@@ -1,0 +1,25 @@
+{
+  "name": "ewa-cli",
+  "version": "1.0.0",
+  "description": "EWA Command line tool",
+  "main": "lib/cli.js",
+  "bin": {
+    "ewa": "lib/cli.js"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lyfeyaj/ewa/tree/master/packages/cli"
+  },
+  "keywords": [
+    "ewa",
+    "cli"
+  ],
+  "author": "Felix Liu",
+  "license": "MIT",
+  "dependencies": {
+    "yargs": "^11.0.0"
+  }
+}

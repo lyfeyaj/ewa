@@ -1,0 +1,16 @@
+{
+  "name": "ewa",
+  "private": true,
+  "license": "MIT",
+  "author": "Felix Liu",
+  "scripts": {
+    "build": "make build",
+    "fix": "make fix",
+    "lint": "make lint",
+    "precommit": "lint-staged",
+    "test": "make test"
+  },
+  "devDependencies": {
+    "lerna": "^2.11.0"
+  }
+}
