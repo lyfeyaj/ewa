@@ -14,5 +14,8 @@
     "ewa"
   ],
   "author": "Felix Liu",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^4.15.1"
+  }
 }

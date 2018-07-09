@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint no-console: "off" */
+
 'use strict';
 
 require('yargs') // eslint-disable-line
@@ -10,11 +12,16 @@ require('yargs') // eslint-disable-line
         default: '.'
       });
   }, (argv) => {
-    if (argv.verbose) console.info(`start server on: ${argv.port}`);
+    require('./commands/create')(argv);
   })
-  .option('verbose', {
-    alias: 'v',
-    default: false
+  .command('init', 'init wechat app project', {}, (argv) => {
+    require('./commands/init')(argv);
+  })
+  .command('start', 'start ewa build server', {}, (argv) => {
+    require('./commands/start')(argv);
+  })
+  .command('build', 'build static files', {}, (argv) => {
+    require('./commands/build')(argv);
   })
   .help()
   .argv;
