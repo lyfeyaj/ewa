@@ -1,3 +1,5 @@
+'use strict';
+
 const webpack = require('webpack');
 const Template = require('webpack/lib/Template');
 const path = require('path');

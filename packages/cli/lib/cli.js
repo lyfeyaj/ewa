@@ -4,7 +4,7 @@
 
 'use strict';
 
-require('yargs') // eslint-disable-line
+require('yargs')
   .command('new [dir]', 'start the server', (yargs) => {
     yargs
       .positional('dir', {
