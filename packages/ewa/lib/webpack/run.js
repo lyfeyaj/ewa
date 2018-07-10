@@ -9,17 +9,22 @@ const path = require('path');
 
 const ROOT = process.cwd();
 
+const FAKE_WATCH_DIR = path.resolve(ROOT, '.ewa');
+
+const webpackBin = path.resolve(__dirname, '../../node_modules/.bin/webpack');
+const configFile = path.resolve(__dirname, 'config.js');
+
 const script = nodemon({
-  exec: `npx webpack --config ${path.join(__dirname, 'config.js')} --watch --progress --colors`,
-  watch: ['.ewa'],
+  exec: `${webpackBin} --config ${configFile} --watch`,
+  watch: [FAKE_WATCH_DIR],
   ext: 'js'
 });
 
 const watcher = chokidar.watch(
   [
-    path.join(ROOT, 'src/pages/**/*.{js,wxml,wxss,json}'),
-    path.join(ROOT, 'src/components/**/*.{js,wxml,wxss,json}'),
-    path.join(ROOT, '.ewa')
+    path.resolve(ROOT, 'src/pages/**/*.{js,wxml,wxss,json}'),
+    path.resolve(ROOT, 'src/components/**/*.{js,wxml,wxss,json}'),
+    path.resolve(ROOT, '.ewa')
   ],
   {
     ignored: /(^|[/\\])\../,

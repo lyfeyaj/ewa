@@ -10,6 +10,7 @@ const utils = require('../utils');
 
 // 常量
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const IS_DEV = NODE_ENV === 'development';
 const ROOT = process.cwd();
 const ENTRY_DIR = path.join(ROOT, 'src');
 const OUTPUT_DIR = path.join(ROOT, 'dist');
@@ -106,7 +107,7 @@ module.exports = function makeConfig(options = {}) {
   // Loaders
   let rules = [];
 
-  if (NODE_ENV === 'development') {
+  if (IS_DEV) {
     // do nothing
     rules.push(
       {
@@ -132,14 +133,14 @@ module.exports = function makeConfig(options = {}) {
         options: {
           cacheDirectory: true,
           presets: [
-            'env',
-            'stage-2',
-            'es2017'
+            require('babel-preset-env'),
+            require('babel-preset-stage-2'),
+            require('babel-preset-es2017')
           ],
           plugins: [
-            ['transform-runtime', {
+            [require('babel-plugin-transform-runtime'), {
               'helpers': false,
-              'polyfill': true,
+              'polyfill': false,
               'regenerator': true,
               'moduleName': 'babel-runtime'
             }]
@@ -157,7 +158,7 @@ module.exports = function makeConfig(options = {}) {
         use: [
           {
             loader: 'css-loader',
-            options: { minimize: NODE_ENV !== 'development' }
+            options: { minimize: !IS_DEV }
           },
           // PostCSS 配置
           {
@@ -168,7 +169,7 @@ module.exports = function makeConfig(options = {}) {
                   require('autoprefixer')({ remove: false, browsers: ['> 1%'] })
                 ];
 
-                if (NODE_ENV !== 'development') {
+                if (!IS_DEV) {
                   ps = ps.concat(
                     require('cssnano')({
                       preset: ['default', { discardComments: { removeAll: true } }]
@@ -246,15 +247,17 @@ module.exports = function makeConfig(options = {}) {
   };
 
   // 开发工具
-  const devtool = NODE_ENV === 'development' ? 'source-map' : '';
+  const devtool = IS_DEV ? 'source-map' : '';
 
   // 构建模式
-  const mode = NODE_ENV === 'development' ? 'development' : 'production';
+  const mode = IS_DEV ? 'development' : 'production';
+
+  // 是否是开发环境
 
   return {
     devtool,
     mode,
-    context: ROOT,
+    context: __dirname,
     entry: buildDynamicEntries(),
     target: 'node',
     output: {
@@ -263,10 +266,13 @@ module.exports = function makeConfig(options = {}) {
       globalObject: OUTPUT_GLOBAL_OBJECT
     },
     optimization,
-    module: { rules: rules },
+    module: { rules },
     plugins: plugins,
     resolve: {
-      modules: ['node_modules'],
+      modules: [
+        'node_modules',
+        path.resolve(__dirname, '../../node_modules')
+      ],
       extensions: ['.js', '.coffee', '.html', '.css', '.scss', '.sass', '.wxml', '.wxss'],
       alias: Object.assign(aliasDirs, {
         '@': path.resolve(ROOT, 'src/')
