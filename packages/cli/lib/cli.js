@@ -3,6 +3,7 @@
 'use strict';
 
 require('yargs')
+  .usage('$0 <cmd> [args]')
   .command('new [projectName]', '创建新的微信小程序项目', (yargs) => {
     yargs
       .positional('projectName', {
@@ -32,4 +33,6 @@ require('yargs')
   })
   .help('help', '获取使用帮助')
   .alias('help', 'h')
+  .default('help')
+  .demandCommand(1, '请输入命令来启动相应的功能')
   .argv;
