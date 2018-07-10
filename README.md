@@ -53,7 +53,7 @@ module.exports = {
   // 通用代码名称，默认为 vendors.js
   commonModuleName: 'vendors.js',
 
-  // 是否简化路径，作用于 page 和 component，如 index/index.=> index，默认为 false
+  // 是否简化路径，作用于 page 和 component，如 index/index.wxml=> index.wxml，默认为 false
   simplifyPath: false,
 
   // 文件夹快捷引用

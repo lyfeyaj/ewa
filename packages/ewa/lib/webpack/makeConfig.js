@@ -37,7 +37,7 @@ const DEFAULT_COPY_FILE_TYPES = [
  * 生成 webpack 配置
  * options:
  *   commonModuleName: 通用代码名称，默认为 vendors.js
- *   simplifyPath: 是否简化路径，作用于 page 和 component，如 index/index.=> index，默认为 false
+ *   simplifyPath: 是否简化路径，作用于 page 和 component，如 index/index.wxml=> index.wxml，默认为 false
  *   aliasDirs: 文件夹快捷引用
  *   copyFileTypes: 需要拷贝的文件类型
  *   rules: webpack loader 规则
