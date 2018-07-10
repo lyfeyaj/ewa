@@ -11,11 +11,10 @@ const ROOT = process.cwd();
 
 const FAKE_WATCH_DIR = path.resolve(ROOT, '.ewa');
 
-const webpackBin = path.resolve(__dirname, '../../node_modules/.bin/webpack');
 const configFile = path.resolve(__dirname, 'config.js');
 
 const script = nodemon({
-  exec: `${webpackBin} --config ${configFile} --watch`,
+  exec: `npx webpack --config ${configFile} --watch`,
   watch: [FAKE_WATCH_DIR],
   ext: 'js'
 });
