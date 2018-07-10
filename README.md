@@ -41,3 +41,43 @@ cd your_project_dir && ewa init
 运行 `npm start` 即可启动实时编译
 
 运行 `npm run build` 即可编译线上版本（相比实时编译而言，体积更小）
+
+#### 配置
+
+ewa 通过 `ewa.config.js` 来支持个性化配置。如下所示：
+
+``` javascript
+// ewa.config.js
+
+module.exports = {
+  // 通用代码名称，默认为 vendors.js
+  commonModuleName: 'vendors.js',
+
+  // 是否简化路径，作用于 page 和 component，如 index/index.=> index，默认为 false
+  simplifyPath: false,
+
+  // 文件夹快捷引用
+  aliasDirs: [
+    'apis',
+    'assets',
+    'constants',
+    'utils'
+  ],
+
+  // 需要拷贝的文件类型
+  copyFileTypes: [
+    'png',
+    'jpeg',
+    'jpg',
+    'gif',
+    'svg',
+    'ico'
+  ],
+
+  // webpack loader 规则
+  rules: [],
+
+  // webpack 插件
+  plugins: []
+};
+```
