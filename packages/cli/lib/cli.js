@@ -23,5 +23,8 @@ require('yargs')
   .command('build', 'build static files', {}, (argv) => {
     require('./commands/build')(argv);
   })
+  .command('clean', 'clean dist files', {}, (argv) => {
+    require('./commands/clean')(argv);
+  })
   .help()
   .argv;
