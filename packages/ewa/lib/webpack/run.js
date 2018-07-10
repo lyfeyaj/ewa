@@ -5,18 +5,21 @@
 const nodemon = require('nodemon');
 const bus = require('nodemon/lib/utils/bus');
 const chokidar = require('chokidar');
+const path = require('path');
+
+const ROOT = process.cwd();
 
 const script = nodemon({
-  exec: 'npm run webpack',
+  exec: `npx webpack --config ${path.join(__dirname, 'config.js')} --watch --progress --colors`,
   watch: ['.ewa'],
   ext: 'js'
 });
 
 const watcher = chokidar.watch(
   [
-    './src/pages/**/*.{js,wxml,wxss,json}',
-    './src/components/**/*.{js,wxml,wxss,json}',
-    './ewa'
+    path.join(ROOT, 'src/pages/**/*.{js,wxml,wxss,json}'),
+    path.join(ROOT, 'src/components/**/*.{js,wxml,wxss,json}'),
+    path.join(ROOT, '.ewa')
   ],
   {
     ignored: /(^|[/\\])\../,
