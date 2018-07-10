@@ -42,7 +42,7 @@ cd your_project_dir && ewa init
 
 运行 `npm run build` 即可编译线上版本（相比实时编译而言，体积更小）
 
-#### 配置
+## 配置
 
 ewa 通过 `ewa.config.js` 来支持个性化配置。如下所示：
 
