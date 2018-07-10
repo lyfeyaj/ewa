@@ -17,7 +17,6 @@
   "license": "MIT",
   "dependencies": {
     "autoprefixer": "^8.6.5",
-    "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.5",
