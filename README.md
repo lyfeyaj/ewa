@@ -19,7 +19,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 ## 安装
 
 ```bash
-npm i -g ewa-cli 或者 yarn add -g ewa-cli
+npm i -g ewa-cli 或者 yarn global add ewa-cli
 ```
 
 ## 如何使用
