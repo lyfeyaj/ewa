@@ -50,7 +50,7 @@ ewa 通过 `ewa.config.js` 来支持个性化配置。如下所示：
 // ewa.config.js
 
 module.exports = {
-  // 通用代码名称，默认为 vendors.js
+  // 公用代码库 (node_modules 打包生成的文件)名称，默认为 vendors.js
   commonModuleName: 'vendors.js',
 
   // 是否简化路径，作用于 page 和 component，如 index/index.wxml=> index.wxml，默认为 false
