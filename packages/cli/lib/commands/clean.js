@@ -13,9 +13,9 @@ module.exports = function clean() {
 
   const distDir = path.resolve(ROOT, 'dist/*');
 
-  console.log('    正在清理 dist 目录... ');
+  utils.log('正在清理 dist 目录... ');
 
   rimraf(distDir);
 
-  console.log('    完成 !');
+  utils.log('完成 !', 'success');
 };

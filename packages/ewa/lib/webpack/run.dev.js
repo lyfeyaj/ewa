@@ -6,6 +6,7 @@ const nodemon = require('nodemon');
 const bus = require('nodemon/lib/utils/bus');
 const chokidar = require('chokidar');
 const path = require('path');
+const utils = require('../utils');
 
 const ROOT = process.cwd();
 
@@ -32,7 +33,7 @@ const watcher = chokidar.watch(
 );
 
 function moniter(file) {
-  nodemonLog(`Watching file: ${path.relative(ROOT, file)}`);
+  utils.log(`Watching file: ${path.relative(ROOT, file)}`);
   bus.emit('restart', [file]);
 }
 
@@ -54,9 +55,5 @@ script.on('exit', function () {
 
 // Forward log messages and stdin
 script.on('log', function (log){
-  nodemonLog(log.colour);
+  utils.log(log.colour);
 });
-
-function nodemonLog(message){
-  console.log('[' + new Date().toString().split(' ')[4] + '] ' + message);
-}

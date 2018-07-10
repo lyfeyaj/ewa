@@ -14,9 +14,9 @@ module.exports = function start() {
   const script = path.resolve(ROOT, 'node_modules/ewa/lib/webpack/run.js');
   const crossEnv = path.resolve(__dirname, '../../node_modules/.bin/cross-env');
 
-  console.log('    正在以生产模式构建项目...');
+  utils.log('正在以生产模式构建项目...');
 
   execSync(`cd ${ROOT} && ${crossEnv} NODE_ENV=production node ${script}`);
 
-  console.log('    完成 !');
+  utils.log('完成 !', 'success');
 };

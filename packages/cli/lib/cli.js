@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-/* eslint no-console: "off" */
-
 'use strict';
 
 require('yargs')

@@ -8,6 +8,8 @@ module.exports = function start() {
 
   const ROOT = process.cwd();
 
+  utils.log('正在启动项目实时编译...');
+
   const runEwa = path.resolve(ROOT, 'node_modules/ewa/lib/webpack/run.js');
 
   require(runEwa);
