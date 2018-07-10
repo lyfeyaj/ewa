@@ -97,9 +97,12 @@ module.exports = function makeConfig(options = {}) {
     }),
     new CopyWebpackPlugin([
       {
-        from: `**/*.{${options.copyFileTypes.join(',')}}`,
+        from: path.resolve(
+          ROOT,
+          `src/**/*.{${options.copyFileTypes.join(',')}}`
+        ),
         to: OUTPUT_DIR,
-        context: 'src'
+        context: path.resolve(ROOT, 'src')
       }
     ])
   ].concat(options.plugins);
