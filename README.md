@@ -1,5 +1,5 @@
-EWA
-===
+EWA (微信小程序增强开发工具)
+=========================
 
 Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 
