@@ -30,13 +30,13 @@ npm i -g ewa-cli 或者 yarn global add ewa-cli
 
 ## 如何使用
 
-#### 创建新项目
+### 创建新项目
 
 ```bash
 ewa new your_project_name
 ```
 
-#### 集成到现有小程序项目，仅支持小程序原生开发目录
+### 集成到现有小程序项目，仅支持小程序原生开发目录
 
 ***注意：使用此方法，请务必对项目代码做好备份！！！***
 
@@ -44,7 +44,7 @@ ewa new your_project_name
 cd your_project_dir && ewa init
 ```
 
-#### 启动
+### 启动
 
 运行 `npm start` 即可启动实时编译
 
