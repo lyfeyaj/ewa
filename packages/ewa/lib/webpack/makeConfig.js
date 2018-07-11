@@ -32,11 +32,13 @@ const DEFAULT_COPY_FILE_TYPES = [
   'svg',
   'ico'
 ];
+const DEFAULT_COMMON_MODULE_PATTERN = /[\\/]node_modules[\\/]/;
 
 /**
  * 生成 webpack 配置
  * options:
  *   commonModuleName: 通用代码名称，默认为 vendors.js
+ *   commonModulePattern: 通用模块匹配模式，默认为 /[\\/]node_modules[\\/]/
  *   simplifyPath: 是否简化路径，作用于 page 和 component，如 index/index.wxml=> index.wxml，默认为 false
  *   aliasDirs: 文件夹快捷引用
  *   copyFileTypes: 需要拷贝的文件类型
@@ -46,8 +48,9 @@ const DEFAULT_COPY_FILE_TYPES = [
 module.exports = function makeConfig(options = {}) {
   options = Object.assign({
     commonModuleName: DEFAULT_COMMON_MODULE_NAME,
+    commonModulePattern: DEFAULT_COMMON_MODULE_PATTERN,
     aliasDirs: DEFAULT_ALIAS_DIRS,
-    copyFileTypes: DEFAULT_COPY_FILE_TYPES,
+    copyFileTypes: DEFAULT_COPY_FILE_TYPES
   }, options);
 
   options.simplifyPath = options.simplifyPath === true;
@@ -241,7 +244,7 @@ module.exports = function makeConfig(options = {}) {
     splitChunks: {
       cacheGroups: {
         commons: {
-          test: /[\\/]node_modules[\\/]/,
+          test: options.commonModulePattern,
           name: options.commonModuleName,
           chunks: 'all'
         }
