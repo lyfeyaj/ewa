@@ -30,7 +30,7 @@ module.exports = function create(argv) {
   // 拷贝项目文件
   fs.copySync(TEMPLATE_DIR, projectDir, {
     filter: function(src) {
-      if (/(dist|node_modules)(\/|\\)/i.test(src)) return false;
+      if (/template(\/|\\)(dist|node_modules)(\/|\\)/i.test(src)) return false;
       return true;
     }
   });
