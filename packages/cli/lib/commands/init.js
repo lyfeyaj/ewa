@@ -41,7 +41,7 @@ module.exports = function init() {
     let dest = path.resolve(TMP_SRC, basename);
 
     utils.log(`正在移动 ${path.relative(ROOT, source)} 至 ${path.relative(ROOT, dest)}`);
-    fs.moveSync(source, dest);
+    fs.moveSync(source, dest, { overwrite: true });
   });
   utils.log('重命名 __tmp_src__ 为 src');
   fs.moveSync(TMP_SRC, path.resolve(ROOT, 'src'));
