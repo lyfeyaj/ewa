@@ -15,7 +15,7 @@ const FAKE_WATCH_DIR = path.resolve(ROOT, '.ewa');
 const configFile = path.resolve(__dirname, 'config.js');
 
 const script = nodemon({
-  exec: `npx webpack --config ${configFile} --watch`,
+  exec: `npx --quiet webpack --config ${configFile} --watch`,
   watch: [FAKE_WATCH_DIR],
   ext: 'js'
 });

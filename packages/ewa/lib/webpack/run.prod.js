@@ -7,4 +7,4 @@ const execSync = require('child_process').execSync;
 
 const configFile = path.resolve(__dirname, 'config.js');
 
-execSync(`npx webpack --config ${configFile} --progress`);
+execSync(`npx --quiet webpack --config ${configFile} --progress`);
