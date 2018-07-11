@@ -44,11 +44,16 @@ module.exports = function(webpack) {
     .on('unlink', moniter)
     .on('unlinkDir', moniter);
 
-  // Capture ^C
-  process.once('SIGINT', function () {
+  function terminate() {
+    if (script.quitEmitted) return;
     script.quitEmitted = true;
     script.emit('exit');
-  });
+  }
+
+  // Capture ^C
+  process.once('SIGINT', terminate);
+  // Capture exit
+  process.once('exit', terminate);
 
   script.on('exit', function () {
     // Ignore exit event during restart
