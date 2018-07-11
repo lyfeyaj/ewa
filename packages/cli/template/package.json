@@ -12,6 +12,6 @@
   "dependencies": {},
   "devDependencies": {
     "ewa": "^0.1.9",
-    "ewa-cli": "^0.1.9"
+    "ewa-cli": "^0.1.10"
   }
 }
