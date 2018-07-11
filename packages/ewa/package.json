@@ -1,6 +1,6 @@
 {
   "name": "ewa",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Enhanced wechat app development toolkit",
   "main": "lib/ewa.js",
   "scripts": {
