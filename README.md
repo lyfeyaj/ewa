@@ -5,7 +5,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 
 ## 为什么开发这个工具？
 
-厌倦了不停的对比 [wepy](https://github.com/Tencent/wepy) 或者 [mpvue](https://github.com/Meituan-Dianping/mpvue) 的特性，间歇性的踩雷，以及 `code once, run everywhere` 的美好幻想。只想给小程序开发插上效率的翅膀 ~
+厌倦了不停的对比 [wepy](https://github.com/Tencent/wepy) 或者 [mpvue](https://github.com/Meituan-Dianping/mpvue) 的特性，间歇性的踩雷，以及 `code once, run everywhere` 的幻想。只想给小程序开发插上效率的翅膀 ~
 
 ## 功能特性
 
