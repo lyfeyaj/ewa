@@ -11,7 +11,7 @@ module.exports = function clean() {
 
   const ROOT = process.cwd();
 
-  const distDir = path.resolve(ROOT, 'dist/*');
+  const distDir = path.resolve(ROOT, 'dist');
 
   utils.log('正在清理 dist 目录... ');
 
