@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "ewa": "^0.1.11",
-    "ewa-cli": "^0.1.15"
+    "ewa": "^0.1.16",
+    "ewa-cli": "^0.1.16"
   }
 }
