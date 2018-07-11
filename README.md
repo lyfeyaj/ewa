@@ -36,7 +36,7 @@ npm i -g ewa-cli 或者 yarn global add ewa-cli
 ewa new your_project_name
 ```
 
-### 集成到现有小程序项目，仅支持小程序原生开发目录
+### 集成到现有小程序项目，仅支持小程序原生开发项目转换
 
 ***注意：使用此方法，请务必对项目代码做好备份！！！***
 
