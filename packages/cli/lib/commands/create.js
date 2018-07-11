@@ -24,6 +24,9 @@ module.exports = function create(argv) {
 
   utils.log(`初始化 ewa 项目: ${projectName}`);
 
+  // 创建项目文件夹
+  fs.ensureDirSync(projectDir);
+
   // 拷贝项目文件
   fs.copySync(TEMPLATE_DIR, projectDir, {
     filter: function(src) {
