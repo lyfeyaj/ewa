@@ -3,6 +3,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const glob = require('glob');
+const NodeSourcePlugin = require('webpack/lib/node/NodeSourcePlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const NodeCommonModuleTemplatePlugin = require('./NodeCommonModuleTemplatePlugin');
@@ -14,7 +15,7 @@ const IS_DEV = NODE_ENV === 'development';
 const ROOT = process.cwd();
 const ENTRY_DIR = path.join(ROOT, 'src');
 const OUTPUT_DIR = path.join(ROOT, 'dist');
-const OUTPUT_GLOBAL_OBJECT = '(function(){var a=getApp();a.__g=a.__g||{};return a.__g;})()';
+const OUTPUT_GLOBAL_OBJECT = '(function(){var a=getApp()||wx;a.__g=a.__g||{};return a.__g;})()';
 
 // 默认常量
 const DEFAULT_COMMON_MODULE_NAME = 'vendors.js';
@@ -44,6 +45,7 @@ const DEFAULT_COMMON_MODULE_PATTERN = /[\\/]node_modules[\\/]/;
  *   copyFileTypes: 需要拷贝的文件类型
  *   rules: webpack loader 规则
  *   plugins: webpack plugin
+ *   webpack: 修改并自定义 webpack 配置，如：function(config) { return config; }
  */
 module.exports = function makeConfig(options = {}) {
   options = Object.assign({
@@ -92,6 +94,16 @@ module.exports = function makeConfig(options = {}) {
 
   // 插件
   let plugins = [
+    // Mock node env
+    new NodeSourcePlugin({
+      console: false,
+      global: true,
+      process: true,
+      __filename: 'mock',
+      __dirname: 'mock',
+      Buffer: true,
+      setImmediate: true
+    }),
     new webpack.NamedModulesPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: '[name]' }),
@@ -260,7 +272,7 @@ module.exports = function makeConfig(options = {}) {
 
   // 是否是开发环境
 
-  return {
+  let config = {
     devtool,
     mode,
     context: __dirname,
@@ -285,4 +297,11 @@ module.exports = function makeConfig(options = {}) {
       })
     }
   };
+
+  // 允许自定义 webpack 配置
+  if (typeof options.webpack === 'function') {
+    return options.webpack(config) || config;
+  }
+
+  return config;
 };
