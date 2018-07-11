@@ -16,7 +16,7 @@ function isEwaProject() {
 
 function checkEwaProject() {
   if (isEwaProject()) return;
-  log('无法执行命令，不是一个有效的 EWA 项目', 'error');
+  log('无法执行命令，不是一个有效的 ewa 项目', 'error');
   process.exit(0);
 }
 

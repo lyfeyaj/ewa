@@ -7,8 +7,7 @@ require('yargs')
   .command('new [projectName]', '创建新的微信小程序项目', (yargs) => {
     yargs
       .positional('projectName', {
-        describe: '项目名称',
-        default: '.'
+        describe: '项目名称'
       });
   }, (argv) => {
     require('./commands/create')(argv);

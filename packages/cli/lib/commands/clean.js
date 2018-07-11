@@ -2,7 +2,7 @@
 
 /* eslint no-console: "off" */
 
-const rimraf = require('rimraf').sync;
+const fs = require('fs-extra');
 const path = require('path');
 const utils = require('../utils');
 
@@ -15,7 +15,7 @@ module.exports = function clean() {
 
   utils.log('正在清理 dist 目录... ');
 
-  rimraf(distDir);
+  fs.emptyDirSync(distDir);
 
   utils.log('完成 !', 'success');
 };
