@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const path = require('path');
-// const webpack = require('webpack');
 const makeConfig = require('./makeConfig');
 
 const USER_CONFIG_FILE = path.join(
