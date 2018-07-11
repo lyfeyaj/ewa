@@ -10,6 +10,13 @@ const utils = require('../utils');
 module.exports = function install(projectDir, successTip) {
   const projectName = path.basename(projectDir);
 
+  // 重命名 gitignore => .gitignore
+  // https://github.com/npm/npm/issues/3763
+  let gitignoreFile = path.resolve(projectDir, 'gitignore');
+  if (fs.existsSync(gitignoreFile)) {
+    fs.moveSync(gitignoreFile, path.resolve(projectDir, '.gitignore'));
+  }
+
   successTip = successTip || `cd ${projectName} && npm start`;
 
   // 修改项目名称
