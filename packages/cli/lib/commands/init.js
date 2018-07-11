@@ -16,7 +16,7 @@ const TMP_SRC = path.resolve(ROOT, '__tmp_src__');
 const COPY_FILE_OR_DIRS =[
   '.ewa',
   '.eslintrc.js',
-  '.gitingore',
+  '.gitignore',
   'package.json'
 ];
 
