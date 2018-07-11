@@ -24,6 +24,7 @@ const watcher = chokidar.watch(
   [
     path.resolve(ROOT, 'src/pages/**/*.{js,wxml,wxss,json}'),
     path.resolve(ROOT, 'src/components/**/*.{js,wxml,wxss,json}'),
+    path.resolve(ROOT, 'src/templates/**/*.{js,wxml,wxss,json}'),
     path.resolve(ROOT, '.ewa')
   ],
   {
