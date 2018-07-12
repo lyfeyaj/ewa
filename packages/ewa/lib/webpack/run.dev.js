@@ -3,7 +3,6 @@
 /* eslint no-console: "off" */
 
 const nodemon = require('nodemon');
-const bus = require('nodemon/lib/utils/bus');
 const chokidar = require('chokidar');
 const path = require('path');
 const utils = require('../utils');
@@ -36,32 +35,28 @@ module.exports = function(webpack) {
 
   function moniter(file) {
     utils.log(`Watching file: ${path.relative(ROOT, file)}`);
-    bus.emit('restart', [file]);
+    script.emit('restart', [file]);
   }
 
-  watcher
-    .on('add', moniter)
-    .on('unlink', moniter)
-    .on('unlinkDir', moniter);
-
-  function terminate() {
-    if (script.quitEmitted) return;
-    script.quitEmitted = true;
-    script.emit('exit');
-  }
+  // Delay 5 seconds watching target files
+  setTimeout(() => {
+    watcher
+      .on('add', moniter)
+      .on('unlink', moniter)
+      .on('unlinkDir', moniter);
+  }, 5000);
 
   // Capture ^C
-  process.once('SIGINT', terminate);
-  // Capture exit
-  process.once('exit', terminate);
+  process.once('SIGINT', function() {
+    script.emit('quit', 130);
+  });
 
-  script.on('exit', function () {
-    // Ignore exit event during restart
-    if (script.quitEmitted) process.exit(0);
+  script.on('quit', function() {
+    process.exit(0);
   });
 
   // Forward log messages and stdin
-  script.on('log', function (log){
+  script.on('log', function(log) {
     utils.log(log.colour);
   });
 };
