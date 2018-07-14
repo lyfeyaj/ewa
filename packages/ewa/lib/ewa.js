@@ -1,7 +1,9 @@
 'use strict';
 
-const utils = require('./utils');
+const wxPromisify = require('./wxPromisify');
 
-module.exports = {
-  utils
-};
+const ewa = {};
+
+wxPromisify(ewa);
+
+module.exports = ewa;
