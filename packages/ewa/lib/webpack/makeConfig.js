@@ -158,7 +158,7 @@ module.exports = function makeConfig(options = {}) {
           plugins: [
             [require('babel-plugin-transform-runtime'), {
               'helpers': false,
-              'polyfill': false,
+              'polyfill': true,
               'regenerator': true,
               'moduleName': 'babel-runtime'
             }]
