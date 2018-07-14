@@ -50,6 +50,16 @@ cd your_project_dir && ewa init
 
 运行 `npm run build` 即可编译线上版本（相比实时编译而言，体积更小）
 
+## 微信接口 Promise 化
+
+```javascript
+const { wx } = require('ewa');
+
+wx.request('http://your_api_endpoint').then(function({ data, statusCode, header }) {
+  // 数据处理逻辑
+});
+```
+
 ## 配置
 
 ewa 通过 `ewa.config.js` 来支持个性化配置。如下所示：
@@ -89,6 +99,11 @@ module.exports = {
   rules: [],
 
   // webpack 插件
-  plugins: []
+  plugins: [],
+
+  // webpack 自定义配置
+  webpack: function(config) {
+    // 通过直接修改 config 来添加自定义 webpack 配置
+  }
 };
 ```
