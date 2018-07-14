@@ -3,7 +3,7 @@
 const Queue = require('./Queue');
 const queue = new Queue();
 
-const makeArgs = function () {
+const buildArgs = function () {
   let args = [], len = arguments.length;
   while (len--) args[len] = arguments[len];
   return args;
@@ -20,7 +20,7 @@ const promisify = function (fn, caller, type) {
   if ( type === void 0 ) type = 'weapp-style';
 
   return function () {
-    let args = makeArgs.call(null, arguments);
+    let args = buildArgs.apply(null, arguments);
 
     return new Promise(function (resolve, reject) {
       switch (type) {
@@ -190,7 +190,7 @@ module.exports = function install (ewa, removeFromPromisify) {
   Object.keys(_wx).forEach(function (key) {
     if (!noPromiseMap[key] && key.substr(0, 2) !== 'on' && key.substr(-4) !== 'Sync') {
       _wx[key] = promisify(function () {
-        let args = makeArgs.call(null, arguments);
+        let args = buildArgs.apply(null, arguments);
 
         let fixArgs = args[0];
         let failFn = args.pop();
@@ -214,11 +214,14 @@ module.exports = function install (ewa, removeFromPromisify) {
 
       // enhanced request with queue
       if (key === 'request') {
+        let rq = _wx[key];
+
+        // overwrite request method
         _wx[key] = function request() {
-          let args = makeArgs.call(null, arguments);
+          let args = buildArgs.apply(null, arguments);
           return new Promise(function(resolve, reject) {
             queue.push(function() {
-              return _wx[key].call(_wx, args).then(resolve, reject);
+              return rq.apply(_wx, args).then(resolve, reject);
             });
           });
         };
