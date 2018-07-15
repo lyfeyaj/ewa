@@ -15,10 +15,15 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 4. 微信接口 Promise 化
 5. 支持安装 NPM 包
 6. 支持 SCSS 以及 小于 16k 的 background-image
-7. 添加新页面或新组件无需重启编译
-8. 自定义编译流程
+7. 支持 source map, 方便调试
+8. 添加新页面或新组件无需重启编译
+9. 允许自定义编译流程
 
-更多特性正在赶来 ... 敬请期待
+更多特性正在赶来 ... 敬请期待 👇
+
++ LESS 支持
++ 可跨项目复用的小程序组件或页面（通过NPM包管理）
++ Redux 支持
 
 ## 安装
 
@@ -48,16 +53,18 @@ cd your_project_dir && ewa init
 
 运行 `npm start` 即可启动实时编译
 
-运行 `npm run build` 即可编译线上版本（相比实时编译而言，体积更小）
+运行 `npm run build` 即可编译线上版本（相比实时编译而言，去除了 source map 并增加了代码压缩混淆等，体积更小）
 
 ## 微信接口 Promise 化
 
 ```javascript
 const { wx } = require('ewa');
 
-wx.request('http://your_api_endpoint').then(function({ data, statusCode, header }) {
-  // 数据处理逻辑
-});
+Page({
+  async onLoad() {
+    let { data } = await wx.request({ url: 'http://your_api_endpoint' });
+  }
+})
 ```
 
 ## 配置
@@ -101,9 +108,9 @@ module.exports = {
   // webpack 插件
   plugins: [],
 
-  // webpack 自定义配置
+  // 嫌不够灵活？直接修改 webpack 配置
   webpack: function(config) {
-    // 通过直接修改 config 来添加自定义 webpack 配置
+    return config;
   }
 };
 ```
