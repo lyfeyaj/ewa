@@ -60,7 +60,7 @@ cd your_project_dir && ewa init
 
 使用[微信开发者工具](https://mp.weixin.qq.com/debug/wxadoc/dev/devtools/devtools.html)选择 `dist` 目录打开，即可预览项目
 
-所有的源代码存放在 `src` 文件夹，详细的目录结构如下：
+### 目录结构
 
 ```
 ├── .ewa                         特殊占位目录，用于检查是否为 ewa 项目
