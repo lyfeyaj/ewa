@@ -63,12 +63,12 @@ cd your_project_dir && ewa init
 所有的源代码存放在 `src` 文件夹，详细的目录结构如下：
 
 ```
-├── .ewa
-│   └── .keep
-├── dist
-├── src
-│   ├── components
-│   ├── pages
+├── .ewa                         特殊占位目录，用于检查是否为 ewa 项目
+├── dist                         小程序运行代码目录（该目录由ewa的start 或者 build指令自动编译生成，请不要直接修改该目录下的文件）
+├── node_modules                 外部依赖库
+├── src                          代码编写的目录（该目录为使用ewa后的开发目录）
+│   ├── components               小程序组件目录
+│   ├── pages                    小程序页面目录
 │   │   ├── index
 │   │   │   ├── index.js
 │   │   │   ├── index.wxml
@@ -78,15 +78,16 @@ cd your_project_dir && ewa init
 │   │       ├── logs.json
 │   │       ├── logs.wxml
 │   │       └── logs.wxss
-│   ├── templates
+│   ├── templates                小程序模版目录
 │   ├── utils
 │   │   └── util.js
-│   ├── app.js
-│   ├── app.json
-│   ├── app.wxss
-│   └── project.config.json
+│   ├── app.js                   小程序入口文件
+│   ├── app.json                 小程序全局配置文件
+│   ├── app.wxss                 小程序全局样式文件
+│   └── project.config.json      微信开发者工具小程序项目配置文件
+├── ewa.config.js                ewa 配置文件
 ├── .gitignore
-├── .eslintrc.js
+├── .eslintrc.js                 eslint 配置
 └── package.json
 ```
 
