@@ -13,9 +13,10 @@ const install = require('./install');
 const ROOT = process.cwd();
 const TEMPLATE_DIR = path.resolve(__dirname, '../../template');
 const TMP_SRC = path.resolve(ROOT, '__tmp_src__');
-const COPY_FILE_OR_DIRS =[
+const COPY_FILES_OR_DIRS =[
   '.ewa',
   '.eslintrc.js',
+  'ewa.config.js',
   ['gitignore', '.gitignore'],
   'package.json'
 ];
@@ -48,7 +49,7 @@ module.exports = function init() {
   utils.log('文件移动完成', 'success');
 
   utils.log('正在添加必要的文件...');
-  COPY_FILE_OR_DIRS.map(file => {
+  COPY_FILES_OR_DIRS.map(file => {
     let source;
     let dest;
 
