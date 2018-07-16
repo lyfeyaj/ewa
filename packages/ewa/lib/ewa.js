@@ -1,8 +1,11 @@
 'use strict';
 
 const wxPromisify = require('./wxPromisify');
+const mixin = require('./mixins/mixin');
 
-const ewa = {};
+const ewa = {
+  mixin
+};
 
 wxPromisify(ewa);
 

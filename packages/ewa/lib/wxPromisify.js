@@ -1,13 +1,9 @@
 'use strict';
 
-const Queue = require('./Queue');
-const queue = new Queue();
+const Queue = require('./utils/Queue');
+const buildArgs = require('./utils/buildArgs');
 
-const buildArgs = function () {
-  let args = [], len = arguments.length;
-  while (len--) args[len] = arguments[len];
-  return args;
-};
+const queue = new Queue();
 
 /**
  * Promisify a callback function
