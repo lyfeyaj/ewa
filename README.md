@@ -56,6 +56,40 @@ cd your_project_dir && ewa init
 
 运行 `npm run build` 即可编译线上版本（相比实时编译而言，去除了 source map 并增加了代码压缩混淆等，体积更小）
 
+上述命令运行成功后，可以看到本地多了个 `dist` 目录，这个目录里就是生成的小程序相关代码。
+
+使用[微信开发者工具](https://mp.weixin.qq.com/debug/wxadoc/dev/devtools/devtools.html)选择 `dist` 目录打开，即可预览项目
+
+所有的源代码存放在 `src` 文件夹，详细的目录结构如下：
+
+```
+├── .ewa
+│   └── .keep
+├── dist
+├── src
+│   ├── components
+│   ├── pages
+│   │   ├── index
+│   │   │   ├── index.js
+│   │   │   ├── index.wxml
+│   │   │   └── index.wxss
+│   │   └── logs
+│   │       ├── logs.js
+│   │       ├── logs.json
+│   │       ├── logs.wxml
+│   │       └── logs.wxss
+│   ├── templates
+│   ├── utils
+│   │   └── util.js
+│   ├── app.js
+│   ├── app.json
+│   ├── app.wxss
+│   └── project.config.json
+├── .gitignore
+├── .eslintrc.js
+└── package.json
+```
+
 ## 微信接口 Promise 化
 
 ```javascript
@@ -115,3 +149,8 @@ module.exports = {
   }
 };
 ```
+
+## 常见问题
+
+1. wxss 中可以直接编写 scss 样式代码
+2. 可以使用 `@` 来代替**源代码根目录**来引入代码或样式，如 `const utils = require('@/utils/util')`
