@@ -32,7 +32,7 @@ module.exports = {
         "indent": [
             2,
             2,
-            { "SwitchCase": 1, "MemberExpression": 0 }
+            { "SwitchCase": 1, "MemberExpression": 1 }
         ],
         "linebreak-style": [
             2,
