@@ -17,5 +17,5 @@ module.exports = function clean() {
 
   fs.emptyDirSync(distDir);
 
-  utils.log('完成 !', 'success');
+  utils.log('清理完成 !', 'success');
 };

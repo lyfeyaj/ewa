@@ -13,7 +13,7 @@ module.exports = function start() {
 
   const script = path.resolve(ROOT, 'node_modules/ewa/lib/webpack/run.js');
 
-  utils.log('正在以生产模式构建项目...');
+  utils.log('正在以生产模式编译项目...');
 
   execSync(
     `cd ${ROOT} && node ${script}`,
@@ -25,5 +25,5 @@ module.exports = function start() {
     }
   );
 
-  utils.log('完成 !', 'success');
+  utils.log('编译完成 !', 'success');
 };
