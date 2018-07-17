@@ -91,6 +91,23 @@ cd your_project_dir && ewa init
 └── package.json
 ```
 
+### 命令行
+
+```
+ewa <cmd> [args]
+
+命令：
+  ewa new    创建新的微信小程序项目                         [别名: create]
+  ewa init   在现有的小程序项目中初始化 EWA
+  ewa start  启动 EWA 小程序项目实时编译                       [别名: dev]
+  ewa build  编译小程序静态文件
+  ewa clean  清理小程序静态文件
+
+选项：
+  --version, -v  当前版本号
+  --help, -h     获取使用帮助
+```
+
 ## 微信接口 Promise 化
 
 ```javascript
@@ -115,6 +132,7 @@ module.exports = {
   commonModuleName: 'vendors.js',
 
   // 通用模块匹配模式，默认为 /[\\/]node_modules[\\/]/
+  // 如需添加多个文件夹，可自定义正则，如 /[\\/](node_modules|utils)[\\/]/
   commonModulePattern: /[\\/]node_modules[\\/]/,
 
   // 是否简化路径，作用于 page 和 component，如 index/index.wxml=> index.wxml，默认为 false
