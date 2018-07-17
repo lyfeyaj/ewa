@@ -154,7 +154,7 @@ module.exports = function makeConfig(options = {}) {
             require('babel-preset-env'),
             require('babel-preset-es2016'),
             require('babel-preset-es2017'),
-            require('babel-preset-stage-2'),
+            require('babel-preset-stage-2')
           ],
           plugins: [
             [require('babel-plugin-transform-runtime'), {
