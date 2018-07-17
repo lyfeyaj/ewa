@@ -7,7 +7,7 @@
 require('yargs')
   .locale('zh_CN')
   .usage('$0 <cmd> [args]')
-  .command(['new', 'create'], '创建新的微信小程序项目', (yargs) => {
+  .command(['new <projectName>', 'create'], '创建新的微信小程序项目', (yargs) => {
     yargs
       .positional('projectName', {
         describe: '项目名称'
