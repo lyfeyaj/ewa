@@ -27,6 +27,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2016": "^6.24.1",
     "babel-preset-es2017": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "chalk": "^2.4.1",
     "chokidar": "^2.0.4",
     "copy-webpack-plugin": "^4.5.2",
