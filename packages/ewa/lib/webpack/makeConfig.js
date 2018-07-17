@@ -150,7 +150,11 @@ module.exports = function makeConfig(options = {}) {
         loader: 'babel-loader',
         options: {
           cacheDirectory: true,
-          presets: [require('babel-preset-env')],
+          presets: [
+            require('babel-preset-env'),
+            require('babel-preset-es2016'),
+            require('babel-preset-es2017')
+          ],
           plugins: [
             [require('babel-plugin-transform-runtime'), {
               'helpers': false,
