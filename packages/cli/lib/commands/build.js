@@ -15,7 +15,15 @@ module.exports = function start() {
 
   utils.log('正在以生产模式构建项目...');
 
-  execSync(`cd ${ROOT} && npx --quiet cross-env NODE_ENV=production node ${script}`);
+  execSync(
+    `cd ${ROOT} && node ${script}`,
+    {
+      env: Object.assign({}, process.env, {
+        NODE_ENV: 'production'
+      }),
+      stdio: ['pipe', process.stdout, process.stderr]
+    }
+  );
 
   utils.log('完成 !', 'success');
 };
