@@ -150,11 +150,7 @@ module.exports = function makeConfig(options = {}) {
         loader: 'babel-loader',
         options: {
           cacheDirectory: true,
-          presets: [
-            require('babel-preset-env'),
-            require('babel-preset-stage-2'),
-            require('babel-preset-es2017')
-          ],
+          presets: [require('babel-preset-env')],
           plugins: [
             [require('babel-plugin-transform-runtime'), {
               'helpers': false,
@@ -184,13 +180,22 @@ module.exports = function makeConfig(options = {}) {
             options: {
               plugins: function() {
                 let ps = [
-                  require('autoprefixer')({ remove: false, browsers: ['> 1%'] })
+                  require('autoprefixer')({
+                    remove: false,
+                    browsers: ['> 1%']
+                  })
                 ];
 
                 if (!IS_DEV) {
                   ps = ps.concat(
                     require('cssnano')({
-                      preset: ['default', { discardComments: { removeAll: true } }]
+                      preset: [
+                        'default',
+                        {
+                          discardComments: { removeAll: true },
+                          calc: false
+                        }
+                      ]
                     })
                   );
                 }
@@ -203,6 +208,7 @@ module.exports = function makeConfig(options = {}) {
           {
             loader: 'sass-loader',
             options: {
+              // resolve-url-loader 需要开启 sourceMap 才能工作
               sourceMap: true
             }
           }
