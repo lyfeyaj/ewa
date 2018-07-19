@@ -169,7 +169,8 @@ module.exports = {
 };
 ```
 
-## 常见问题
+## 常见问题 & Tips
 
 1. wxss 中可以直接编写 scss 样式代码
-2. 可以使用 `@` 来代替**源代码根目录**来引入代码或样式，如 `const utils = require('@/utils/util')`
+2. wxss 中引用绝对路径需要在路径前加 `~` 符号，如：`@import "~assets/styles/common.scss";`，具体原因参见：[sass-loader](https://github.com/webpack-contrib/sass-loader#imports)
+3. 可以使用 `@` 来代替**源代码根目录**来引入代码或样式，如 `const utils = require('@/utils/util')`
