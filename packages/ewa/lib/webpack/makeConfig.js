@@ -7,6 +7,7 @@ const NodeSourcePlugin = require('webpack/lib/node/NodeSourcePlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const NodeCommonModuleTemplatePlugin = require('./NodeCommonModuleTemplatePlugin');
+const AutoCleanUnusedFilesPlugin = require('./AutoCleanUnusedFilesPlugin');
 const utils = require('../utils');
 
 // 常量
@@ -15,7 +16,7 @@ const IS_DEV = NODE_ENV === 'development';
 const ROOT = process.cwd();
 const ENTRY_DIR = path.join(ROOT, 'src');
 const OUTPUT_DIR = path.join(ROOT, 'dist');
-const OUTPUT_GLOBAL_OBJECT = '(function(){var a=getApp()||wx;a.__g=a.__g||{};return a.__g;})()';
+const OUTPUT_GLOBAL_OBJECT = 'wx';
 
 // 默认常量
 const DEFAULT_COMMON_MODULE_NAME = 'vendors.js';
@@ -45,6 +46,7 @@ const DEFAULT_COMMON_MODULE_PATTERN = /[\\/]node_modules[\\/]/;
  *   copyFileTypes: 需要拷贝的文件类型
  *   rules: webpack loader 规则
  *   plugins: webpack plugin
+ *   autoCleanUnusedFiles: 开发环境下是否自动清理无用文件，默认为 true
  *   webpack: 修改并自定义 webpack 配置，如：function(config) { return config; }
  */
 module.exports = function makeConfig(options = {}) {
@@ -56,6 +58,7 @@ module.exports = function makeConfig(options = {}) {
   }, options);
 
   options.simplifyPath = options.simplifyPath === true;
+  options.autoCleanUnusedFiles = options.autoCleanUnusedFiles !== false;
   options.rules = options.rules || [];
   options.plugins = options.plugins || [];
 
@@ -82,14 +85,33 @@ module.exports = function makeConfig(options = {}) {
 
   // 构建 entries
   function buildDynamicEntries() {
-    let entries = glob.sync(path.join(ENTRY_DIR, '**/*.{js,wxss,wxml,json}'));
-    let result = {};
-    entries.map(function(filename) {
-      let relativePath = resolvePath(filename);
+    let wxFiles = glob.sync(
+      path.join(ENTRY_DIR, '**/*.{wxss,wxs,wxml}')
+    );
 
-      result[relativePath] = filename;
+    let otherFiles = glob.sync(
+      path.join(ENTRY_DIR, '**/*.{js,json}')
+    );
+
+    let entryDirs = {};
+    entryDirs[ENTRY_DIR] = 1;
+
+    let entries = {};
+
+    wxFiles.map(function(file) {
+      entryDirs[path.dirname(file)] = 1;
+      let relativePath = resolvePath(file);
+      entries[relativePath] = file;
     });
-    return result;
+
+    otherFiles.map(function(file) {
+      if (entryDirs[path.dirname(file)]) {
+        let relativePath = resolvePath(file);
+        entries[relativePath] = file;
+      }
+    });
+
+    return entries;
   }
 
   // 插件
@@ -120,7 +142,14 @@ module.exports = function makeConfig(options = {}) {
         context: path.resolve(ROOT, 'src')
       }
     ])
-  ].concat(options.plugins);
+  ];
+
+  // 开发环境下，自动清理无用的文件
+  if (IS_DEV && options.autoCleanUnusedFiles) {
+    plugins.push(new AutoCleanUnusedFilesPlugin());
+  }
+
+  plugins = plugins.concat(options.plugins);
 
   // Loaders
   let rules = [];
@@ -237,7 +266,7 @@ module.exports = function makeConfig(options = {}) {
 
     // 处理 wxml 文件
     {
-      test: /\.wxml$/i,
+      test: /\.(wxml|wxs)$/i,
       use: ExtractTextPlugin.extract([
         'raw-loader',
         'extract-loader',
