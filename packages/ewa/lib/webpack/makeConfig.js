@@ -93,13 +93,14 @@ module.exports = function makeConfig(options = {}) {
       path.join(ENTRY_DIR, '**/*.{js,json}')
     );
 
-    let entryDirs = {};
-    entryDirs[ENTRY_DIR] = 1;
+    let entryDirs = { [ENTRY_DIR]: true };
 
     let entries = {};
 
     wxFiles.map(function(file) {
-      entryDirs[path.dirname(file)] = 1;
+      // 标记为微信页面或组件文件夹
+      entryDirs[path.dirname(file)] = true;
+
       let relativePath = resolvePath(file);
       entries[relativePath] = file;
     });
@@ -216,7 +217,7 @@ module.exports = function makeConfig(options = {}) {
                 let ps = [
                   require('autoprefixer')({
                     remove: false,
-                    browsers: ['> 1%']
+                    browsers: ['iOS 7']
                   })
                 ];
 
