@@ -147,7 +147,12 @@ module.exports = function makeConfig(options = {}) {
 
   // 开发环境下，自动清理无用的文件
   if (IS_DEV && options.autoCleanUnusedFiles) {
-    plugins.push(new AutoCleanUnusedFilesPlugin());
+    plugins.push(new AutoCleanUnusedFilesPlugin({
+      // 排除拷贝的文件
+      exclude: options.copyFileTypes.map(fileType => {
+        return `**/*.${fileType}`;
+      })
+    }));
   }
 
   plugins = plugins.concat(options.plugins);
