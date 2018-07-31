@@ -27,6 +27,9 @@ require('yargs')
   .command('clean', '清理小程序静态文件', {}, (argv) => {
     require('./commands/clean')(argv);
   })
+  .command('upgrade', '升级 EWA 工具', {}, (argv) => {
+    require('./commands/upgrade')(argv);
+  })
   .options({
     version: {
       alias: 'v',
