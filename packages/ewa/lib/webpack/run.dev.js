@@ -65,7 +65,7 @@ module.exports = function(webpack) {
   // 监听文件夹
   function addDir(file) {
     // 监听文件夹
-    if (fs.statSync(file).isFile(file)) {
+    if (fs.statSync(file).isFile()) {
       let dir = path.dirname(file);
       if (watchedDirs.indexOf(dir) === -1) {
         utils.log(`Watching directory: ${path.relative(ROOT, dir)}`);
