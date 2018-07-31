@@ -11,34 +11,31 @@ const utils = require('../utils');
 
 const ROOT = process.cwd();
 
-const FAKE_WATCH_DIR = path.resolve(ROOT, '.ewa');
+const FAKE_WATCH_DIR = path.resolve(ROOT, '.ewa') + '/';
 
-const configFile = path.resolve(__dirname, 'config.js');
+const CONFIG_FILE = path.resolve(__dirname, 'config.js');
 
 // 需要监听的文件夹
-const watchPatterns = [
-  'src/pages/**/*.{js,wxml,wxss,json}',
-  'src/components/**/*.{js,wxml,wxss,json}',
-  'src/templates/**/*.{js,wxml,wxss,json}',
-  'src/packages/**/*.{js,wxml,wxss,json}',
-  '.ewa'
-];
+const WATCH_PATTERNS = [
+  'pages',
+  'components',
+  'templates',
+  'packages'
+].map(dir => {
+  return path.resolve(ROOT, `src/${dir}/**/*.{js,wxml,wxss,json}`);
+});
 
 module.exports = function(webpack) {
   // nodemon 实例
   const script = nodemon({
-    exec: `${webpack} --config ${configFile} --watch`,
+    exec: `${webpack} --config ${CONFIG_FILE} --watch`,
     watch: [FAKE_WATCH_DIR],
     ext: 'js'
   });
 
-  let patterns = watchPatterns.map(pattern => {
-    return path.resolve(ROOT, pattern);
-  });
-
   // 添加文件夹监听
   const watcher = chokidar.watch(
-    patterns,
+    WATCH_PATTERNS.concat(FAKE_WATCH_DIR),
     {
       ignored: /(^|[/\\])\../,
       persistent: true
@@ -48,7 +45,7 @@ module.exports = function(webpack) {
   // 额外添加文件夹监听
   // 遍历所有pattern，搜集所有的文件夹
   let watchedDirs = [];
-  patterns.map(pattern => {
+  WATCH_PATTERNS.map(pattern => {
     glob.sync(pattern).map(file => {
       let dir = fs.statSync(file).isDirectory() ? file : path.dirname(file);
       if (watchedDirs.indexOf(dir) === -1) {
