@@ -1,4 +1,4 @@
 EWA 核心代码
 ==========
 
-文档完善中...
+参见 [项目文档](https://github.com/lyfeyaj/ewa)
