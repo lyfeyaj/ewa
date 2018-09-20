@@ -16,14 +16,14 @@ module.exports = class Queue {
     return !!this._queue.length;
   }
 
-  pop() {
+  shift() {
     // 当前并发数大于最大并发数时, 不做任何操作
     if (this._currentCocurrency >= this._maxCocurrency) {
       return Promise.resolve();
     }
 
     // 执行队列下一个请求
-    let next = this._queue.pop();
+    let next = this._queue.shift();
 
     if (next) {
       this._currentCocurrency++;
@@ -33,7 +33,7 @@ module.exports = class Queue {
         // eslint-disable-next-line
         if (e) console.log(e.message, e.stack);
         this._currentCocurrency--;
-        return this.pop();
+        return this.shift();
       };
 
       try {
@@ -48,7 +48,7 @@ module.exports = class Queue {
 
   push(item) {
     this._queue.push(item);
-    this.pop();
+    this.shift();
     return this;
   }
 };
