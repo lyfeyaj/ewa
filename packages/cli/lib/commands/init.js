@@ -34,16 +34,21 @@ module.exports = function init() {
 
   // 拷贝文件至 src 中
   utils.log('准备移动文件或文件夹...');
-  glob.sync(path.resolve(ROOT, '*')).map(source => {
-    if (source === TMP_SRC) return;
+  let sourceFiles = glob.sync(path.resolve(ROOT, '*')) || [];
+  // 如果存在源文件
+  if (sourceFiles.length) {
+    sourceFiles.map(source => {
+      if (source === TMP_SRC) return;
 
-    let basename = path.basename(source);
+      let basename = path.basename(source);
 
-    let dest = path.resolve(TMP_SRC, basename);
+      let dest = path.resolve(TMP_SRC, basename);
 
-    utils.log(`正在移动 ${path.relative(ROOT, source)} 至 ${path.relative(ROOT, dest)}`);
-    fs.moveSync(source, dest, { overwrite: true });
-  });
+      utils.log(`正在移动 ${path.relative(ROOT, source)} 至 ${path.relative(ROOT, dest)}`);
+      fs.moveSync(source, dest, { overwrite: true });
+    });
+  }
+
   utils.log('重命名 __tmp_src__ 为 src');
   fs.moveSync(TMP_SRC, path.resolve(ROOT, 'src'));
   utils.log('文件移动完成', 'success');
@@ -69,6 +74,12 @@ module.exports = function init() {
 
     fs.copySync(source, dest);
   });
+
+  // 如果 src 为空，则拷贝小程序模版文件
+  if (!sourceFiles.length) {
+    fs.copySync(path.resolve(TEMPLATE_DIR, 'src'), path.resolve(ROOT, 'src'));
+  }
+
   utils.log('文件添加完成', 'success');
 
   // 执行安装流程

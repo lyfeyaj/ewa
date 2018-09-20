@@ -11,8 +11,6 @@ const USER_CONFIG_FILE = path.join(
 
 let config = {};
 
-if (fs.existsSync(USER_CONFIG_FILE)) {
-  config = require(USER_CONFIG_FILE);
-}
+if (fs.existsSync(USER_CONFIG_FILE)) config = require(USER_CONFIG_FILE);
 
 module.exports = makeConfig(config);
