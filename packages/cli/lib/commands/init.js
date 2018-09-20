@@ -35,19 +35,21 @@ module.exports = function init() {
   // 拷贝文件至 src 中
   utils.log('准备移动文件或文件夹...');
   let sourceFiles = glob.sync(path.resolve(ROOT, '*')) || [];
+  let isEmptySrc = true;
+
   // 如果存在源文件
-  if (sourceFiles.length) {
-    sourceFiles.map(source => {
-      if (source === TMP_SRC) return;
+  sourceFiles.map(source => {
+    if (source === TMP_SRC) return;
 
-      let basename = path.basename(source);
+    if (isEmptySrc) isEmptySrc = false;
 
-      let dest = path.resolve(TMP_SRC, basename);
+    let basename = path.basename(source);
 
-      utils.log(`正在移动 ${path.relative(ROOT, source)} 至 ${path.relative(ROOT, dest)}`);
-      fs.moveSync(source, dest, { overwrite: true });
-    });
-  }
+    let dest = path.resolve(TMP_SRC, basename);
+
+    utils.log(`正在移动 ${path.relative(ROOT, source)} 至 ${path.relative(ROOT, dest)}`);
+    fs.moveSync(source, dest, { overwrite: true });
+  });
 
   utils.log('重命名 __tmp_src__ 为 src');
   fs.moveSync(TMP_SRC, path.resolve(ROOT, 'src'));
@@ -76,7 +78,7 @@ module.exports = function init() {
   });
 
   // 如果 src 为空，则拷贝小程序模版文件
-  if (!sourceFiles.length) {
+  if (isEmptySrc) {
     fs.copySync(path.resolve(TEMPLATE_DIR, 'src'), path.resolve(ROOT, 'src'));
   }
 
