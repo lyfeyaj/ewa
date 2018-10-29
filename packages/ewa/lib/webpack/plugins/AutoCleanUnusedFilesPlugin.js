@@ -2,7 +2,7 @@
 
 const path = require('path');
 const del = require('del');
-const utils = require('../utils');
+const utils = require('../../utils');
 
 // 自动清理无用的文件
 module.exports = class AutoCleanUnusedFilesPlugin {

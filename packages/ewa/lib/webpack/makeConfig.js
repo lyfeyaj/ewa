@@ -6,8 +6,8 @@ const glob = require('glob');
 const NodeSourcePlugin = require('webpack/lib/node/NodeSourcePlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const NodeCommonModuleTemplatePlugin = require('./NodeCommonModuleTemplatePlugin');
-const AutoCleanUnusedFilesPlugin = require('./AutoCleanUnusedFilesPlugin');
+const NodeCommonModuleTemplatePlugin = require('./plugins/NodeCommonModuleTemplatePlugin');
+const AutoCleanUnusedFilesPlugin = require('./plugins/AutoCleanUnusedFilesPlugin');
 const utils = require('../utils');
 
 // 常量
@@ -212,7 +212,7 @@ module.exports = function makeConfig(options = {}) {
         use: [
           {
             loader: 'css-loader',
-            options: { minimize: !IS_DEV }
+            options: { minimize: !IS_DEV, import: false }
           },
           // PostCSS 配置
           {
@@ -244,14 +244,16 @@ module.exports = function makeConfig(options = {}) {
               sourceMap: 'inline'
             }
           },
-          'resolve-url-loader',
+          { loader: 'resolve-url-loader' },
+          { loader: './loaders/fix-import-wxss-loader.js' },
           {
             loader: 'sass-loader',
             options: {
               // resolve-url-loader 需要开启 sourceMap 才能工作
               sourceMap: true
             }
-          }
+          },
+          { loader: './loaders/import-wxss-loader.js' },
         ]
       })
     },
