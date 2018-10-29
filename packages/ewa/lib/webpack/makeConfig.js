@@ -34,7 +34,7 @@ const DEFAULT_COPY_FILE_TYPES = [
   'svg',
   'ico'
 ];
-const DEFAULT_COMMON_MODULE_PATTERN = /[\\/]node_modules[\\/]/;
+const DEFAULT_COMMON_MODULE_PATTERN = /[\\/](node_modules|utils|vendor)[\\/].+\.js/;
 
 /**
  * 生成 webpack 配置
@@ -127,7 +127,6 @@ module.exports = function makeConfig(options = {}) {
       Buffer: true,
       setImmediate: true
     }),
-    new webpack.NamedModulesPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: '[name]' }),
     new NodeCommonModuleTemplatePlugin({
@@ -145,6 +144,17 @@ module.exports = function makeConfig(options = {}) {
     ])
   ];
 
+  // 生产环境进一步压缩代码
+  if (!IS_DEV) {
+    plugins.push(
+      new webpack.HashedModuleIdsPlugin({
+        hashFunction: 'md5',
+        hashDigest: 'base64',
+        hashDigestLength: 4
+      })
+    );
+  }
+
   // 开发环境下，自动清理无用的文件
   if (IS_DEV && options.autoCleanUnusedFiles) {
     plugins.push(new AutoCleanUnusedFilesPlugin({
@@ -153,6 +163,11 @@ module.exports = function makeConfig(options = {}) {
         return `**/*.${fileType}`;
       })
     }));
+
+    // 允许模块命名，方便调试
+    plugins.push(
+      new webpack.NamedModulesPlugin()
+    );
   }
 
   plugins = plugins.concat(options.plugins);
@@ -339,7 +354,7 @@ module.exports = function makeConfig(options = {}) {
         'node_modules',
         path.resolve(__dirname, '../../node_modules')
       ],
-      extensions: ['.js', '.coffee', '.html', '.css', '.scss', '.sass', '.wxml', '.wxss'],
+      extensions: ['.js', '.html', '.css', '.scss', '.sass', '.wxml', '.wxss', '.wxs'],
       alias: Object.assign(aliasDirs, {
         '@': path.resolve(ROOT, 'src/')
       })
