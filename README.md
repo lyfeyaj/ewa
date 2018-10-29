@@ -18,6 +18,9 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 7. 支持 source map, 方便调试
 8. 添加新页面或新组件无需重启编译
 9. 允许自定义编译流程
+10. 自动兼容旧版本手机中的显示样式
+11. 支持 WXSS 和 SCSS 混用
+12. 代码混淆及高度压缩，节省包大小
 
 更多特性正在赶来 ... 敬请期待 👇
 
@@ -131,9 +134,9 @@ module.exports = {
   // 公用代码库 (node_modules 打包生成的文件)名称，默认为 vendors.js
   commonModuleName: 'vendors.js',
 
-  // 通用模块匹配模式，默认为 /[\\/]node_modules[\\/]/
+  // 通用模块匹配模式，默认为 /[\\/](node_modules|utils|vendor)[\\/].+\.js/
   // 如需添加多个文件夹，可自定义正则，如 /[\\/](node_modules|utils)[\\/]/
-  commonModulePattern: /[\\/]node_modules[\\/]/,
+  commonModulePattern: /[\\/](node_modules|utils|vendor)[\\/].+\.js/,
 
   // 是否简化路径，作用于 page 和 component，如 index/index.wxml=> index.wxml，默认为 false
   simplifyPath: false,
