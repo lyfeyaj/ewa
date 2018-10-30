@@ -167,6 +167,9 @@ module.exports = {
   // 开发环境下是否自动清理无用文件，默认为 true
   autoCleanUnusedFiles: true,
 
+  // css 解析器，sass 或者 less，默认为 sass
+  cssParser: 'sass',
+
   // 嫌不够灵活？直接修改 webpack 配置
   webpack: function(config) {
     return config;
