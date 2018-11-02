@@ -2,13 +2,14 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const glob = require('glob');
+
 const NodeSourcePlugin = require('webpack/lib/node/NodeSourcePlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const NodeCommonModuleTemplatePlugin = require('./plugins/NodeCommonModuleTemplatePlugin');
 const AutoCleanUnusedFilesPlugin = require('./plugins/AutoCleanUnusedFilesPlugin');
 const utils = require('../utils');
+const helpers = require('./helpers');
 
 // 常量
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -67,56 +68,6 @@ module.exports = function makeConfig(options = {}) {
 
   const aliasDirs = {};
   options.aliasDirs.forEach(d => aliasDirs[d] = path.join(ENTRY_DIR, `${d}/`));
-
-  // 判断是否为 page 或者 component
-  function isPageOrComponent(file) {
-    if (!options.simplifyPath) return false;
-    return !!(~file.indexOf('components/') || ~file.indexOf('pages/'));
-  }
-
-  // 去除 components 和 pages 重复路径, 如 navbar/navbar.js => navbar.js
-  function resolvePath(filepath) {
-    let relativePath = path.relative(ENTRY_DIR, filepath);
-    if (isPageOrComponent(relativePath)) {
-      let extname = path.extname(relativePath);
-      let name = path.basename(relativePath, extname);
-      return relativePath.replace(`${name}/${name}${extname}`, `${name}${extname}`);
-    } else {
-      return relativePath;
-    }
-  }
-
-  // 构建 entries
-  function buildDynamicEntries() {
-    let wxFiles = glob.sync(
-      path.join(ENTRY_DIR, '**/*.{wxss,wxs,wxml}')
-    );
-
-    let otherFiles = glob.sync(
-      path.join(ENTRY_DIR, '**/*.{js,json}')
-    );
-
-    let entryDirs = { [ENTRY_DIR]: true };
-
-    let entries = {};
-
-    wxFiles.map(function(file) {
-      // 标记为微信页面或组件文件夹
-      entryDirs[path.dirname(file)] = true;
-
-      let relativePath = resolvePath(file);
-      entries[relativePath] = file;
-    });
-
-    otherFiles.map(function(file) {
-      if (entryDirs[path.dirname(file)]) {
-        let relativePath = resolvePath(file);
-        entries[relativePath] = file;
-      }
-    });
-
-    return entries;
-  }
 
   // 插件
   let plugins = [
@@ -294,7 +245,10 @@ module.exports = function makeConfig(options = {}) {
           sourceMap: true
         }
       },
-      { loader: './loaders/import-wxss-loader.js' }
+      {
+        loader: './loaders/import-wxss-loader.js',
+        options: { simplifyPath: options.simplifyPath }
+      }
     ];
     cssExtensions = cssExtensions.concat(['.scss', '.sass']);
   } else if (cssPattern === 'less') {
@@ -302,7 +256,10 @@ module.exports = function makeConfig(options = {}) {
     cssRules = [
       { loader: './loaders/fix-import-wxss-loader.js' },
       { loader: 'less-loader', options: { sourceMap: true } },
-      { loader: './loaders/import-wxss-loader.js' }
+      {
+        loader: './loaders/import-wxss-loader.js',
+        options: { simplifyPath: options.simplifyPath }
+      }
     ];
     cssExtensions = cssExtensions.concat(['.less']);
   }
@@ -376,7 +333,7 @@ module.exports = function makeConfig(options = {}) {
     devtool,
     mode,
     context: __dirname,
-    entry: buildDynamicEntries(),
+    entry: helpers.buildDynamicEntries(ENTRY_DIR, options.simplifyPath),
     target: 'node',
     output: {
       path: OUTPUT_DIR,
