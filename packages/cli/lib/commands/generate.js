@@ -28,9 +28,14 @@ module.exports = function generate(type, name, dest) {
 
   const baseDir = path.resolve(ROOT, 'src');
 
-  dest = (dest || '').trim() || `${type}s`;
+  let typeDir = `${type}s`;
+  dest = (dest || '').trim();
+  let regexp = new RegExp(`${typeDir}[\\/]?$`);
+  if (!regexp.test(dest)) dest = path.join(dest, typeDir);
   dest = path.resolve(baseDir, dest);
   let fileDir = path.resolve(dest, name);
+
+  name = path.basename(fileDir);
 
   // 生成文件夹
   fs.ensureDirSync(fileDir);
