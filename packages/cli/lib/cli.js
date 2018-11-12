@@ -30,7 +30,7 @@ require('yargs')
   .command('upgrade', '升级 EWA 工具', {}, (argv) => {
     require('./commands/upgrade')(argv);
   })
-  .command(['generate <type> <name>', 'g'], '创建新的微信小程序项目', (yargs) => {
+  .command(['generate <type> <name>', 'g'], '快速生成模版', (yargs) => {
     yargs
       .positional('type', {
         describe: '类型(page|component|template)',

@@ -11,7 +11,8 @@
     "url": "https://github.com/lyfeyaj/ewa/tree/master/packages/ewa"
   },
   "keywords": [
-    "ewa"
+    "ewa",
+    "wechat"
   ],
   "author": "Felix Liu",
   "license": "MIT",
