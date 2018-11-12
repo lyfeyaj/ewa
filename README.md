@@ -99,15 +99,17 @@ cd your_project_dir && ewa init
 ewa <cmd> [args]
 
 命令：
-  ewa new    创建新的微信小程序项目                         [别名: create]
-  ewa init   在现有的小程序项目中初始化 EWA
-  ewa start  启动 EWA 小程序项目实时编译                       [别名: dev]
-  ewa build  编译小程序静态文件
-  ewa clean  清理小程序静态文件
+  ewa new <projectName>       创建新的微信小程序项目           [别名: create]
+  ewa init                    在现有的小程序项目中初始化 EWA
+  ewa start                   启动 EWA 小程序项目实时编译         [别名: dev]
+  ewa build                   编译小程序静态文件
+  ewa clean                   清理小程序静态文件
+  ewa upgrade                 升级 EWA 工具
+  ewa generate <type> <name>  快速生成模版                          [别名: g]
 
 选项：
-  --version, -v  当前版本号
-  --help, -h     获取使用帮助
+  --version, -v  当前版本号                                               [布尔]
+  --help, -h     获取使用帮助                                             [布尔]
 ```
 
 ## 微信接口 Promise 化
