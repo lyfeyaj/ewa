@@ -87,7 +87,7 @@ async function checkUpdates() {
     msg.unshift('');
     msg.push('请运行命令 `ewa upgrade` 更新至最新版');
     msg.push('');
-    msg.map(m => log(m, 'warning'));
+    msg.map(m => log(m, 'success'));
   }
 }
 
