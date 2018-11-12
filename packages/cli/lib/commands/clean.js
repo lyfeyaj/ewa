@@ -7,7 +7,7 @@ const path = require('path');
 const utils = require('../utils');
 
 module.exports = function clean() {
-  utils.checkEwaProject();
+  utils.ensureEwaProject();
 
   const ROOT = process.cwd();
 

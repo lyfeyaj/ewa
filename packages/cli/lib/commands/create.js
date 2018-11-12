@@ -10,7 +10,7 @@ const install = require('./install');
 
 // Constants
 const ROOT = process.cwd();
-const TEMPLATE_DIR = path.resolve(__dirname, '../../template');
+const TEMPLATE_DIR = path.resolve(__dirname, '../../templates/wechat-app');
 
 module.exports = function create(argv) {
   const projectName = argv.projectName || '';

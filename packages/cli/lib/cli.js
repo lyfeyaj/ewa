@@ -30,6 +30,24 @@ require('yargs')
   .command('upgrade', '升级 EWA 工具', {}, (argv) => {
     require('./commands/upgrade')(argv);
   })
+  .command(['generate <type> <name>', 'g'], '创建新的微信小程序项目', (yargs) => {
+    yargs
+      .positional('type', {
+        describe: '类型(page|component|template)',
+        choices: ['page', 'component', 'template'],
+        type: 'string'
+      }).positional('name', {
+        describe: '名称',
+        type: 'string'
+      }).option('target-dir', {
+        alias: 'd',
+        describe: '目标文件夹，默认为 pages|components|templates 其中的一个',
+        type: 'string',
+        demandOption: false
+      });
+  }, (argv) => {
+    require('./commands/generate')(argv.type, argv.name, argv.targetDir);
+  })
   .options({
     version: {
       alias: 'v',

@@ -11,7 +11,7 @@ const install = require('./install');
 
 // Constants
 const ROOT = process.cwd();
-const TEMPLATE_DIR = path.resolve(__dirname, '../../template');
+const TEMPLATE_DIR = path.resolve(__dirname, '../../templates/wechat-app');
 const TMP_SRC = path.resolve(ROOT, '__tmp_src__');
 const COPY_FILES_OR_DIRS =[
   '.ewa',
