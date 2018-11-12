@@ -47,13 +47,13 @@ module.exports = function generate(type, name, dest) {
 
   if (type === 'component' || type === 'page') {
     fileMappings = Object.assign(fileMappings, {
-      [`${type}/${type}.js`]: `${name}/${name}.js`,
-      [`${type}/${type}.json`]: `${name}/${name}.json`
+      [`${type}/${type}.js`]: `${name}.js`,
+      [`${type}/${type}.json`]: `${name}.json`
     });
   }
 
   for (let source in fileMappings) {
-    let target =  path.resolve(dest, fileMappings[source]);
+    let target =  path.resolve(fileDir, fileMappings[source]);
 
     if (fs.existsSync(target)) {
       utils.log(` 跳过, 文件 ${target} 已存在`, 'warning');
