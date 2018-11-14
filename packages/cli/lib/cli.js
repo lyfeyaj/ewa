@@ -41,7 +41,7 @@ require('yargs')
         type: 'string'
       }).option('target-dir', {
         alias: 'd',
-        describe: '目标文件夹，默认为 pages|components|templates 其中的一个',
+        describe: '目标文件夹，默认为 src，也可以指定为 src 中的某个子目录',
         type: 'string',
         demandOption: false
       });
