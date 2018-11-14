@@ -115,7 +115,11 @@ module.exports = function makeConfig(options = {}) {
       // 排除拷贝的文件
       exclude: options.copyFileTypes.map(fileType => {
         return `**/*.${fileType}`;
-      })
+      }).concat([
+        // 排除公共库文件 和 对应的 sourceMap 文件
+        options.commonModuleName,
+        `${options.commonModuleName}.map`
+      ])
     }));
 
     // 允许模块命名，方便调试
