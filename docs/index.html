@@ -17,7 +17,7 @@
     window.$docsify = {
       name: 'ewa',
       repo: 'https://github.com/lyfeyaj/ewa',
-      loadSidebar: true,
+      loadSidebar: false,
       loadNavbar: true,
       subMaxLevel: 6,
       auto2top: true,
@@ -29,10 +29,9 @@
       coverpage: true,
       nameLink: '#/',
       homepage: 'https://raw.githubusercontent.com/lyfeyaj/ewa/master/README.md',
-      // alias: {
-      //   '/_sidebar.md': '/guide/_sidebar.md',
-      //   '/': '/guide/README.md',
-      // },
+      alias: {
+        '/': '/guide/README.md',
+      },
       // ga: '',
       pagination: {
         previousText: '上一章节',
