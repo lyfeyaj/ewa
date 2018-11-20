@@ -6,4 +6,4 @@
 [马上开始 <i class="iconfont icon-down"></i>](#main)
 
 <!-- background image -->
-![](./_media/cover-image.jepg)
+![](https://raw.githubusercontent.com/lyfeyaj/ewa/master/docs/_media/cover-image.jpg)
