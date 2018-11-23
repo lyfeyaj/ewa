@@ -41,8 +41,8 @@ module.exports = function generate(type, name, dest) {
   fs.ensureDirSync(fileDir);
 
   let fileMappings = {
-    [`${type}/${type}.wxml`]: `${name}/${name}.wxml`,
-    [`${type}/${type}.wxss`]: `${name}/${name}.wxss`
+    [`${type}/${type}.wxml`]: `${name}.wxml`,
+    [`${type}/${type}.wxss`]: `${name}.wxss`
   };
 
   if (type === 'component' || type === 'page') {
