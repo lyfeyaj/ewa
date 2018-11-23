@@ -6,7 +6,7 @@ const path = require('path');
 // Constants
 const DEFAULT_COMMON_MODULE_NAME = 'vendors.js';
 
-const GLOBAL_CACHED_VAR = 'global.__cim';
+const GLOBAL_CACHED_VAR = 'g.$x$';
 
 // Inject common module into entry files
 module.exports = class NodeCommonModuleTemplatePlugin {
@@ -29,6 +29,8 @@ module.exports = class NodeCommonModuleTemplatePlugin {
         return Template.asString([
           source,
           '',
+          'var g = global;',
+          '',
           '// require common modules',
           '(function loadVendorModules() {',
           Template.indent([
@@ -49,7 +51,7 @@ module.exports = class NodeCommonModuleTemplatePlugin {
         ]);
       });
 
-      // cachedInstalledModules => __cim
+      // Add global cachedInstalledModules
       mainTemplate.hooks.localVars.tap('NodeCommonModuleTemplatePlugin', (source) => {
         return Template.asString([
           source,
