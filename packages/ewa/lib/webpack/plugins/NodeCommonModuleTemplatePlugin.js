@@ -21,10 +21,13 @@ module.exports = class NodeCommonModuleTemplatePlugin {
       const mainTemplate = compilation.mainTemplate;
 
       mainTemplate.hooks.bootstrap.tap('NodeCommonModuleTemplatePlugin', (source, chunk) => {
-        const vendorPath = path.relative(
+        let vendorPath = path.relative(
           path.dirname(chunk.name),
           this.options.commonModuleName
         );
+
+        // remove js ext for saving dist space
+        vendorPath = vendorPath.replace(/\.js$/, '');
 
         return Template.asString([
           source,
