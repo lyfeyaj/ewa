@@ -99,13 +99,15 @@ module.exports = function makeConfig(options = {}) {
   ];
 
   // 生产环境进一步压缩代码
-  if (!IS_DEV) {
+  if (!IS_DEV && options.hashedModuleIds !== false) {
     plugins.push(
-      new webpack.HashedModuleIdsPlugin({
-        hashFunction: 'md5',
-        hashDigest: 'base64',
-        hashDigestLength: 4
-      })
+      new webpack.HashedModuleIdsPlugin(
+        !options.hashedModuleIds || options.hashedModuleIds === true ? {
+          hashFunction: 'md5',
+          hashDigest: 'base64',
+          hashDigestLength: 4
+        } : options.hashedModuleIds
+      )
     );
   }
 

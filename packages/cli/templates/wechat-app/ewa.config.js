@@ -41,6 +41,9 @@ module.exports = {
   // css 解析器，sass 或者 less，默认为 sass
   cssParser: 'sass',
 
+  // 是否开启 hashed module id
+  hashedModuleIds: true,
+
   // 嫌不够灵活？直接修改 webpack 配置
   webpack: function(config) {
     return config;
