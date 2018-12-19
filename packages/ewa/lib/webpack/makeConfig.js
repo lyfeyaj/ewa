@@ -50,6 +50,7 @@ const DEFAULT_CSS_PARSER = 'sass';
  *   plugins: webpack plugin
  *   autoCleanUnusedFiles: 开发环境下是否自动清理无用文件，默认为 true
  *   cssParser: sass 或者 less，默认为 sass
+ *   hashedModuleIds: 是否开启 hashed module id
  *   webpack: 修改并自定义 webpack 配置，如：function(config) { return config; }
  */
 module.exports = function makeConfig(options = {}) {
@@ -109,6 +110,11 @@ module.exports = function makeConfig(options = {}) {
         } : options.hashedModuleIds
       )
     );
+  } else {
+    // 允许模块命名，方便调试
+    plugins.push(
+      new webpack.NamedModulesPlugin()
+    );
   }
 
   // 开发环境下，自动清理无用的文件
@@ -123,11 +129,6 @@ module.exports = function makeConfig(options = {}) {
         `${options.commonModuleName}.map`
       ])
     }));
-
-    // 允许模块命名，方便调试
-    plugins.push(
-      new webpack.NamedModulesPlugin()
-    );
   }
 
   plugins = plugins.concat(options.plugins);
