@@ -1,6 +1,6 @@
 'use strict';
 
-const buildArgs = require('./utils/buildArgs');
+const buildArgs = require('../utils/buildArgs');
 
 module.exports = function mixin() {
   let mixins = buildArgs.apply(null, arguments);
