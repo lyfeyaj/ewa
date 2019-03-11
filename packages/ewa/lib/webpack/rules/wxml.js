@@ -16,7 +16,9 @@ module.exports = function wxmlRule() {
           minimize: true,
           minifyCSS: false,
           removeComments: true,
-          removeAttributeQuotes: false
+          removeAttributeQuotes: false,
+          removeEmptyElements: false,
+          keepClosingSlash: true
         }
       }
     ])
