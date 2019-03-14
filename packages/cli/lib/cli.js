@@ -44,9 +44,19 @@ require('yargs')
         describe: '目标文件夹，默认为 src，也可以指定为 src 中的某个子目录',
         type: 'string',
         demandOption: false
+      }).option('index', {
+        alias: 'i',
+        describe: '生成的文件名称为 [name]/index，默认为 [name]/[name]',
+        type: 'boolean',
+        demandOption: false
       });
   }, (argv) => {
-    require('./commands/generate')(argv.type, argv.name, argv.targetDir);
+    require('./commands/generate')(
+      argv.type,
+      argv.name,
+      argv.targetDir,
+      argv.index
+    );
   })
   .options({
     version: {

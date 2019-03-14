@@ -8,7 +8,7 @@ const SUPPORT_TYPES = ['page', 'component', 'template'];
 const ROOT = process.cwd();
 const BASE_GENERATOR_DIR = path.resolve(__dirname, '../../templates/generators');
 
-module.exports = function generate(type, name, dest) {
+module.exports = function generate(type, name, dest, index) {
   utils.ensureEwaProject();
 
   if (SUPPORT_TYPES.indexOf(type) === -1) {
@@ -35,7 +35,8 @@ module.exports = function generate(type, name, dest) {
   dest = path.resolve(baseDir, dest);
   let fileDir = path.resolve(dest, name);
 
-  name = path.basename(fileDir);
+  // 文件名称
+  name = index ? 'index' : path.basename(fileDir);
 
   // 生成文件夹
   fs.ensureDirSync(fileDir);
