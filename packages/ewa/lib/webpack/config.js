@@ -157,17 +157,15 @@ function makeConfig() {
     );
   }
 
-  const { cssRule, cssExtensions } = require('./rules/css')({
-    ...options,
-    IS_DEV
-  });
+  let ruleOpts = { ...options, IS_DEV };
+  const { cssRule, cssExtensions } = require('./rules/css')(ruleOpts);
 
   // 不同文件类型的处理
   rules = rules.concat([
-    require('./rules/js')(),
-    require('./rules/image')(),
-    require('./rules/wxml')(),
-    require('./rules/json')(),
+    require('./rules/js')(ruleOpts),
+    require('./rules/image')(ruleOpts),
+    require('./rules/wxml')(ruleOpts),
+    require('./rules/json')(ruleOpts),
     cssRule
   ]);
 

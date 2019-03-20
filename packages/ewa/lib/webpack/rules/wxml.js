@@ -3,7 +3,25 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // 处理 wxml 文件
-module.exports = function wxmlRule() {
+module.exports = function wxmlRule(options = {}) {
+  let htmlOptions = {
+    attrs: false,
+    minifyCSS: false,
+    minimize: false,
+    removeComments: false,
+    removeAttributeQuotes: false,
+    removeEmptyElements: false,
+    keepClosingSlash: false
+  };
+
+  if (!options.IS_DEV) {
+    htmlOptions = Object.assign(htmlOptions, {
+      minimize: true,
+      removeComments: true,
+      keepClosingSlash: true
+    });
+  }
+
   return {
     test: /\.(wxml|wxs)$/i,
     use: ExtractTextPlugin.extract([
@@ -11,15 +29,7 @@ module.exports = function wxmlRule() {
       'extract-loader',
       {
         loader: 'html-loader',
-        options: {
-          attrs: false,
-          minimize: true,
-          minifyCSS: false,
-          removeComments: true,
-          removeAttributeQuotes: false,
-          removeEmptyElements: false,
-          keepClosingSlash: true
-        }
+        options: htmlOptions
       }
     ])
   };
