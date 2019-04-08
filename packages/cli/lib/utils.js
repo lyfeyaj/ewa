@@ -79,15 +79,21 @@ async function checkUpdates() {
     }
   }
 
-  await versionCheck('ewa');
-  await versionCheck('ewa-cli');
+  try {
+    await Promise.all([
+      versionCheck('ewa'),
+      versionCheck('ewa-cli')
+    ]);
 
-  if (msg.length) {
-    msg.unshift('发现新版本:');
-    msg.unshift('');
-    msg.push('请运行命令 `ewa upgrade` 更新至最新版');
-    msg.push('');
-    msg.map(m => log(m, 'success'));
+    if (msg.length) {
+      msg.unshift('发现新版本:');
+      msg.unshift('');
+      msg.push('请运行命令 `ewa upgrade` 更新至最新版');
+      msg.push('');
+      msg.map(m => log(m, 'success'));
+    }
+  } catch (error) {
+    log('检查版本失败', 'warning');
   }
 }
 
