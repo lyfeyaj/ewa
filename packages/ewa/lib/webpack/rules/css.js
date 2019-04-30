@@ -25,7 +25,7 @@ module.exports = function cssRule(options = {}) {
       }
     ];
     cssExtensions = cssExtensions.concat(['.scss', '.sass']);
-  } else if (cssPattern === 'less') {
+  } else if (options.cssParser === 'less') {
     cssPattern = /\.(css|less|wxss)$/;
     cssRules = [
       { loader: './loaders/fix-import-wxss-loader.js' },
