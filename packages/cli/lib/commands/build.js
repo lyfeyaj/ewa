@@ -8,6 +8,8 @@ const utils = require('../utils');
 module.exports = function build() {
   utils.ensureEwaProject();
 
+  const ROOT = process.cwd();
+
   const script = require.resolve('ewa/lib/webpack/run.js');
 
   utils.log('正在以生产模式编译项目...');
