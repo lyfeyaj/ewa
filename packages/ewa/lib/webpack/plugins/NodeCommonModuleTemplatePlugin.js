@@ -27,7 +27,7 @@ module.exports = class NodeCommonModuleTemplatePlugin {
         );
 
         // remove js ext for saving dist space
-        vendorPath = vendorPath.replace(/\.js$/, '');
+        vendorPath = vendorPath.replace(/\.js$/, '').replace(/\\/g,'/');;
 
         return Template.asString([
           source,
