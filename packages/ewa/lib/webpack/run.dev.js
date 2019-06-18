@@ -54,7 +54,6 @@ module.exports = function(webpack) {
       }
     });
   });
-
   function restart(file) {
     script.emit('restart', [file]);
   }

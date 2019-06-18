@@ -1,22 +1,32 @@
 {
-  "name": "ewa",
-  "version": "0.2.22",
-  "description": "Enhanced wechat app development toolkit",
-  "main": "lib/ewa.js",
-  "scripts": {
-    "test": "mocha"
+  "_from": "ewa",
+  "_id": "ewa@0.2.23",
+  "_inBundle": false,
+  "_integrity": "sha1-rPQvrKISPjn1eG6/gl5VMfV7FFA=",
+  "_location": "/ewa",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "ewa",
+    "name": "ewa",
+    "escapedName": "ewa",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lyfeyaj/ewa/tree/master/packages/ewa"
-  },
-  "keywords": [
-    "ewa",
-    "wechat",
-    "toolkit"
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
   ],
-  "author": "Felix Liu",
-  "license": "MIT",
+  "_resolved": "https://registry.npm.taobao.org/ewa/download/ewa-0.2.23.tgz",
+  "_shasum": "acf42faca2123e39f5786ebf825e5531f57b1450",
+  "_spec": "ewa",
+  "_where": "C:\\Users\\xw\\Desktop\\code\\bamaying\\ewaPro",
+  "author": {
+    "name": "Felix Liu"
+  },
+  "bundleDependencies": false,
   "dependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.4",
@@ -61,7 +71,30 @@
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
+    "webpack-cli": "^3.2.3",
+    "babel-core": "^6.26.3",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "htmldom": "^3.0.8",
+    "node-notifier": "^5.4.0",
+    "wx2swan": "^1.2.20
   },
-  "gitHead": "a280118f8557069fc383c105d1301b8175d74c13"
+  "deprecated": false,
+  "description": "Enhanced wechat app development toolkit",
+  "gitHead": "72bcaafe10f4d1d6a9bc08daec0583363978c2f9",
+  "keywords": [
+    "ewa",
+    "wechat",
+    "toolkit"
+  ],
+  "license": "MIT",
+  "main": "lib/ewa.js",
+  "name": "ewa",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lyfeyaj/ewa/tree/master/packages/ewa"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "version": "0.2.23"
 }
