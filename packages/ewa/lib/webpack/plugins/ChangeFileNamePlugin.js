@@ -50,13 +50,6 @@ module.exports = class ChangeFileNamePlugin {
         excludePatterns.map((item) => {
           if (item.match("wxml")) {
             let oldname = item.split(".")[0]
-            fs.rename(item, oldname + '.swan', function(err) {
-              if (err) {
-                throw err;
-              }
-              console.log('done!');
-              reject("失败")
-            })
             let newname= oldname+".swan"
             try {
               fs.readFile(item, 'utf8', (err, data) => {
@@ -65,7 +58,13 @@ module.exports = class ChangeFileNamePlugin {
                   if (err) {
                     console.log('写文件失败');
                   } else {
-                    console.log('写文件成功');
+                    fs.rename(item, oldname + '.swan', function(err) {
+                      if (err) {
+                        throw err;
+                      }
+                      console.log('done!');
+                      reject("失败")
+                    })
                   }
                 })
               })
@@ -78,21 +77,19 @@ module.exports = class ChangeFileNamePlugin {
           else if (item.match("wxss")) {
             let oldname = item.split(".")[0]
             let newname= oldname+".css"
-            fs.rename(item,  newname, function(err) {
-              if (err) {
-                throw err;
-              }
-              console.log('done!');
-              reject("失败")
-            })
+
             try {
               fs.readFile(item, 'utf8', (err, data) => {
                 let transformData= wxssToAcss(data.toString())
                 fs.writeFile(item, transformData, 'utf8', (err) => {
                   if (err) {
-                    console.log('写文件失败');
                   } else {
-                    console.log('写文件成功');
+                    fs.rename(item,  newname, function(err) {
+                      if (err) {
+                        throw err;
+                      }
+                      reject("失败")
+                    })
                   }
                 })
               })
@@ -108,7 +105,6 @@ module.exports = class ChangeFileNamePlugin {
                   if (err) {
                     console.log('写文件失败');
                   } else {
-                    console.log('写文件成功');
                   }
                 })
               })

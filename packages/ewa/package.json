@@ -73,10 +73,8 @@
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
     "babel-core": "^6.26.3",
-    "friendly-errors-webpack-plugin": "^1.7.0",
     "htmldom": "^3.0.8",
-    "node-notifier": "^5.4.0",
-    "wx2swan": "^1.2.20
+    "progress-bar-webpack-plugin": "^1.12.1"
   },
   "deprecated": false,
   "description": "Enhanced wechat app development toolkit",

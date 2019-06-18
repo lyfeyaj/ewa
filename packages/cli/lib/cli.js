@@ -21,7 +21,15 @@ require('yargs')
   .command(['start', 'dev'], '启动 EWA 小程序项目实时编译', {}, (argv) => {
     require('./commands/start')(argv);
   })
+  .command(['start:baidu', 'dev'], '启动 EWA-百度小程序项目实时编译', {}, (argv) => {
+    process.env.platform = 'baidu';//设置为百度平台
+    require('./commands/start')(argv);
+  })
   .command('build', '编译小程序静态文件', {}, (argv) => {
+    require('./commands/build')(argv);
+  })
+  .command('build:baidu', '编译百度小程序静态文件', {}, (argv) => {
+    process.env.platform = 'baidu';//设置为百度平台
     require('./commands/build')(argv);
   })
   .command('clean', '清理小程序静态文件', {}, (argv) => {
