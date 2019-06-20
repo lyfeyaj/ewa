@@ -56,7 +56,7 @@ module.exports = function cssRule(options = {}) {
         options: {
           plugins: function() {
             let p = [
-              require('autoprefixer')({ remove: false, browsers: ['iOS 7']})
+              require('autoprefixer')({ remove: false})
             ];
 
             if (!options.IS_DEV) {

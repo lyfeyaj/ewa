@@ -94,5 +94,11 @@
   "scripts": {
     "test": "mocha"
   },
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "maintained node versions",
+    "not dead"
+  ],
   "version": "0.2.23"
 }
