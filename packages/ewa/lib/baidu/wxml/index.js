@@ -142,12 +142,8 @@ function validate ($, warn) {
 function wxmlToAxml (code, {
 	warn
 } = {}) {
-	console.log("变更前",code);
 	let html = new HtmlDom(code);
 	let $ = html.$;
-	console.log("变更hz ",html);
-
-
 	if (warn) {
 		validate($, warn);
 	}

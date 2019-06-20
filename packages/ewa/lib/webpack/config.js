@@ -101,7 +101,6 @@ function makeConfig() {
     new NodeCommonModuleTemplatePlugin({
       commonModuleName: options.commonModuleName
     }),
-    new ProgressBarPlugin({}),
     new CopyWebpackPlugin([{
       from: path.resolve(
         ROOT,
@@ -241,7 +240,7 @@ function makeConfig() {
   const config = {
     devtool,
     mode,
-    stats,
+    stats:'minimal',
     context: __dirname,
     entry: helpers.buildDynamicEntries(ENTRY_DIR, options.simplifyPath),
     target: 'node',

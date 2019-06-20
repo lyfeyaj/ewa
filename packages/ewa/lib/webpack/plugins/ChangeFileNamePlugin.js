@@ -7,6 +7,7 @@ const utils = require('../../utils');
 const wxmlToAxml = require('../../baidu/wxml/index');
 const wxssToAcss = require('../../baidu/wxss/index');
 const jsTobaidu = require('../../baidu/js/index');
+// const jsonTobaidu = require('../../baidu/json/index');
 
 
 // 重命名文件
@@ -110,6 +111,11 @@ module.exports = class ChangeFileNamePlugin {
               })
             } catch (err) {
               console.log('读取文件时发生错误');
+            }
+          }
+          else if (item.match('.json')) {
+            if (item.match('project.config.json')) {
+              utils.log(`配置文件生成`, 'success');
             }
           }
         })
