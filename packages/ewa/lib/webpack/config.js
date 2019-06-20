@@ -7,6 +7,7 @@ const { existsSync } = require('fs');
 const NodeSourcePlugin = require('webpack/lib/node/NodeSourcePlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const NodeCommonModuleTemplatePlugin = require('./plugins/NodeCommonModuleTemplatePlugin');
 const AutoCleanUnusedFilesPlugin = require('./plugins/AutoCleanUnusedFilesPlugin');
 const utils = require('../utils');
@@ -90,6 +91,7 @@ function makeConfig() {
     new NodeCommonModuleTemplatePlugin({
       commonModuleName: options.commonModuleName
     }),
+    new ProgressBarPlugin({}),
     new CopyWebpackPlugin([
       {
         from: path.resolve(
@@ -188,7 +190,27 @@ function makeConfig() {
   // 构建模式
   const mode = IS_DEV ? 'development' : 'production';
 
+
+  const stats = {
+    // copied from `'minimal'`
+    all: false,
+    modules: true,
+    maxModules: 0,
+    errors: true,
+    warnings: false,
+    // our additional options
+    moduleTrace: true,
+    errorDetails: true,
+    builtAt: true,
+    colors: {
+      green: '\u001b[32m',
+    },
+    outputPath: true,
+    timings: true,
+  }
+
   const config = {
+    stats,
     devtool,
     mode,
     context: __dirname,
@@ -223,4 +245,3 @@ function makeConfig() {
 }
 
 module.exports = makeConfig();
-

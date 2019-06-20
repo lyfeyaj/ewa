@@ -15,6 +15,12 @@
     "wechat",
     "toolkit"
   ],
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "maintained node versions",
+    "not dead"
+  ],
   "author": "Felix Liu",
   "license": "MIT",
   "dependencies": {
@@ -55,13 +61,15 @@
     "node-sass": "^4.11.0",
     "nodemon": "^1.18.10",
     "postcss-loader": "^3.0.0",
+    "progress-bar-webpack-plugin": "^1.12.1",
     "raw-loader": "^1.0.0",
     "resolve-url-loader": "^3.0.1",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
+    "webpack-cli": "^3.2.3",
+    "wxministore": "^1.2.4"
   },
   "gitHead": "a280118f8557069fc383c105d1301b8175d74c13"
 }
