@@ -6,7 +6,6 @@ const fs = require('fs');
 const ROOT = process.cwd();
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const PLATFORM = process.env.platform || 'wechat'
 
 let webpackBin = require.resolve('webpack').replace(
   path.normalize('webpack/lib/webpack.js'),

@@ -133,7 +133,7 @@ function makeConfig() {
     // 允许模块命名，方便调试
     plugins.push(
       new webpack.NamedModulesPlugin()
-    );
+    ); 
   }
 
   // 开发环境下，自动清理无用的文件
