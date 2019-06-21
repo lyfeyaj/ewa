@@ -12,7 +12,6 @@ module.exports = function(webpack) {
     webpack,
     '--config',
     configFile,
-    '--progress',
     '--colors',
     '--display=errors-only'
   ].join(' ');

@@ -61,7 +61,8 @@
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
+    "webpack-cli": "^3.2.3",
+    "webpackbar": "^3.2.0"
   },
   "gitHead": "a280118f8557069fc383c105d1301b8175d74c13"
 }

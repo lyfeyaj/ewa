@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const path = require('path');
 const { existsSync } = require('fs');
 
+const WebpackBar = require('webpackbar');
 const NodeSourcePlugin = require('webpack/lib/node/NodeSourcePlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -75,6 +76,7 @@ function makeConfig() {
 
   // 插件
   let plugins = [
+    new WebpackBar(),
     // Mock node env
     new NodeSourcePlugin({
       console: false,
@@ -189,6 +191,23 @@ function makeConfig() {
   const mode = IS_DEV ? 'development' : 'production';
 
   const config = {
+    stats: {
+      // copied from `'minimal'`
+      all: false,
+      modules: true,
+      maxModules: 0,
+      errors: true,
+      warnings: true,
+      // our additional options
+      moduleTrace: true,
+      errorDetails: true,
+      builtAt: true,
+      colors: {
+        green: '\u001b[32m',
+      },
+      outputPath: true,
+      timings: true,
+    },
     devtool,
     mode,
     context: __dirname,
