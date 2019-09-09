@@ -4,11 +4,13 @@ const cloneDeep = require('lodash.clonedeep');
 const pick = require('lodash.pick');
 const keys = require('lodash.keys');
 
+// 日志打印
 const logger = function() {
   // eslint-disable-next-line
   console.log.apply(console, arguments);
 };
 
+// 开启 state 支持
 function enableState(opts = {}) {
   const {
     debug = false,
@@ -40,7 +42,14 @@ function enableState(opts = {}) {
         // 对数组特殊处理
         if (item.kind === 'A') {
           path = `${path}[${item.index}]`;
-          value = item.item.rhs;
+          // 处理数组元素删除的情况，需要业务代码做支持
+          if (item.item.kind === 'D') {
+            value = null;
+          }
+          // 其他情况如 添加/修改 直接修改值
+          else {
+            value = item.item.rhs;
+          }
         }
 
         // 忽略 undefined
@@ -48,7 +57,7 @@ function enableState(opts = {}) {
           hasChanges = true;
           set(state, path, value);
 
-          // 深拷贝 值，防止直接对 this.data 进行修改
+          // 深拷贝 value，防止对 this.data 的直接修改影响 diff 算法的结果
           changes[path] = cloneDeep(value);
         }
       }
@@ -57,10 +66,16 @@ function enableState(opts = {}) {
     return hasChanges ? changes : null;
   }
 
+  // 初始化状态函数
+  function initState() {
+    // 初始化状态
+    this.$$state = cloneDeep(this.data);
+  }
+
   // 设置状态函数
   function setState(obj, callback) {
     // 初始化状态
-    if (!this.$$state) this.$$state = cloneDeep(this.data);
+    if (!this.$$state) this.initState();
 
     // 计算增量更新
     let changes = diffAndMergeChanges(this.$$state, obj);
@@ -83,6 +98,7 @@ function enableState(opts = {}) {
   if (page) {
     const $Page = Page;
     Page = function(obj = {}) {
+      obj.initState = function() { initState.call(this); };
       obj.setState = function() { setState.apply(this, arguments); };
       obj.__isPage = true;
       return $Page(obj);
@@ -94,6 +110,7 @@ function enableState(opts = {}) {
     const $Component = Component;
     Component = function(obj = {}) {
       obj.methods = obj.methods || {};
+      obj.methods.initState = function() { initState.call(this); };
       obj.methods.setState = function() { setState.apply(this, arguments); };
 
       // 代替 true
