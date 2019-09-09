@@ -1,7 +1,7 @@
 'use strict';
 
-const Queue = require('./utils/Queue');
-const buildArgs = require('./utils/buildArgs');
+const Queue = require('../utils/Queue');
+const buildArgs = require('../utils/buildArgs');
 
 const queue = new Queue();
 
