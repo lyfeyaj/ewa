@@ -1,13 +1,26 @@
+/* eslint-disable no-console */
+
 const diff = require('deep-diff');
 const set = require('lodash.set');
+const get = require('lodash.get');
 const cloneDeep = require('lodash.clonedeep');
 const pick = require('lodash.pick');
 const keys = require('lodash.keys');
 
 // 日志打印
-const logger = function() {
-  // eslint-disable-next-line
-  console.log.apply(console, arguments);
+const logger = function(type, name, changes) {
+  if (!console) return;
+  try {
+    if (console.group) {
+      console.group(type, name);
+      console.log(changes);
+      console.groupEnd();
+    } else {
+      console.log(type, name, changes);
+    }
+  } catch (e) {
+    // Do nothing
+  }
 };
 
 // 开启 state 支持
@@ -15,8 +28,13 @@ function enableState(opts = {}) {
   const {
     debug = false,
     component = true,
-    page = true
+    page = true,
+
+    // 数组删除操作： true 或者 false
+    overwriteArrayOnDeleted = true
   } = opts;
+
+
 
   // 解析变更内容
   function diffAndMergeChanges(state, obj) {
@@ -25,10 +43,12 @@ function enableState(opts = {}) {
     if (!rawChanges) return;
 
     let changes = {};
+    let lastArrayDeletedPath = '';
     let hasChanges = false;
 
     for (let i = 0; i < rawChanges.length; i++) {
       let item = rawChanges[i];
+      // NOTE: 暂不处理删除对象属性的情况
       if (item.kind !== 'D') {
         // 修复路径 a.b.0.1 => a.b[0][1]
         let path = item.path
@@ -36,18 +56,41 @@ function enableState(opts = {}) {
           .replace(/\.([0-9]+)\./g, '[$1].')
           .replace(/\.([0-9]+)$/, '[$1]');
 
+        // 处理数组删除的问题，后续更新如果为数组中的元素，直接跳过
+        if (
+          overwriteArrayOnDeleted &&
+          lastArrayDeletedPath &&
+          path.indexOf(lastArrayDeletedPath) === 0
+        ) continue;
+
         // 记录变化
         let value = item.rhs;
 
         // 对数组特殊处理
         if (item.kind === 'A') {
-          path = `${path}[${item.index}]`;
           // 处理数组元素删除的情况，需要业务代码做支持
           if (item.item.kind === 'D') {
-            value = null;
+            // 覆盖整个数组
+            if (overwriteArrayOnDeleted) {
+              // 如果后续变更依然为同一个数组中的操作，直接跳过
+              if (lastArrayDeletedPath === path) continue;
+
+              lastArrayDeletedPath = path;
+              value = get(obj, path);
+            }
+
+            // 对特定数组元素置空
+            else {
+              path = `${path}[${item.index}]`;
+              value = null;
+            }
           }
           // 其他情况如 添加/修改 直接修改值
           else {
+            // 如果后续变更为数组中的更新，忽略
+            if (overwriteArrayOnDeleted && lastArrayDeletedPath === path) continue;
+
+            path = `${path}[${item.index}]`;
             value = item.item.rhs;
           }
         }
@@ -83,9 +126,10 @@ function enableState(opts = {}) {
     if (changes) {
       // 开启调试模式
       if (debug) {
-        if (debug === true) logger(this.route || this.is, changes);
-        if (debug === 'page' && this.__isPage) logger(this.route, changes);
-        if (debug === 'component' && this.__isComponent) logger(this.is, changes);
+        let type = this.__isPage ? 'Page:' : 'Component:';
+        if (debug === true) logger(type, this.route || this.is, changes);
+        if (debug === 'page' && this.__isPage) logger(type, this.route, changes);
+        if (debug === 'component' && this.__isComponent) logger(type, this.is, changes);
       }
 
       this.setData(changes, callback);
