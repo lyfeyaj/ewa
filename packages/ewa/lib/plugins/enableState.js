@@ -142,6 +142,13 @@ function enableState(opts = {}) {
   if (page) {
     const $Page = Page;
     Page = function(obj = {}) {
+
+      let originOnload = obj.onLoad;
+      obj.onLoad = function () {
+        initState.call(this);
+        return originOnload.apply(this, arguments);
+      };
+
       obj.initState = function() { initState.call(this); };
       obj.setState = function() { setState.apply(this, arguments); };
       obj.__isPage = true;
@@ -153,6 +160,13 @@ function enableState(opts = {}) {
   if (component) {
     const $Component = Component;
     Component = function(obj = {}) {
+
+      let originAttached = obj.attached;
+      obj.attached = function () {
+        initState.call(this);
+        return originAttached.apply(this, arguments);
+      };
+
       obj.methods = obj.methods || {};
       obj.methods.initState = function() { initState.call(this); };
       obj.methods.setState = function() { setState.apply(this, arguments); };
