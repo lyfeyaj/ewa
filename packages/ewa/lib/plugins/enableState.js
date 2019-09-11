@@ -7,6 +7,8 @@ const cloneDeep = require('lodash.clonedeep');
 const pick = require('lodash.pick');
 const keys = require('lodash.keys');
 
+const noop = function () {};
+
 // 日志打印
 const logger = function(type, name, changes) {
   if (!console) return;
@@ -143,7 +145,7 @@ function enableState(opts = {}) {
     const $Page = Page;
     Page = function(obj = {}) {
 
-      let originOnload = obj.onLoad;
+      let originOnload = obj.onLoad || noop;
       obj.onLoad = function () {
         initState.call(this);
         return originOnload.apply(this, arguments);
@@ -161,10 +163,10 @@ function enableState(opts = {}) {
     const $Component = Component;
     Component = function(obj = {}) {
 
-      let originAttached = obj.attached;
-      obj.attached = function () {
+      let originCreated = obj.created || noop;
+      obj.created = function () {
         initState.call(this);
-        return originAttached.apply(this, arguments);
+        return originCreated.apply(this, arguments);
       };
 
       obj.methods = obj.methods || {};
