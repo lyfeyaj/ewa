@@ -15,12 +15,12 @@ const logger = function(type, name, timeConsumption = 0, changes) {
   let timeConsumptionMsg = `Diff 耗时: ${timeConsumption}ms`;
   try {
     if (console.group) {
-      console.group(type, name);
+      console.group(type, name, '触发更新');
       console.log(timeConsumptionMsg);
-      console.log(changes);
+      console.log('Diff 结果: ', changes);
       console.groupEnd();
     } else {
-      console.log(type, name, timeConsumptionMsg, changes);
+      console.log(type, name, timeConsumptionMsg, 'Diff 结果: ', changes);
     }
   } catch (e) {
     // Do nothing
@@ -108,10 +108,10 @@ function enableState(opts = {}) {
         // 忽略 undefined
         if (value !== void 0) {
           hasChanges = true;
-          set(state, path, value);
-
           // 深拷贝 value，防止对 this.data 的直接修改影响 diff 算法的结果
-          changes[path] = cloneDeep(value);
+          set(state, path, cloneDeep(value));
+
+          changes[path] = value;
         }
       }
     }
@@ -127,6 +127,9 @@ function enableState(opts = {}) {
 
   // 给 setData 打补丁,
   function patchSetData() {
+    // 防止重复打补丁
+    if (this.__setDataPatched) return;
+
     this.__setData = this.setData;
 
     this.setData = (obj, callback) => {
@@ -136,6 +139,8 @@ function enableState(opts = {}) {
         if (typeof callback === 'function') return callback();
       });
     };
+
+    this.__setDataPatched = true;
   }
 
   // 设置状态函数
@@ -143,19 +148,38 @@ function enableState(opts = {}) {
     // 初始化状态
     if (!this.$$state) this.initState();
 
-    // 计算增量更新
     let time;
-    if (debug) time = +new Date();
+    // 输出 debug 信息
+    if (debug) {
+      // 记录当前时间
+      time = +new Date();
+
+      // 警告 Component 中，data 和 properties 属性冲突
+      if (this.__isComponent) {
+        let changedKeys = keys(obj);
+        let conflictKeys = [];
+        for (let i = 0; i < changedKeys.length; i++) {
+          let k = changedKeys[i];
+          if (k in this.$$properties) {
+            conflictKeys.push(k);
+          }
+        }
+        if (conflictKeys.length) {
+          console.warn(`组件: ${this.is} 中, properties 和 data 存在字段冲突: ${conflictKeys.join('、')}, 请尽快调整`);
+        }
+      }
+    }
 
     // 计算变更
     let changes = diffAndMergeChanges(this.$$state, obj);
 
     // 如果有变更，则触发更新
     if (changes) {
+
       // 开启调试模式
       if (debug) {
         let timeConsumption = +new Date() - time;
-        let type = this.__isPage ? 'Page:' : 'Component:';
+        let type = this.__isPage ? '页面:' : '组件:';
         if (debug === true) logger(type, this.route || this.is, timeConsumption, changes);
         if (debug === 'page' && this.__isPage) logger(type, this.route, timeConsumption, changes);
         if (debug === 'component' && this.__isComponent) logger(type, this.is, timeConsumption, changes);
@@ -193,6 +217,7 @@ function enableState(opts = {}) {
   if (component) {
     const $Component = Component;
     Component = function(obj = {}) {
+      let properties = obj.properties || {};
       obj.lifetimes = obj.lifetimes || {};
       obj.methods = obj.methods || {};
 
@@ -200,7 +225,12 @@ function enableState(opts = {}) {
       let _created = obj.lifetimes.created || obj.created || noop;
       obj.lifetimes.created = obj.created = function() {
         patchSetData.call(this);
+
+        // 标识组件
         this.__isComponent = true;
+
+        // 保存属性设置
+        this.$$properties = properties;
         return _created.apply(this, arguments);
       };
 
