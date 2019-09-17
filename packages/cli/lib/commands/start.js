@@ -9,7 +9,7 @@ module.exports = async function start() {
 
   utils.log('正在启动项目实时编译...');
 
-  const runEwa = require.resolve('ewa-webpack/lib/webpack/run.js');
+  const runEwa = require.resolve('ewa-webpack/lib/run.js');
 
   require(runEwa);
 };

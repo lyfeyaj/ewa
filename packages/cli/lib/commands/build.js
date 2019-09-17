@@ -10,7 +10,7 @@ module.exports = function build() {
 
   const ROOT = process.cwd();
 
-  const script = require.resolve('ewa-webpack/lib/webpack/run.js');
+  const script = require.resolve('ewa-webpack/lib/run.js');
 
   utils.log('正在以生产模式编译项目...');
 
