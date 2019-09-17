@@ -11,7 +11,7 @@ module.exports = function upgrade() {
   execSync('npm i ewa-cli@latest -g');
 
   if (utils.isEwaProject()) {
-    execSync('npm i -D ewa-cli@latest ewa@latest');
+    execSync('npm i ewa@latest');
   }
 
   utils.log('升级完成！', 'success');
