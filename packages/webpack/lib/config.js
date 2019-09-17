@@ -223,7 +223,9 @@ function makeConfig() {
     resolve: {
       modules: [
         'node_modules',
-        path.resolve(__dirname, '../../node_modules')
+        path.resolve(__dirname, '../node_modules'),
+        path.resolve(__dirname, '../../'),
+        path.resolve(__dirname, '../../../node_modules')
       ],
       extensions: ['.js', '.html', '.wxml', '.wxs'].concat(cssExtensions),
       alias: Object.assign(aliasDirs, {
