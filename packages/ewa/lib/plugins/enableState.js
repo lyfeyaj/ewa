@@ -191,62 +191,67 @@ function enableState(opts = {}) {
     }
   }
 
-  // 仅在 Page 开启 setState
-  if (page) {
-    const $Page = Page;
-    Page = function(obj = {}) {
-      obj.__isPage = true;
+  try {
+    if (page) {
+      let $Page = Page;
+      // Page 功能扩展
+      Page = function(obj = {}) {
+        obj.__isPage = true;
 
-      // 修改 onLoad 方法，页面载入时打补丁
-      let _onLoad = obj.onLoad || noop;
-      obj.onLoad = function() {
-        initState.call(this);
-        patchSetData.call(this);
-        return _onLoad.apply(this, arguments);
+        // 修改 onLoad 方法，页面载入时打补丁
+        let _onLoad = obj.onLoad || noop;
+        obj.onLoad = function() {
+          initState.call(this);
+          patchSetData.call(this);
+          return _onLoad.apply(this, arguments);
+        };
+
+        // 注入 initState 和 setState 方法
+        obj.initState = function() { initState.call(this); };
+        obj.setState = function() { setState.apply(this, arguments); };
+
+        return $Page(obj);
       };
+    }
 
-      // 注入 initState 和 setState 方法
-      obj.initState = function() { initState.call(this); };
-      obj.setState = function() { setState.apply(this, arguments); };
+    if (component) {
+      let $Component = Component;
+      // Component 功能扩展
+      Component = function(obj = {}) {
+        let properties = obj.properties || {};
+        obj.lifetimes = obj.lifetimes || {};
+        obj.methods = obj.methods || {};
 
-      return $Page(obj);
-    };
-  }
+        // 修改 created 方法，组件创建时打补丁
+        let _created = obj.lifetimes.created || obj.created || noop;
+        obj.lifetimes.created = obj.created = function() {
+          patchSetData.call(this);
 
-  // 仅在 Component 开启 setState
-  if (component) {
-    const $Component = Component;
-    Component = function(obj = {}) {
-      let properties = obj.properties || {};
-      obj.lifetimes = obj.lifetimes || {};
-      obj.methods = obj.methods || {};
+          // 标识组件
+          this.__isComponent = true;
 
-      // 修改 created 方法，组件创建时打补丁
-      let _created = obj.lifetimes.created || obj.created || noop;
-      obj.lifetimes.created = obj.created = function() {
-        patchSetData.call(this);
+          // 保存属性设置
+          this.$$properties = properties;
+          return _created.apply(this, arguments);
+        };
 
-        // 标识组件
-        this.__isComponent = true;
+        // 修改 attached 方法，组件挂载时初始化 state
+        let _attached = obj.lifetimes.attached || obj.attached || noop;
+        obj.lifetimes.attached = obj.attached = function() {
+          initState.call(this);
+          return _attached.apply(this, arguments);
+        };
 
-        // 保存属性设置
-        this.$$properties = properties;
-        return _created.apply(this, arguments);
+        // 注入 initState 和 setState 方法
+        obj.methods.initState = function() { initState.call(this); };
+        obj.methods.setState = function() { setState.apply(this, arguments); };
+
+        return $Component(obj);
       };
-
-      // 修改 attached 方法，组件挂载时初始化 state
-      let _attached = obj.lifetimes.attached || obj.attached || noop;
-      obj.lifetimes.attached = obj.attached = function() {
-        initState.call(this);
-        return _attached.apply(this, arguments);
-      };
-
-      // 注入 initState 和 setState 方法
-      obj.methods.initState = function() { initState.call(this); };
-      obj.methods.setState = function() { setState.apply(this, arguments); };
-
-      return $Component(obj);
-    };
+    }
+  } catch (e) {
+    // Page 或者 Component 未定义
+    console.log('覆盖小程序 Page 或 Component 出错', e);
   }
 }
 
