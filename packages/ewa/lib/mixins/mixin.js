@@ -1,23 +1,21 @@
-'use strict';
+"use strict";
 
-const buildArgs = require('../utils/buildArgs');
+var assign = require('lodash.assign');
+
+var buildArgs = require('../utils/buildArgs');
 
 module.exports = function mixin() {
-  let mixins = buildArgs.apply(null, arguments);
+  var mixins = buildArgs.apply(void 0, arguments);
+  var mixes = {};
+  var kls = mixins.pop();
 
-  let mixes = {};
-  let kls = mixins.pop();
-
-  for (let i = 0; i < mixins.length; i++) {
-    let _mixin = mixins[i];
-    mixes = Object.assign({}, mixes, typeof _mixin === 'function' ? _mixin() : _mixin);
+  for (var i = 0; i < mixins.length; i++) {
+    var item = mixins[i];
+    mixes = assign({}, mixes, typeof item === 'function' ? item() : item);
   }
 
-  let newKls = Object.assign({}, mixes, kls);
-
-  newKls.__proto__ = {
+  var newKls = assign({
     parent: mixes
-  };
-
+  }, mixes, kls);
   return newKls;
 };

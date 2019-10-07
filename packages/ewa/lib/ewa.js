@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-const wxPromisify = require('./plugins/wxPromisify');
-const enableState = require('./plugins/enableState');
-const mixin = require('./mixins/mixin');
+var wxPromisify = require('./plugins/wxPromisify');
 
-const ewa = {
-  mixin,
-  enableState
+var enableState = require('./plugins/enableState');
+
+var mixin = require('./mixins/mixin');
+
+var ewa = {
+  mixin: mixin,
+  enableState: enableState
 };
-
 wxPromisify(ewa);
-
 module.exports = ewa;
