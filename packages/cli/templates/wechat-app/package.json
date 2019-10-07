@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "ewa": "^0.4.0"
+    "ewa": "^0.4.1"
   }
 }
