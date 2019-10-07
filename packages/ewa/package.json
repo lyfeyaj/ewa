@@ -4,7 +4,11 @@
   "description": "Enhanced wechat app development toolkit",
   "main": "lib/ewa.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "babel src -d ./lib",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "clean": "rm -rf lib"
   },
   "repository": {
     "type": "git",
@@ -19,11 +23,23 @@
   "license": "MIT",
   "dependencies": {
     "deep-diff": "^1.0.2",
+    "lodash.assign": "^4.2.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.get": "^4.4.2",
     "lodash.keys": "^4.2.0",
     "lodash.pick": "^4.4.0",
     "lodash.set": "^4.3.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "babel-plugin-add-module-exports": "^1.0.0",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.11.0"
   },
   "gitHead": "a280118f8557069fc383c105d1301b8175d74c13"
 }
