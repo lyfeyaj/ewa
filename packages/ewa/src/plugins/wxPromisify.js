@@ -1,5 +1,6 @@
 
 const assign = require('lodash.assign');
+const keys = require('lodash.keys');
 const Queue = require('../utils/Queue');
 const buildArgs = require('../utils/buildArgs');
 
@@ -193,7 +194,7 @@ module.exports = function install(ewa, removeFromPromisify) {
     }
   }
 
-  Object.keys(_wx).forEach((key) => {
+  keys(_wx).forEach((key) => {
     if (!noPromiseMap[key] && key.substr(0, 2) !== 'on' && key.substr(-4) !== 'Sync') {
       _wx[key] = promisify(function () {
         let args = buildArgs.apply(null, arguments);

@@ -4,10 +4,19 @@ const diff = require('deep-diff');
 const set = require('lodash.set');
 const get = require('lodash.get');
 const cloneDeep = require('lodash.clonedeep');
-const pick = require('lodash.pick');
 const keys = require('lodash.keys');
+const map = require('lodash.map');
 
 const noop = function () {};
+
+// 取出 对象中的部分键值，支持 嵌套 key， 如 'user.gender'
+function deepPick(obj, keys) {
+  let _obj = {};
+  map(keys, function(key) {
+    _obj[key] = get(obj, key);
+  });
+  return _obj;
+}
 
 // 日志打印
 const logger = function (type, name, timeConsumption = 0, changes) {
@@ -48,7 +57,7 @@ function enableState(opts = {}) {
 
   // 解析变更内容
   function diffAndMergeChanges(state, obj) {
-    let rawChanges = diff(pick(state, keys(obj)), obj);
+    let rawChanges = diff(deepPick(state, keys(obj)), obj);
 
     if (!rawChanges) return null;
 
