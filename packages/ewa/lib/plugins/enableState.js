@@ -9,11 +9,20 @@ var get = require('lodash.get');
 
 var cloneDeep = require('lodash.clonedeep');
 
-var pick = require('lodash.pick');
-
 var keys = require('lodash.keys');
 
-var noop = function noop() {}; // 日志打印
+var map = require('lodash.map');
+
+var noop = function noop() {}; // 取出 对象中的部分键值，支持 嵌套 key， 如 'user.gender'
+
+
+function deepPick(obj, keys) {
+  var _obj = {};
+  map(keys, function (key) {
+    _obj[key] = get(obj, key);
+  });
+  return _obj;
+} // 日志打印
 
 
 var logger = function logger(type, name) {
@@ -50,7 +59,7 @@ function enableState() {
       autoSync = _opts$autoSync === void 0 ? true : _opts$autoSync; // 解析变更内容
 
   function diffAndMergeChanges(state, obj) {
-    var rawChanges = diff(pick(state, keys(obj)), obj);
+    var rawChanges = diff(deepPick(state, keys(obj)), obj);
     if (!rawChanges) return null;
     var changes = {};
     var lastArrayDeletedPath = '';

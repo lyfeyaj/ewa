@@ -4,6 +4,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 var assign = require('lodash.assign');
 
+var keys = require('lodash.keys');
+
 var Queue = require('../utils/Queue');
 
 var buildArgs = require('../utils/buildArgs');
@@ -147,7 +149,7 @@ module.exports = function install(ewa, removeFromPromisify) {
     }
   }
 
-  Object.keys(_wx).forEach(function (key) {
+  keys(_wx).forEach(function (key) {
     if (!noPromiseMap[key] && key.substr(0, 2) !== 'on' && key.substr(-4) !== 'Sync') {
       _wx[key] = promisify(function () {
         var args = buildArgs.apply(null, arguments);
