@@ -5,16 +5,17 @@ const set = require('lodash.set');
 const get = require('lodash.get');
 const cloneDeep = require('lodash.clonedeep');
 const keys = require('lodash.keys');
-const map = require('lodash.map');
 
 const noop = function () {};
 
 // 取出 对象中的部分键值，支持 嵌套 key， 如 'user.gender'
-function deepPick(obj, keys) {
+function deepPick(obj, props = []) {
   let _obj = {};
-  map(keys, function(key) {
-    _obj[key] = get(obj, key);
-  });
+  if (!obj) return _obj;
+  for (let i = 0; i < props.length; i++) {
+    let prop = props[i];
+    _obj[prop] = get(obj, prop);
+  }
   return _obj;
 }
 

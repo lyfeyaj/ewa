@@ -11,16 +11,19 @@ var cloneDeep = require('lodash.clonedeep');
 
 var keys = require('lodash.keys');
 
-var map = require('lodash.map');
-
 var noop = function noop() {}; // 取出 对象中的部分键值，支持 嵌套 key， 如 'user.gender'
 
 
-function deepPick(obj, keys) {
+function deepPick(obj) {
+  var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
   var _obj = {};
-  map(keys, function (key) {
-    _obj[key] = get(obj, key);
-  });
+  if (!obj) return _obj;
+
+  for (var i = 0; i < props.length; i++) {
+    var prop = props[i];
+    _obj[prop] = get(obj, prop);
+  }
+
   return _obj;
 } // 日志打印
 
