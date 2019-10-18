@@ -9,6 +9,9 @@ let webpackBin = require.resolve('webpack').replace(
   path.normalize('webpack/bin/webpack.js')
 );
 
+// Support windows and *nix like os
+webpackBin = `node ${webpackBin}`;
+
 if (NODE_ENV === 'development') {
   require('./run.dev')(webpackBin);
 } else {
