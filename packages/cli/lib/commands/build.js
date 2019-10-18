@@ -17,9 +17,9 @@ module.exports = function build() {
   execSync(
     `cd ${ROOT} && node ${script}`,
     {
-      env: Object.assign({}, process.env, {
+      env: Object.assign({}, {
         NODE_ENV: 'production'
-      }),
+      }, process.env),
       stdio: ['pipe', process.stdout, process.stderr]
     }
   );
