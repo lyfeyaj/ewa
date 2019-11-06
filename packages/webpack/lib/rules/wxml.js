@@ -22,15 +22,20 @@ module.exports = function wxmlRule(options = {}) {
     });
   }
 
+  let htmlRules = [
+    'raw-loader',
+    'extract-loader',
+    {
+      loader: 'html-loader',
+      options: htmlOptions
+    }
+  ];
+
+  // 开启缓存
+  if (options.cache) htmlRules = ['cache-loader'].concat(htmlRules);
+
   return {
     test: /\.(wxml|wxs)$/i,
-    use: ExtractTextPlugin.extract([
-      'raw-loader',
-      'extract-loader',
-      {
-        loader: 'html-loader',
-        options: htmlOptions
-      }
-    ])
+    use: ExtractTextPlugin.extract(htmlRules)
   };
 };

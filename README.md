@@ -175,6 +175,9 @@ module.exports = {
   // 是否开启 hashed module id
   hashedModuleIds: true,
 
+  // 是否开启缓存，默认为 true
+  cache: true,
+
   // 嫌不够灵活？直接修改 webpack 配置
   webpack: function(config) {
     return config;

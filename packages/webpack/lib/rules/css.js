@@ -38,47 +38,54 @@ module.exports = function cssRule(options = {}) {
     cssExtensions = cssExtensions.concat(['.less']);
   }
 
+  // 开启 cache
+  if (options.cache) cssRules = ['cache-loader'].concat(cssRules);
+
+  cssRules = [
+    {
+      loader: 'css-loader',
+      options: {
+        minimize: !options.IS_DEV,
+        // 不处理 css 的 @import, 充分利用 wxss 本身的 @import
+        import: false
+      }
+    },
+    // PostCSS 配置
+    {
+      loader: 'postcss-loader',
+      options: {
+        plugins: function() {
+          let p = [
+            require('autoprefixer')({ remove: false, overrideBrowserslist: ['iOS 7']})
+          ];
+
+          if (!options.IS_DEV) {
+            p = p.concat(
+              require('cssnano')({
+                preset: [
+                  'default',
+                  {
+                    discardComments: { removeAll: true },
+                    // calc 无法计算 rpx，此处禁止
+                    calc: false
+                  }
+                ]
+              })
+            );
+          }
+
+          return p;
+        },
+        sourceMap: 'inline'
+      }
+    }
+  ].concat(cssRules);
+
   const cssRule = {
     test: cssPattern,
     use: ExtractTextPlugin.extract({
       fallback: 'style-loader',
-      use: [{
-        loader: 'css-loader',
-        options: {
-          minimize: !options.IS_DEV,
-          // 不处理 css 的 @import, 充分利用 wxss 本身的 @import
-          import: false
-        }
-      },
-      // PostCSS 配置
-      {
-        loader: 'postcss-loader',
-        options: {
-          plugins: function() {
-            let p = [
-              require('autoprefixer')({ remove: false, overrideBrowserslist: ['iOS 7']})
-            ];
-
-            if (!options.IS_DEV) {
-              p = p.concat(
-                require('cssnano')({
-                  preset: [
-                    'default',
-                    {
-                      discardComments: { removeAll: true },
-                      // calc 无法计算 rpx，此处禁止
-                      calc: false
-                    }
-                  ]
-                })
-              );
-            }
-
-            return p;
-          },
-          sourceMap: 'inline'
-        }
-      }].concat(cssRules)
+      use: cssRules
     })
   };
 
