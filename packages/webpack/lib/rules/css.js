@@ -38,9 +38,6 @@ module.exports = function cssRule(options = {}) {
     cssExtensions = cssExtensions.concat(['.less']);
   }
 
-  // 开启 cache
-  if (options.cache) cssRules = ['cache-loader'].concat(cssRules);
-
   cssRules = [
     {
       loader: 'css-loader',
@@ -80,6 +77,9 @@ module.exports = function cssRule(options = {}) {
       }
     }
   ].concat(cssRules);
+
+  // 开启 cache
+  if (options.cache) cssRules = ['cache-loader'].concat(cssRules);
 
   const cssRule = {
     test: cssPattern,
