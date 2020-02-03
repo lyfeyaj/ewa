@@ -1,7 +1,10 @@
 'use strict';
 
 const path = require('path');
+const os = require('os');
 const helpers = require('../utils');
+
+const IS_WINDOWS = os.platform() === 'win32';
 
 function importWxssLoader(content, map, meta) {
   let re = /(@import\s*)([^;]+);/gi;
@@ -38,6 +41,8 @@ function importWxssLoader(content, map, meta) {
           options.simplifyPath
         );
         let relativePath = path.relative(context, result);
+        // 增加 windows 支持
+        if (IS_WINDOWS) relativePath = relativePath.replace(/\\/g, '/');
         content = content.replace(url, `'${relativePath}'`);
         resolve();
       });
