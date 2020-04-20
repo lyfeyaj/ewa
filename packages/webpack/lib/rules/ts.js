@@ -4,25 +4,20 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports = function tsRule(options) {
-  function fsExistsSync(path) {
+  const defaultConfigPath = path.resolve(__dirname, '../../tsconfig.json')
+  const userConfigPath = path.resolve(options.ROOT, './tsconfig.json')
+
+  function fetchTsConfigFile(path) {
     try {
-      fs.accessSync(path, fs.F_OK);
-    } catch(e) {
-      return false;
+      fs.accessSync(path);
+    } catch(err) {
+      return defaultConfigPath;
     }
     return path;
   }
   
-  let tsconfig;
+  const configFile = fetchTsConfigFile(userConfigPath);
   
-  (() => {
-    try {
-      tsconfig = fsExistsSync(path.resolve(options.ROOT, './tsconfig.json'));
-    } catch(error){
-      console.log(error);
-    }
-  })()
- 
   return {
     test: /\.ts$/,
     use: [
@@ -30,7 +25,7 @@ module.exports = function tsRule(options) {
         loader: 'ts-loader',
         options: {
           transpileOnly: true,
-          configFile: tsconfig || path.resolve(__dirname, '../../tsconfig.json')
+          configFile
         }
       }
     ]
