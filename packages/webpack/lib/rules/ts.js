@@ -2,31 +2,27 @@
 
 const path = require('path');
 const fs = require('fs');
-const ROOT = process.cwd();
 
-function isFileExisted(url) {
-  return new Promise(function(resolve, reject) {
-    fs.access(url, (err) => {
-        if (err) {
-            reject(err.message);
-        } else {
-            resolve('existed');
-        }
-    })
-  })
-}
-
-let tsconfig;
-
-(async() => {
-  try {
-    tsconfig = await isFileExisted(path.resolve(ROOT, './tsconfig.json'));
-  } catch(error){
-    console.log(error);
+module.exports = function tsRule(options) {
+  function fsExistsSync(path) {
+    try {
+      fs.accessSync(path, fs.F_OK);
+    } catch(e) {
+      return false;
+    }
+    return path;
   }
-})()
-
-module.exports = function tsRule() {
+  
+  let tsconfig;
+  
+  (() => {
+    try {
+      tsconfig = fsExistsSync(path.resolve(options.ROOT, './tsconfig.json'));
+    } catch(error){
+      console.log(error);
+    }
+  })()
+ 
   return {
     test: /\.ts$/,
     use: [

@@ -160,7 +160,7 @@ function makeConfig() {
     );
   }
 
-  let ruleOpts = { ...options, IS_DEV };
+  let ruleOpts = { ...options, IS_DEV, ROOT };
   const { cssRule, cssExtensions } = require('./rules/css')(ruleOpts);
 
   // 不同文件类型的处理
