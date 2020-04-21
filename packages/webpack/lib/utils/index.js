@@ -30,7 +30,7 @@ function buildDynamicEntries(baseDir, simplifyPath = false) {
   );
 
   let otherFiles = glob.sync(
-    path.join(baseDir, '**/*.{js,json}')
+    path.join(baseDir, '**/*.{ts,js,json}')
   );
 
   let entryDirs = { [baseDir]: true };
@@ -48,6 +48,7 @@ function buildDynamicEntries(baseDir, simplifyPath = false) {
   otherFiles.map(function(file) {
     if (entryDirs[path.dirname(file)]) {
       let relativePath = resolveOrSimplifyPath(baseDir, file, simplifyPath);
+      if (/\.ts$/.test(relativePath)) relativePath = relativePath.replace(/\.ts$/, '.js');
       entries[relativePath] = file;
     }
   });
