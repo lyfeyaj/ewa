@@ -1,6 +1,6 @@
 {
   "name": "ewa-webpack",
-  "version": "0.4.9",
+  "version": "0.4.11",
   "description": "Enhanced wechat app development toolkit",
   "main": "lib/run.js",
   "scripts": {
@@ -61,6 +61,8 @@
     "resolve-url-loader": "3.0.1",
     "sass-loader": "7.1.0",
     "style-loader": "^0.23.1",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
     "url-loader": "^1.1.2",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.8",

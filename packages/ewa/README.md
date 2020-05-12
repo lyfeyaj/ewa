@@ -21,6 +21,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 10. 自动兼容旧版本手机中的显示样式
 11. 支持 WXSS 和 SCSS(或 LESS) 混用
 12. 代码混淆及高度压缩，节省包大小
+13. Typescript 支持
 
 更多特性正在赶来 ... 敬请期待 👇
 
@@ -175,6 +176,9 @@ module.exports = {
   // 是否开启 hashed module id
   hashedModuleIds: true,
 
+  // 是否开启缓存，默认为 true
+  cache: true,
+
   // 嫌不够灵活？直接修改 webpack 配置
   webpack: function(config) {
     return config;
@@ -187,4 +191,4 @@ module.exports = {
 1. 可以使用 `@` 来代替 **源代码根目录** 来引入代码或样式，如 `const utils = require('@/utils/util')`
 2. WXSS 中可以直接编写 SCSS 样式代码
 3. WXSS 或 SCSS 中引用绝对路径需要在路径前加 `~` 符号，如：`@import "~@/assets/styles/common.scss";`，具体原因参见: [sass-loader](https://github.com/webpack-contrib/sass-loader#imports)
-4. `ewa build` 后如果无法正常运行小程序，可检查下是否关闭了微信开发者工具中的 `ES6 转 ES5` 选项。原因是：ewa 打包时会将 ES6 转换为 ES5 并混淆压缩，此功能和微信开发者工具自带的 `ES6 转 ES5` 功能有部分重复，多次转换会导致代码无法运行，所以只要关闭即可。
+4. `ewa build` 后如果无法正常运行小程序，可检查下是否关闭了微信开发者工具中的 `ES6 转 ES5` 和 `增强编译` 选项。原因是：ewa 打包时会将 ES6 转换为 ES5 并混淆压缩，此功能和微信开发者工具自带的 `ES6 转 ES5` 和 `增强编译` 功能有部分重复，多次转换会导致代码无法运行，所以只要关闭即可。

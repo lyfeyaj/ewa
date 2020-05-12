@@ -21,13 +21,13 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 10. 自动兼容旧版本手机中的显示样式
 11. 支持 WXSS 和 SCSS(或 LESS) 混用
 12. 代码混淆及高度压缩，节省包大小
+13. Typescript 支持
 
 更多特性正在赶来 ... 敬请期待 👇
 
 + 可跨项目复用的小程序组件或页面（通过NPM包管理）
 + Redux 支持
 + Mixin 支持
-+ Typescript 支持
 
 ## 安装
 

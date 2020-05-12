@@ -160,11 +160,12 @@ function makeConfig() {
     );
   }
 
-  let ruleOpts = { ...options, IS_DEV };
+  let ruleOpts = { ...options, IS_DEV, ROOT };
   const { cssRule, cssExtensions } = require('./rules/css')(ruleOpts);
 
   // 不同文件类型的处理
   rules = rules.concat([
+    require('./rules/ts')(ruleOpts),
     require('./rules/js')(ruleOpts),
     require('./rules/image')(ruleOpts),
     require('./rules/wxml')(ruleOpts),
@@ -229,7 +230,7 @@ function makeConfig() {
         path.resolve(__dirname, '../../'),
         path.resolve(__dirname, '../../../node_modules')
       ],
-      extensions: ['.js', '.html', '.wxml', '.wxs'].concat(cssExtensions),
+      extensions: ['.ts', '.js', '.html', '.wxml', '.wxs'].concat(cssExtensions),
       alias: Object.assign(aliasDirs, {
         '@': path.resolve(ROOT, 'src/')
       })
