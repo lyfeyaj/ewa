@@ -25,12 +25,18 @@ module.exports = function wxmlRule(options = {}) {
   let htmlRules = [
     'raw-loader',
     'extract-loader',
-    './loaders/fix-unary-element-loader',
+    {
+      loader: './loaders/fix-unary-element-loader',
+      options: { action: 'removePrefix' }
+    },
     {
       loader: 'html-loader',
       options: htmlOptions
     },
-    './loaders/fix-unary-element-loader'
+    {
+      loader: './loaders/fix-unary-element-loader',
+      options: { action: 'addPrefix' }
+    },
   ];
 
   // 开启缓存
