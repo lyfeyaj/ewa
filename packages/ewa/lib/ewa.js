@@ -6,11 +6,10 @@ var enableState = require('./plugins/enableState');
 
 var mixin = require('./mixins/mixin');
 
-var _require = require('./observer/install'),
-    watcherInstall = _require.watcherInstall;
+var watcherInstall = require('./observer/install');
 
-var _require2 = require('./observer/reactive'),
-    reactive = _require2.reactive;
+var _require = require('./observer/reactive'),
+    reactive = _require.reactive;
 
 var ewa = {
   mixin: mixin,

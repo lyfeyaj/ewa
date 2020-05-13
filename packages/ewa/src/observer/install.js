@@ -1,16 +1,16 @@
-import Watcher from './Watcher';
-import Observer from './Observer';
-import { handleUpdate } from './reactive';
-import * as utils from './utils.js';
+const Watcher = require('./Watcher');
+const Observer = require('./Observer');
+const { handleUpdate } = require('./reactive');
+const { noop } = require('./utils');
 
 const obInstance = Observer.getInstance();
 
-export function watcherInstall() {
+function watcherInstall() {
   const prePage = Page;
   Page = function() {
     const obj = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-    const _onLoad = obj.onLoad || utils.noop;
-    const _onUnload = obj.onUnload || utils.noop;
+    const _onLoad = obj.onLoad || noop;
+    const _onUnload = obj.onUnload || noop;
 
     obj.onLoad = function () {
       const updateMethod = this.setState || this.setData;
@@ -42,8 +42,8 @@ export function watcherInstall() {
     const obj = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
     obj.lifetimes = obj.lifetimes || {};
     obj.methods = obj.methods || {};
-    const _attached = obj.lifetimes.attached || obj.attached || utils.noop;
-    const _detached = obj.lifetimes.detached || obj.detached || utils.noop;
+    const _attached = obj.lifetimes.attached || obj.attached || noop;
+    const _detached = obj.lifetimes.detached || obj.detached || noop;
 
     obj.lifetimes.attached = obj.attached = function () {
       const updateMethod = this.setState || this.setData;
@@ -102,6 +102,8 @@ const createStore = () => {
   };
   return store;
 };
+
+module.exports = watcherInstall;
 
 /*
   注入全局方法 使用示例:

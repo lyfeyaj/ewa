@@ -1,16 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.noop = noop;
-exports.isObject = isObject;
-exports.isFunction = isFunction;
-exports.isExistSameId = isExistSameId;
-exports.removeById = removeById;
-exports.removeEmptyArr = removeEmptyArr;
-exports.hasKeyByObj = hasKeyByObj;
-
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function noop() {}
@@ -61,3 +50,13 @@ function hasKeyByObj(obj, key) {
     return key in obj;
   }
 }
+
+module.exports = {
+  noop: noop,
+  isObject: isObject,
+  isFunction: isFunction,
+  isExistSameId: isExistSameId,
+  removeById: removeById,
+  removeEmptyArr: removeEmptyArr,
+  hasKeyByObj: hasKeyByObj
+};

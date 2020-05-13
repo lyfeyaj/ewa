@@ -1,27 +1,16 @@
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+var Watcher = require('./Watcher');
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.watcherInstall = watcherInstall;
+var Observer = require('./Observer');
 
-var _Watcher = _interopRequireDefault(require("./Watcher"));
+var _require = require('./reactive'),
+    handleUpdate = _require.handleUpdate;
 
-var _Observer = _interopRequireDefault(require("./Observer"));
+var _require2 = require('./utils'),
+    noop = _require2.noop;
 
-var _reactive = require("./reactive");
-
-var utils = _interopRequireWildcard(require("./utils.js"));
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var obInstance = _Observer.default.getInstance();
+var obInstance = Observer.getInstance();
 
 function watcherInstall() {
   var prePage = Page;
@@ -29,16 +18,16 @@ function watcherInstall() {
   Page = function Page() {
     var obj = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
 
-    var _onLoad = obj.onLoad || utils.noop;
+    var _onLoad = obj.onLoad || noop;
 
-    var _onUnload = obj.onUnload || utils.noop;
+    var _onUnload = obj.onUnload || noop;
 
     obj.onLoad = function () {
       var updateMethod = this.setState || this.setData;
       var data = obj.data || {}; // 页面初始化添加watcher
 
-      if (!this._watcher || !(this._watcher instanceof _Watcher.default)) {
-        this._watcher = new _Watcher.default(data, updateMethod.bind(this));
+      if (!this._watcher || !(this._watcher instanceof Watcher)) {
+        this._watcher = new Watcher(data, updateMethod.bind(this));
       }
 
       return _onLoad.apply(this, arguments);
@@ -68,16 +57,16 @@ function watcherInstall() {
     obj.lifetimes = obj.lifetimes || {};
     obj.methods = obj.methods || {};
 
-    var _attached = obj.lifetimes.attached || obj.attached || utils.noop;
+    var _attached = obj.lifetimes.attached || obj.attached || noop;
 
-    var _detached = obj.lifetimes.detached || obj.detached || utils.noop;
+    var _detached = obj.lifetimes.detached || obj.detached || noop;
 
     obj.lifetimes.attached = obj.attached = function () {
       var updateMethod = this.setState || this.setData;
       var data = obj.data || {}; // 组件初始化添加watcher
 
-      if (!this._watcher || !(this._watcher instanceof _Watcher.default)) {
-        this._watcher = new _Watcher.default(data, updateMethod.bind(this));
+      if (!this._watcher || !(this._watcher instanceof Watcher)) {
+        this._watcher = new Watcher(data, updateMethod.bind(this));
       }
 
       return _attached.apply(this, arguments);
@@ -105,7 +94,7 @@ function watcherInstall() {
 var createStore = function createStore() {
   // 手动更新全局data
   function set(key, value) {
-    (0, _reactive.handleUpdate)(key, value);
+    handleUpdate(key, value);
   } // 添加注册事件函数
 
 
@@ -137,6 +126,8 @@ var createStore = function createStore() {
   };
   return store;
 };
+
+module.exports = watcherInstall;
 /*
   注入全局方法 使用示例:
   this.$on('test', (val) => { console.log(val) })

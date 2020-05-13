@@ -1,10 +1,10 @@
-import * as utils from './utils.js';
-import Observer from './Observer';
-const obInstance = Observer.getInstance();
 const get = require('lodash.get');
 const set = require('lodash.set');
+const { isObject, hasKeyByObj } = require('./utils');
+const Observer = require('./Observer');
+const obInstance = Observer.getInstance();
 
-export function reactive (obj, key) {
+function reactive (obj, key) {
   const keys = Object.keys(obj);
   for (let i = 0; i < keys.length; i++) {
     defineReactive(obj, keys[i], key);
@@ -23,7 +23,7 @@ function defineReactive(obj, key, path) {
   // 记录遍历层级
   if (path) path = `${path}.${key}`;
   // 深度遍历
-  if (utils.isObject(val)) reactive(val, path || key);
+  if (isObject(val)) reactive(val, path || key);
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
@@ -51,10 +51,10 @@ function trigger(key, value) {
 }
 
 // 手动更新
-export function handleUpdate(key, value) {
+function handleUpdate(key, value) {
   const { globalData } = getApp();
   // key在globalData中 更新globalData
-  if (utils.hasKeyByObj(globalData, key)) {
+  if (hasKeyByObj(globalData, key)) {
     if (get(globalData, key) !== value) {
       set(globalData, key, value);
     } else {
@@ -63,12 +63,17 @@ export function handleUpdate(key, value) {
   } else {
     // key不在globalData中 手动更新所有watcher中的$data
     obInstance.globalWatchers.forEach(watcher => {
-      if (utils.hasKeyByObj(watcher.$data, key)) {
+      if (hasKeyByObj(watcher.$data, key)) {
         watcher.update(key, value);
       }
     });
   }
 }
+
+module.exports = {
+  reactive,
+  handleUpdate
+};
 
 /* 
   使globalData响应式化，即 globalData修改 => 全局data(同字段)更新

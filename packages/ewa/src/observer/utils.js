@@ -1,15 +1,15 @@
-export function noop() {}
+function noop() {}
 
-export function isObject(obj) {
+function isObject(obj) {
   return typeof obj === 'object' && obj !== null;
 }
 
-export function isFunction(obj) {
+function isFunction(obj) {
   return typeof obj === 'function';
 }
 
 // 判断数组中是否存在相同id的元素
-export function isExistSameId(arr, id) {
+function isExistSameId(arr, id) {
   if (Array.isArray(arr) && arr.length) {
     return !!arr.find(item => item.id === id);
   }
@@ -17,7 +17,7 @@ export function isExistSameId(arr, id) {
 }
 
 // 根据id删除数组中元素
-export function removeById(arr, id) {
+function removeById(arr, id) {
   if (Array.isArray(arr) && arr.length) {
     return arr.filter(item => item.id !== id);
   }
@@ -25,13 +25,13 @@ export function removeById(arr, id) {
 }
 
 // 删除对象中空数组的属性
-export function removeEmptyArr(obj, key) {
+function removeEmptyArr(obj, key) {
   if (!obj || !Array.isArray(obj[key])) return;
   if (obj[key].length === 0) delete obj[key];
 }
 
 // 对象中是否存在某属性
-export function hasKeyByObj(obj, key) {
+function hasKeyByObj(obj, key) {
   if (!obj || !key) return false;
   if (key.indexOf('.') > -1) {
     return key.split('.')[0] in obj;
@@ -39,3 +39,13 @@ export function hasKeyByObj(obj, key) {
     return key in obj;
   }
 }
+
+module.exports = {
+  noop,
+  isObject,
+  isFunction,
+  isExistSameId,
+  removeById,
+  removeEmptyArr,
+  hasKeyByObj,
+};

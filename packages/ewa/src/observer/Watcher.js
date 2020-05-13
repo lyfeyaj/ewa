@@ -1,10 +1,10 @@
-import * as utils from './utils.js';
-import Observer from './Observer';
+const { isFunction } = require('./utils');
+const Observer = require('./Observer');
 const obInstance = Observer.getInstance();
 
 let uid = 0;
 
-export default class Watcher {
+class Watcher {
   constructor() {
     const argsData = arguments[0] ? arguments[0] : {};
     // 备份data数据
@@ -56,6 +56,8 @@ export default class Watcher {
 
   // 更新数据和视图
   update(key, value) {
-    if (utils.isFunction(this.updateFn)) this.updateFn({ [key]: value });
+    if (isFunction(this.updateFn)) this.updateFn({ [key]: value });
   }
 }
+
+module.exports = Watcher;

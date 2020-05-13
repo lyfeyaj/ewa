@@ -1,28 +1,16 @@
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.reactive = reactive;
-exports.handleUpdate = handleUpdate;
-
-var utils = _interopRequireWildcard(require("./utils.js"));
-
-var _Observer = _interopRequireDefault(require("./Observer"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-var obInstance = _Observer.default.getInstance();
-
 var get = require('lodash.get');
 
 var set = require('lodash.set');
+
+var _require = require('./utils'),
+    isObject = _require.isObject,
+    hasKeyByObj = _require.hasKeyByObj;
+
+var Observer = require('./Observer');
+
+var obInstance = Observer.getInstance();
 
 function reactive(obj, key) {
   var keys = Object.keys(obj);
@@ -45,7 +33,7 @@ function defineReactive(obj, key, path) {
 
   if (path) path = "".concat(path, ".").concat(key); // 深度遍历
 
-  if (utils.isObject(val)) reactive(val, path || key);
+  if (isObject(val)) reactive(val, path || key);
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
@@ -79,7 +67,7 @@ function handleUpdate(key, value) {
       globalData = _getApp.globalData; // key在globalData中 更新globalData
 
 
-  if (utils.hasKeyByObj(globalData, key)) {
+  if (hasKeyByObj(globalData, key)) {
     if (get(globalData, key) !== value) {
       set(globalData, key, value);
     } else {
@@ -88,12 +76,17 @@ function handleUpdate(key, value) {
   } else {
     // key不在globalData中 手动更新所有watcher中的$data
     obInstance.globalWatchers.forEach(function (watcher) {
-      if (utils.hasKeyByObj(watcher.$data, key)) {
+      if (hasKeyByObj(watcher.$data, key)) {
         watcher.update(key, value);
       }
     });
   }
 }
+
+module.exports = {
+  reactive: reactive,
+  handleUpdate: handleUpdate
+};
 /* 
   使globalData响应式化，即 globalData修改 => 全局data(同字段)更新
 

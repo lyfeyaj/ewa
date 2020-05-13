@@ -1,6 +1,6 @@
-import * as utils from './utils.js';
+const { isExistSameId, removeEmptyArr, removeById, hasKeyByObj, isFunction } = require('./utils.js');
 
-export default class Observer {
+class Observer {
   constructor() {
     // 响应式对象集合
     this.reactiveBus = new Object();
@@ -20,19 +20,19 @@ export default class Observer {
   
   // 收集全局watcher
   setGlobalWatcher(obj) {
-    if (!utils.isExistSameId(this.globalWatchers, obj.id)) this.globalWatchers.push(obj);
+    if (!isExistSameId(this.globalWatchers, obj.id)) this.globalWatchers.push(obj);
   }
 
   // 收集响应式数据
   onReactive(key, obj) {
     if (!this.reactiveBus[key]) this.reactiveBus[key] = new Array();
-    if (!utils.isExistSameId(this.reactiveBus[key], obj.id)) this.reactiveBus[key].push(obj);
+    if (!isExistSameId(this.reactiveBus[key], obj.id)) this.reactiveBus[key].push(obj);
   }
 
   // 收集自定义事件 
   onEvent(key, obj, watcherId) {
     if (!this.eventBus[key]) this.eventBus[key] = new Array();
-    if (utils.isExistSameId(this.eventBus[key], watcherId)) {
+    if (isExistSameId(this.eventBus[key], watcherId)) {
       console.warn(`自定义事件 '${key}' 无法重复添加，请尽快调整`);
     } else {
       this.eventBus[key].push(this.toEventObj(watcherId, obj));
@@ -57,15 +57,15 @@ export default class Observer {
   // 解绑自定义事件
   off(key, watcherId) {
     if (!this.eventBus[key]) return;
-    this.eventBus[key] = utils.removeById(this.eventBus[key], watcherId);
-    utils.removeEmptyArr(this.eventBus, key);
+    this.eventBus[key] = removeById(this.eventBus[key], watcherId);
+    removeEmptyArr(this.eventBus, key);
   }
 
   // 移除reactiveBus
   removeReactive(watcherKeys, id) {
     watcherKeys.forEach(key => {
-      this.reactiveBus[key] = utils.removeById(this.reactiveBus[key], id);
-      utils.removeEmptyArr(this.reactiveBus, key);
+      this.reactiveBus[key] = removeById(this.reactiveBus[key], id);
+      removeEmptyArr(this.reactiveBus, key);
     });
   }
 
@@ -73,22 +73,22 @@ export default class Observer {
   removeEvent(id) {
     const eventKeys = Object.keys(this.eventBus);
     eventKeys.forEach(key => {
-      this.eventBus[key] = utils.removeById(this.eventBus[key], id);
-      utils.removeEmptyArr(this.eventBus, key);
+      this.eventBus[key] = removeById(this.eventBus[key], id);
+      removeEmptyArr(this.eventBus, key);
     });
   }
 
   // 移除全局watcher
   removeWatcher(id) {
-    this.globalWatchers = utils.removeById(this.globalWatchers, id);
+    this.globalWatchers = removeById(this.globalWatchers, id);
   }
 
   // 触发响应式数据更新
   emitReactive(key, value) {
-    if (!utils.hasKeyByObj(this.reactiveBus, key)) return;
+    if (!hasKeyByObj(this.reactiveBus, key)) return;
     const mergeKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
     this.reactiveBus[mergeKey].forEach(obj => {
-      if (obj.update && utils.isFunction(obj.update)) obj.update(key, value);
+      if (obj.update && isFunction(obj.update)) obj.update(key, value);
     });
   }
 
@@ -96,7 +96,9 @@ export default class Observer {
   emitEvent(key, value) {
     if (!this.eventBus[key]) return;
     this.eventBus[key].forEach(obj => {
-      if (obj.callback && utils.isFunction(obj.callback)) obj.callback(value);
+      if (obj.callback && isFunction(obj.callback)) obj.callback(value);
     });
   }
 }
+
+module.exports = Observer;
