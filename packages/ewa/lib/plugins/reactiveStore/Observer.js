@@ -6,18 +6,27 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var _require = require('./utils.js'),
-    isExistSameId = _require.isExistSameId,
-    removeEmptyArr = _require.removeEmptyArr,
-    removeById = _require.removeById,
-    hasKeyByObj = _require.hasKeyByObj,
-    isFunction = _require.isFunction;
+var isFunction = require('lodash.isFunction');
+
+var get = require('lodash.get');
+
+var set = require('lodash.set');
+
+var has = require('lodash.has');
+
+var isExistSameId = require('../../utils/isExistSameId');
+
+var removeEmptyArr = require('../../utils/removeEmptyArr');
+
+var removeById = require('../../utils/removeById');
 
 var Observer = /*#__PURE__*/function () {
   function Observer() {
     _classCallCheck(this, Observer);
 
-    // 响应式对象集合
+    // 初始化响应式对象
+    this.reactiveObj = new Object(); // 响应式对象集合
+
     this.reactiveBus = new Object(); // 自定义事件集合
 
     this.eventBus = new Object(); // 全局watcher集合
@@ -79,7 +88,7 @@ var Observer = /*#__PURE__*/function () {
   }, {
     key: "off",
     value: function off(key, watcherId) {
-      if (!this.eventBus[key]) return;
+      if (!has(this.eventBus, key)) return;
       this.eventBus[key] = removeById(this.eventBus[key], watcherId);
       removeEmptyArr(this.eventBus, key);
     } // 移除reactiveBus
@@ -116,8 +125,8 @@ var Observer = /*#__PURE__*/function () {
   }, {
     key: "emitReactive",
     value: function emitReactive(key, value) {
-      if (!hasKeyByObj(this.reactiveBus, key)) return;
       var mergeKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
+      if (!has(this.reactiveBus, mergeKey)) return;
       this.reactiveBus[mergeKey].forEach(function (obj) {
         if (obj.update && isFunction(obj.update)) obj.update(key, value);
       });
@@ -126,10 +135,30 @@ var Observer = /*#__PURE__*/function () {
   }, {
     key: "emitEvent",
     value: function emitEvent(key, value) {
-      if (!this.eventBus[key]) return;
+      if (!has(this.eventBus, key)) return;
       this.eventBus[key].forEach(function (obj) {
         if (obj.callback && isFunction(obj.callback)) obj.callback(value);
       });
+    } // 手动更新
+
+  }, {
+    key: "handleUpdate",
+    value: function handleUpdate(key, value) {
+      // key在reactiveObj中 更新reactiveObj
+      if (has(this.reactiveObj, key)) {
+        if (get(this.reactiveObj, key) !== value) {
+          set(this.reactiveObj, key, value);
+        } else {
+          trigger(key, value);
+        }
+      } else {
+        // key不在reactiveObj中 手动更新所有watcher中的$data
+        obInstance.globalWatchers.forEach(function (watcher) {
+          if (has(watcher.$data, key)) {
+            watcher.update(key, value);
+          }
+        });
+      }
     }
   }], [{
     key: "getInstance",

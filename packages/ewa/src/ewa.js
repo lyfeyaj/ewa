@@ -1,15 +1,13 @@
 
 const wxPromisify = require('./plugins/wxPromisify');
 const enableState = require('./plugins/enableState');
+const createStore = require('./plugins/reactiveStore');
 const mixin = require('./mixins/mixin');
-const watcherInstall = require('./observer/install');
-const { reactive } = require('./observer/reactive');
 
 const ewa = {
   mixin,
   enableState,
-  watcherInstall,
-  reactive
+  createStore
 };
 
 wxPromisify(ewa);

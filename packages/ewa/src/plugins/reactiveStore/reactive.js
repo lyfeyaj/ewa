@@ -1,18 +1,44 @@
-const get = require('lodash.get');
-const set = require('lodash.set');
-const { isObject, hasKeyByObj } = require('./utils');
+const isObject = require('lodash.isobject');
+const isPlainObject = require('lodash.isPlainObject');
+const initStore = require('./init');
 const Observer = require('./Observer');
 const obInstance = Observer.getInstance();
 
+/* 
+  使obj响应式化，即 obj修改 => 全局data(同字段)更新
+
+  支持默认修改:     
+    obj.a = 'xxx'
+  支持属性嵌套修改:
+    obj.a.b.c = 'yyy'
+  支持数组下标修改:   
+    obj.a[3] = 'zzz'
+    obj.a.3 = 'zzz'
+*/
+let hasStore = false;
+// 创建全局store对象
+function createStore (obj) {
+  if (hasStore) return;
+  hasStore = true;
+  initStore();
+  if (isPlainObject(obj)) {
+    obInstance.reactiveObj = obj;
+    reactive(obj);
+    return obj;
+  } else {
+    console.warn(`${arguments.callee.name}方法只能接收纯对象，请尽快调整`);
+  }
+}
+
+// 遍历对象使其响应式化
 function reactive (obj, key) {
   const keys = Object.keys(obj);
   for (let i = 0; i < keys.length; i++) {
     defineReactive(obj, keys[i], key);
   }
-  return obj;
 }
 
-// 对象响应式化
+// 劫持属性
 function defineReactive(obj, key, path) {
   const property = Object.getOwnPropertyDescriptor(obj, key);
   if (property && property.configurable === false) return;
@@ -50,39 +76,4 @@ function trigger(key, value) {
   obInstance.emitReactive(key, value);
 }
 
-// 手动更新
-function handleUpdate(key, value) {
-  const { globalData } = getApp();
-  // key在globalData中 更新globalData
-  if (hasKeyByObj(globalData, key)) {
-    if (get(globalData, key) !== value) {
-      set(globalData, key, value);
-    } else {
-      trigger(key, value);
-    }
-  } else {
-    // key不在globalData中 手动更新所有watcher中的$data
-    obInstance.globalWatchers.forEach(watcher => {
-      if (hasKeyByObj(watcher.$data, key)) {
-        watcher.update(key, value);
-      }
-    });
-  }
-}
-
-module.exports = {
-  reactive,
-  handleUpdate
-};
-
-/* 
-  使globalData响应式化，即 globalData修改 => 全局data(同字段)更新
-
-  支持默认修改:     
-    App().globalData.a = 'xxx'
-  支持属性嵌套修改:
-    App().globalData.a.b.c = 'yyy'
-  支持数组下标修改:   
-    App().globalData.a[3] = 'zzz'
-    App().globalData.a.3 = 'zzz'
-*/
+module.exports = createStore;

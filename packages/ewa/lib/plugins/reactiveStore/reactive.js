@@ -1,16 +1,42 @@
 "use strict";
 
-var get = require('lodash.get');
+var isObject = require('lodash.isobject');
 
-var set = require('lodash.set');
+var isPlainObject = require('lodash.isPlainObject');
 
-var _require = require('./utils'),
-    isObject = _require.isObject,
-    hasKeyByObj = _require.hasKeyByObj;
+var initStore = require('./init');
 
 var Observer = require('./Observer');
 
 var obInstance = Observer.getInstance();
+/* 
+  使obj响应式化，即 obj修改 => 全局data(同字段)更新
+
+  支持默认修改:     
+    obj.a = 'xxx'
+  支持属性嵌套修改:
+    obj.a.b.c = 'yyy'
+  支持数组下标修改:   
+    obj.a[3] = 'zzz'
+    obj.a.3 = 'zzz'
+*/
+
+var hasStore = false; // 创建全局store对象
+
+function createStore(obj) {
+  if (hasStore) return;
+  hasStore = true;
+  initStore();
+
+  if (isPlainObject(obj)) {
+    obInstance.reactiveObj = obj;
+    reactive(obj);
+    return obj;
+  } else {
+    console.warn("".concat(arguments.callee.name, "\u65B9\u6CD5\u53EA\u80FD\u63A5\u6536\u7EAF\u5BF9\u8C61\uFF0C\u8BF7\u5C3D\u5FEB\u8C03\u6574"));
+  }
+} // 遍历对象使其响应式化
+
 
 function reactive(obj, key) {
   var keys = Object.keys(obj);
@@ -18,9 +44,7 @@ function reactive(obj, key) {
   for (var i = 0; i < keys.length; i++) {
     defineReactive(obj, keys[i], key);
   }
-
-  return obj;
-} // 对象响应式化
+} // 劫持属性
 
 
 function defineReactive(obj, key, path) {
@@ -59,42 +83,6 @@ function defineReactive(obj, key, path) {
 
 function trigger(key, value) {
   obInstance.emitReactive(key, value);
-} // 手动更新
-
-
-function handleUpdate(key, value) {
-  var _getApp = getApp(),
-      globalData = _getApp.globalData; // key在globalData中 更新globalData
-
-
-  if (hasKeyByObj(globalData, key)) {
-    if (get(globalData, key) !== value) {
-      set(globalData, key, value);
-    } else {
-      trigger(key, value);
-    }
-  } else {
-    // key不在globalData中 手动更新所有watcher中的$data
-    obInstance.globalWatchers.forEach(function (watcher) {
-      if (hasKeyByObj(watcher.$data, key)) {
-        watcher.update(key, value);
-      }
-    });
-  }
 }
 
-module.exports = {
-  reactive: reactive,
-  handleUpdate: handleUpdate
-};
-/* 
-  使globalData响应式化，即 globalData修改 => 全局data(同字段)更新
-
-  支持默认修改:     
-    App().globalData.a = 'xxx'
-  支持属性嵌套修改:
-    App().globalData.a.b.c = 'yyy'
-  支持数组下标修改:   
-    App().globalData.a[3] = 'zzz'
-    App().globalData.a.3 = 'zzz'
-*/
+module.exports = createStore;

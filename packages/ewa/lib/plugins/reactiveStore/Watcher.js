@@ -8,8 +8,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var _require = require('./utils'),
-    isFunction = _require.isFunction;
+var isFunction = require('lodash.isFunction');
+
+var cloneDeep = require('lodash.clonedeep');
 
 var Observer = require('./Observer');
 
@@ -22,7 +23,7 @@ var Watcher = /*#__PURE__*/function () {
 
     var argsData = arguments[0] ? arguments[0] : {}; // 备份data数据
 
-    this.$data = JSON.parse(JSON.stringify(argsData)); // 更新函数
+    this.$data = cloneDeep(argsData); // 更新函数
 
     this.updateFn = arguments[1] ? arguments[1] : {}; // watcherId
 
@@ -41,16 +42,14 @@ var Watcher = /*#__PURE__*/function () {
     key: "initReactiveData",
     value: function initReactiveData() {
       var props = Object.keys(this.$data);
-
-      var _getApp = getApp(),
-          globalData = _getApp.globalData;
+      var reactiveObj = obInstance.reactiveObj;
 
       for (var i = 0; i < props.length; i++) {
         var prop = props[i];
 
-        if (prop in globalData) {
-          this.reactiveData[prop] = globalData[prop];
-          this.update(prop, globalData[prop]);
+        if (prop in reactiveObj) {
+          this.reactiveData[prop] = reactiveObj[prop];
+          this.update(prop, reactiveObj[prop]);
         }
       }
     } // 添加订阅

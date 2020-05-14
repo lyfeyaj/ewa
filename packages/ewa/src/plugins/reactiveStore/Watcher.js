@@ -1,4 +1,5 @@
-const { isFunction } = require('./utils');
+const isFunction = require('lodash.isFunction');
+const cloneDeep = require('lodash.clonedeep');
 const Observer = require('./Observer');
 const obInstance = Observer.getInstance();
 
@@ -8,7 +9,7 @@ class Watcher {
   constructor() {
     const argsData = arguments[0] ? arguments[0] : {};
     // 备份data数据
-    this.$data = JSON.parse(JSON.stringify(argsData));
+    this.$data = cloneDeep(argsData);
     // 更新函数
     this.updateFn = arguments[1] ? arguments[1] : {};
     // watcherId
@@ -25,12 +26,12 @@ class Watcher {
   // 初始化数据并首次更新
   initReactiveData() {
     const props = Object.keys(this.$data);
-    const { globalData } = getApp();
+    const { reactiveObj } = obInstance;
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
-      if (prop in globalData) {
-        this.reactiveData[prop] = globalData[prop];
-        this.update(prop, globalData[prop]);
+      if (prop in reactiveObj) {
+        this.reactiveData[prop] = reactiveObj[prop];
+        this.update(prop, reactiveObj[prop]);
       }
     }
   }

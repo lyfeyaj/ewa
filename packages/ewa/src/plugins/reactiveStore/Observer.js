@@ -1,7 +1,15 @@
-const { isExistSameId, removeEmptyArr, removeById, hasKeyByObj, isFunction } = require('./utils.js');
+const isFunction = require('lodash.isFunction');
+const get = require('lodash.get');
+const set = require('lodash.set');
+const has = require('lodash.has');
+const isExistSameId = require('../../utils/isExistSameId');
+const removeEmptyArr = require('../../utils/removeEmptyArr');
+const removeById = require('../../utils/removeById');
 
 class Observer {
   constructor() {
+    // 初始化响应式对象
+    this.reactiveObj = new Object();
     // 响应式对象集合
     this.reactiveBus = new Object();
     // 自定义事件集合
@@ -56,7 +64,7 @@ class Observer {
 
   // 解绑自定义事件
   off(key, watcherId) {
-    if (!this.eventBus[key]) return;
+    if (!has(this.eventBus, key)) return;
     this.eventBus[key] = removeById(this.eventBus[key], watcherId);
     removeEmptyArr(this.eventBus, key);
   }
@@ -85,8 +93,8 @@ class Observer {
 
   // 触发响应式数据更新
   emitReactive(key, value) {
-    if (!hasKeyByObj(this.reactiveBus, key)) return;
     const mergeKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
+    if (!has(this.reactiveBus, mergeKey)) return;
     this.reactiveBus[mergeKey].forEach(obj => {
       if (obj.update && isFunction(obj.update)) obj.update(key, value);
     });
@@ -94,10 +102,29 @@ class Observer {
 
   // 触发自定义事件更新
   emitEvent(key, value) {
-    if (!this.eventBus[key]) return;
+    if (!has(this.eventBus, key)) return;
     this.eventBus[key].forEach(obj => {
       if (obj.callback && isFunction(obj.callback)) obj.callback(value);
     });
+  }
+
+  // 手动更新
+  handleUpdate(key, value) {
+    // key在reactiveObj中 更新reactiveObj
+    if (has(this.reactiveObj, key)) {
+      if (get(this.reactiveObj, key) !== value) {
+        set(this.reactiveObj, key, value);
+      } else {
+        trigger(key, value);
+      }
+    } else {
+      // key不在reactiveObj中 手动更新所有watcher中的$data
+      obInstance.globalWatchers.forEach(watcher => {
+        if (has(watcher.$data, key)) {
+          watcher.update(key, value);
+        }
+      });
+    }
   }
 }
 
