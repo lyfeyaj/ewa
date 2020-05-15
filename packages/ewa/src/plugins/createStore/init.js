@@ -28,12 +28,7 @@ function initStore() {
         return _onUnload.apply(this, arguments);
       };
       // 注入内置函数
-      const store = injectFuncStore();
-      obj.$set = store.set;
-      obj.$on = store.on;
-      obj.$emit = store.emit;
-      obj.$off = store.off;
-      obj.$once = store.once;
+      injectStoreMethods(obj);
       
       return prePage(obj);
     };
@@ -61,12 +56,7 @@ function initStore() {
         return _detached.apply(this, arguments);
       };
       // 注入内置函数
-      const store = injectFuncStore();
-      obj.methods.$set = store.set;
-      obj.methods.$on = store.on;
-      obj.methods.$emit = store.emit;
-      obj.methods.$off = store.off;
-      obj.methods.$once = store.once;
+      injectStoreMethods(obj.methods);
 
       return preComponent(obj);
     };
@@ -75,36 +65,28 @@ function initStore() {
   }
 }
 
-// 注入接口仓库
-const injectFuncStore = () => {
+// 注入接口方法
+const injectStoreMethods = obj => {
   // 手动更新全局data
-  function set(key, value) { 
+  obj.$set = function(key, value) { 
     obInstance.handleUpdate(key, value);
-  }
-  // 添加注册事件函数
-  function on(key, callback) {
-    obInstance.onEvent(key, callback, this._watcher.id);
-  }
-  // 添加通知更新函数
-  function emit(key, obj) { 
-    obInstance.emitEvent(key, obj);
-  }
-  // 添加解绑事件函数
-  function off(key) { 
-    obInstance.off(key, this._watcher.id);
-  }
-  // 添加执行一次事件函数
-  function once(key, callback) { 
-    obInstance.once(key, callback, this._watcher.id);
-  }
-  const funcStore = {
-    set,
-    on,
-    emit,
-    off,
-    once
   };
-  return funcStore;
+  // 添加注册事件函数
+  obj.$on = function(key, callback) {
+    obInstance.onEvent(key, callback, this._watcher.id);
+  };
+  // 添加通知更新函数
+  obj.$emit = function(key, obj) { 
+    obInstance.emitEvent(key, obj);
+  };
+  // 添加解绑事件函数
+  obj.$off = function(key) { 
+    obInstance.off(key, this._watcher.id);
+  };
+  // 添加执行一次事件函数
+  obj.$once = function(key, callback) { 
+    obInstance.once(key, callback, this._watcher.id);
+  };
 };
 
 module.exports = initStore;

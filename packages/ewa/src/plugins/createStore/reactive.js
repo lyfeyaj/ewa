@@ -1,5 +1,5 @@
 const isObject = require('lodash.isobject');
-const isPlainObject = require('lodash.isPlainObject');
+const isPlainObject = require('lodash.isplainobject');
 const initStore = require('./init');
 const Observer = require('./Observer');
 const obInstance = Observer.getInstance();
@@ -26,7 +26,7 @@ function createStore (obj) {
     reactive(obj);
     return obj;
   } else {
-    console.warn(`${arguments.callee.name}方法只能接收纯对象，请尽快调整`);
+    if (console && console.warn) console.warn('createStore方法只能接收纯对象，请尽快调整');
   }
 }
 
@@ -76,4 +76,7 @@ function trigger(key, value) {
   obInstance.emitReactive(key, value);
 }
 
-module.exports = createStore;
+module.exports = { 
+  createStore,
+  trigger
+};

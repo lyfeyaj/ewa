@@ -1,4 +1,4 @@
-const isFunction = require('lodash.isFunction');
+const isFunction = require('lodash.isfunction');
 const cloneDeep = require('lodash.clonedeep');
 const Observer = require('./Observer');
 const obInstance = Observer.getInstance();

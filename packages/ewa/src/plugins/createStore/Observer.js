@@ -1,7 +1,8 @@
-const isFunction = require('lodash.isFunction');
+const isFunction = require('lodash.isfunction');
 const get = require('lodash.get');
 const set = require('lodash.set');
 const has = require('lodash.has');
+const { trigger } = require('./reactive');
 const isExistSameId = require('../../utils/isExistSameId');
 const removeEmptyArr = require('../../utils/removeEmptyArr');
 const removeById = require('../../utils/removeById');
@@ -41,7 +42,7 @@ class Observer {
   onEvent(key, obj, watcherId) {
     if (!this.eventBus[key]) this.eventBus[key] = new Array();
     if (isExistSameId(this.eventBus[key], watcherId)) {
-      console.warn(`自定义事件 '${key}' 无法重复添加，请尽快调整`);
+      if (console && console.warn) console.warn(`自定义事件 '${key}' 无法重复添加，请尽快调整`);
     } else {
       this.eventBus[key].push(this.toEventObj(watcherId, obj));
     }
@@ -119,7 +120,7 @@ class Observer {
       }
     } else {
       // key不在reactiveObj中 手动更新所有watcher中的$data
-      obInstance.globalWatchers.forEach(watcher => {
+      this.globalWatchers.forEach(watcher => {
         if (has(watcher.$data, key)) {
           watcher.update(key, value);
         }
