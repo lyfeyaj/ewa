@@ -3,20 +3,17 @@ const get = require('lodash.get');
 const set = require('lodash.set');
 const has = require('lodash.has');
 const { trigger } = require('./reactive');
-const isExistSameId = require('../../utils/isExistSameId');
-const removeEmptyArr = require('../../utils/removeEmptyArr');
-const removeById = require('../../utils/removeById');
 
 class Observer {
   constructor() {
     // 初始化响应式对象
-    this.reactiveObj = new Object();
+    this.reactiveObj = {};
     // 响应式对象集合
-    this.reactiveBus = new Object();
+    this.reactiveBus = {};
     // 自定义事件集合
-    this.eventBus = new Object();
+    this.eventBus = {};
     // 全局watcher集合
-    this.globalWatchers = new Array();
+    this.globalWatchers = [];
   }
 
   // 获取唯一实例
@@ -29,19 +26,19 @@ class Observer {
   
   // 收集全局watcher
   setGlobalWatcher(obj) {
-    if (!isExistSameId(this.globalWatchers, obj.id)) this.globalWatchers.push(obj);
+    if (!this.isExistSameId(this.globalWatchers, obj.id)) this.globalWatchers.push(obj);
   }
 
   // 收集响应式数据
   onReactive(key, obj) {
-    if (!this.reactiveBus[key]) this.reactiveBus[key] = new Array();
-    if (!isExistSameId(this.reactiveBus[key], obj.id)) this.reactiveBus[key].push(obj);
+    if (!this.reactiveBus[key]) this.reactiveBus[key] = [];
+    if (!this.isExistSameId(this.reactiveBus[key], obj.id)) this.reactiveBus[key].push(obj);
   }
 
   // 收集自定义事件 
   onEvent(key, obj, watcherId) {
-    if (!this.eventBus[key]) this.eventBus[key] = new Array();
-    if (isExistSameId(this.eventBus[key], watcherId)) {
+    if (!this.eventBus[key]) this.eventBus[key] = [];
+    if (this.isExistSameId(this.eventBus[key], watcherId)) {
       if (console && console.warn) console.warn(`自定义事件 '${key}' 无法重复添加，请尽快调整`);
     } else {
       this.eventBus[key].push(this.toEventObj(watcherId, obj));
@@ -66,15 +63,15 @@ class Observer {
   // 解绑自定义事件
   off(key, watcherId) {
     if (!has(this.eventBus, key)) return;
-    this.eventBus[key] = removeById(this.eventBus[key], watcherId);
-    removeEmptyArr(this.eventBus, key);
+    this.eventBus[key] = this.removeById(this.eventBus[key], watcherId);
+    this.removeEmptyArr(this.eventBus, key);
   }
 
   // 移除reactiveBus
   removeReactive(watcherKeys, id) {
     watcherKeys.forEach(key => {
-      this.reactiveBus[key] = removeById(this.reactiveBus[key], id);
-      removeEmptyArr(this.reactiveBus, key);
+      this.reactiveBus[key] = this.removeById(this.reactiveBus[key], id);
+      this.removeEmptyArr(this.reactiveBus, key);
     });
   }
 
@@ -82,14 +79,14 @@ class Observer {
   removeEvent(id) {
     const eventKeys = Object.keys(this.eventBus);
     eventKeys.forEach(key => {
-      this.eventBus[key] = removeById(this.eventBus[key], id);
-      removeEmptyArr(this.eventBus, key);
+      this.eventBus[key] = this.removeById(this.eventBus[key], id);
+      this.removeEmptyArr(this.eventBus, key);
     });
   }
 
   // 移除全局watcher
   removeWatcher(id) {
-    this.globalWatchers = removeById(this.globalWatchers, id);
+    this.globalWatchers = this.removeById(this.globalWatchers, id);
   }
 
   // 触发响应式数据更新
@@ -97,7 +94,7 @@ class Observer {
     const mergeKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
     if (!has(this.reactiveBus, mergeKey)) return;
     this.reactiveBus[mergeKey].forEach(obj => {
-      if (obj.update && isFunction(obj.update)) obj.update(key, value);
+      if (isFunction(obj.update)) obj.update(key, value);
     });
   }
 
@@ -105,7 +102,7 @@ class Observer {
   emitEvent(key, value) {
     if (!has(this.eventBus, key)) return;
     this.eventBus[key].forEach(obj => {
-      if (obj.callback && isFunction(obj.callback)) obj.callback(value);
+      if (isFunction(obj.callback)) obj.callback(value);
     });
   }
 
@@ -126,6 +123,28 @@ class Observer {
         }
       });
     }
+  }
+
+  // 判断数组中是否存在相同id的元素
+  isExistSameId(arr, id) {
+    if (Array.isArray(arr) && arr.length) {
+      return arr.findIndex(item => item.id === id) > -1;
+    }
+    return false;
+  }
+
+  // 根据id删除数组中元素
+  removeById(arr, id) {
+    if (Array.isArray(arr) && arr.length) {
+      return arr.filter(item => item.id !== id);
+    }
+    return arr;
+  }
+  
+  // 删除对象中空数组的属性
+  removeEmptyArr(obj, key) {
+    if (!obj || !Array.isArray(obj[key])) return;
+    if (obj[key].length === 0) delete obj[key];
   }
 }
 

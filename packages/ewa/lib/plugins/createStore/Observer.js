@@ -17,24 +17,18 @@ var has = require('lodash.has');
 var _require = require('./reactive'),
     trigger = _require.trigger;
 
-var isExistSameId = require('../../utils/isExistSameId');
-
-var removeEmptyArr = require('../../utils/removeEmptyArr');
-
-var removeById = require('../../utils/removeById');
-
 var Observer = /*#__PURE__*/function () {
   function Observer() {
     _classCallCheck(this, Observer);
 
     // 初始化响应式对象
-    this.reactiveObj = new Object(); // 响应式对象集合
+    this.reactiveObj = {}; // 响应式对象集合
 
-    this.reactiveBus = new Object(); // 自定义事件集合
+    this.reactiveBus = {}; // 自定义事件集合
 
-    this.eventBus = new Object(); // 全局watcher集合
+    this.eventBus = {}; // 全局watcher集合
 
-    this.globalWatchers = new Array();
+    this.globalWatchers = [];
   } // 获取唯一实例
 
 
@@ -42,22 +36,22 @@ var Observer = /*#__PURE__*/function () {
     key: "setGlobalWatcher",
     // 收集全局watcher
     value: function setGlobalWatcher(obj) {
-      if (!isExistSameId(this.globalWatchers, obj.id)) this.globalWatchers.push(obj);
+      if (!this.isExistSameId(this.globalWatchers, obj.id)) this.globalWatchers.push(obj);
     } // 收集响应式数据
 
   }, {
     key: "onReactive",
     value: function onReactive(key, obj) {
-      if (!this.reactiveBus[key]) this.reactiveBus[key] = new Array();
-      if (!isExistSameId(this.reactiveBus[key], obj.id)) this.reactiveBus[key].push(obj);
+      if (!this.reactiveBus[key]) this.reactiveBus[key] = [];
+      if (!this.isExistSameId(this.reactiveBus[key], obj.id)) this.reactiveBus[key].push(obj);
     } // 收集自定义事件 
 
   }, {
     key: "onEvent",
     value: function onEvent(key, obj, watcherId) {
-      if (!this.eventBus[key]) this.eventBus[key] = new Array();
+      if (!this.eventBus[key]) this.eventBus[key] = [];
 
-      if (isExistSameId(this.eventBus[key], watcherId)) {
+      if (this.isExistSameId(this.eventBus[key], watcherId)) {
         if (console && console.warn) console.warn("\u81EA\u5B9A\u4E49\u4E8B\u4EF6 '".concat(key, "' \u65E0\u6CD5\u91CD\u590D\u6DFB\u52A0\uFF0C\u8BF7\u5C3D\u5FEB\u8C03\u6574"));
       } else {
         this.eventBus[key].push(this.toEventObj(watcherId, obj));
@@ -92,8 +86,8 @@ var Observer = /*#__PURE__*/function () {
     key: "off",
     value: function off(key, watcherId) {
       if (!has(this.eventBus, key)) return;
-      this.eventBus[key] = removeById(this.eventBus[key], watcherId);
-      removeEmptyArr(this.eventBus, key);
+      this.eventBus[key] = this.removeById(this.eventBus[key], watcherId);
+      this.removeEmptyArr(this.eventBus, key);
     } // 移除reactiveBus
 
   }, {
@@ -102,8 +96,9 @@ var Observer = /*#__PURE__*/function () {
       var _this2 = this;
 
       watcherKeys.forEach(function (key) {
-        _this2.reactiveBus[key] = removeById(_this2.reactiveBus[key], id);
-        removeEmptyArr(_this2.reactiveBus, key);
+        _this2.reactiveBus[key] = _this2.removeById(_this2.reactiveBus[key], id);
+
+        _this2.removeEmptyArr(_this2.reactiveBus, key);
       });
     } // 移除eventBus
 
@@ -114,15 +109,16 @@ var Observer = /*#__PURE__*/function () {
 
       var eventKeys = Object.keys(this.eventBus);
       eventKeys.forEach(function (key) {
-        _this3.eventBus[key] = removeById(_this3.eventBus[key], id);
-        removeEmptyArr(_this3.eventBus, key);
+        _this3.eventBus[key] = _this3.removeById(_this3.eventBus[key], id);
+
+        _this3.removeEmptyArr(_this3.eventBus, key);
       });
     } // 移除全局watcher
 
   }, {
     key: "removeWatcher",
     value: function removeWatcher(id) {
-      this.globalWatchers = removeById(this.globalWatchers, id);
+      this.globalWatchers = this.removeById(this.globalWatchers, id);
     } // 触发响应式数据更新
 
   }, {
@@ -131,7 +127,7 @@ var Observer = /*#__PURE__*/function () {
       var mergeKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
       if (!has(this.reactiveBus, mergeKey)) return;
       this.reactiveBus[mergeKey].forEach(function (obj) {
-        if (obj.update && isFunction(obj.update)) obj.update(key, value);
+        if (isFunction(obj.update)) obj.update(key, value);
       });
     } // 触发自定义事件更新
 
@@ -140,7 +136,7 @@ var Observer = /*#__PURE__*/function () {
     value: function emitEvent(key, value) {
       if (!has(this.eventBus, key)) return;
       this.eventBus[key].forEach(function (obj) {
-        if (obj.callback && isFunction(obj.callback)) obj.callback(value);
+        if (isFunction(obj.callback)) obj.callback(value);
       });
     } // 手动更新
 
@@ -162,6 +158,37 @@ var Observer = /*#__PURE__*/function () {
           }
         });
       }
+    } // 判断数组中是否存在相同id的元素
+
+  }, {
+    key: "isExistSameId",
+    value: function isExistSameId(arr, id) {
+      if (Array.isArray(arr) && arr.length) {
+        return arr.findIndex(function (item) {
+          return item.id === id;
+        }) > -1;
+      }
+
+      return false;
+    } // 根据id删除数组中元素
+
+  }, {
+    key: "removeById",
+    value: function removeById(arr, id) {
+      if (Array.isArray(arr) && arr.length) {
+        return arr.filter(function (item) {
+          return item.id !== id;
+        });
+      }
+
+      return arr;
+    } // 删除对象中空数组的属性
+
+  }, {
+    key: "removeEmptyArr",
+    value: function removeEmptyArr(obj, key) {
+      if (!obj || !Array.isArray(obj[key])) return;
+      if (obj[key].length === 0) delete obj[key];
     }
   }], [{
     key: "getInstance",
