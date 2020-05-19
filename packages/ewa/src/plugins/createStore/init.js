@@ -8,7 +8,7 @@ function noop() {}
 function initStore() {
   try {
     const prePage = Page;
-    Page = function() {
+    Page = function () {
       const obj = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       const _onLoad = obj.onLoad || noop;
       const _onUnload = obj.onUnload || noop;
@@ -29,12 +29,12 @@ function initStore() {
       };
       // 注入内置函数
       injectStoreMethods(obj);
-      
+
       return prePage(obj);
     };
 
     const preComponent = Component;
-    Component = function() {
+    Component = function () {
       const obj = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       obj.lifetimes = obj.lifetimes || {};
       obj.methods = obj.methods || {};
@@ -70,23 +70,23 @@ const injectStoreMethods = obj => {
   // 检查方法
   checkExistedMethods(obj, ['$set', '$on', '$emit', '$off', '$once']);
   // 手动更新全局data
-  obj.$set = function(key, value) { 
+  obj.$set = function (key, value) {
     obInstance.handleUpdate(key, value);
   };
   // 添加注册事件函数
-  obj.$on = function(key, callback) {
+  obj.$on = function (key, callback) {
     obInstance.onEvent(key, callback, this.__watcher.id);
   };
   // 添加通知更新函数
-  obj.$emit = function(key, obj) { 
+  obj.$emit = function (key, obj) {
     obInstance.emitEvent(key, obj);
   };
   // 添加解绑事件函数
-  obj.$off = function(key) { 
+  obj.$off = function (key) {
     obInstance.off(key, this.__watcher.id);
   };
   // 添加执行一次事件函数
-  obj.$once = function(key, callback) { 
+  obj.$once = function (key, callback) {
     obInstance.once(key, callback, this.__watcher.id);
   };
 };

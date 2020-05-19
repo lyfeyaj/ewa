@@ -23,7 +23,7 @@ class Observer {
     }
     return this.instance;
   }
-  
+
   // 收集全局watcher
   setGlobalWatcher(obj) {
     if (!this.isExistSameId(this.globalWatchers, obj.id)) this.globalWatchers.push(obj);
@@ -35,7 +35,7 @@ class Observer {
     if (!this.isExistSameId(this.reactiveBus[key], obj.id)) this.reactiveBus[key].push(obj);
   }
 
-  // 收集自定义事件 
+  // 收集自定义事件
   onEvent(key, obj, watcherId) {
     if (!this.eventBus[key]) this.eventBus[key] = [];
     if (this.isExistSameId(this.eventBus[key], watcherId)) {
@@ -57,7 +57,10 @@ class Observer {
 
   // 转为eventBus对象
   toEventObj(id, callback) {
-    return { id, callback };
+    return {
+      id,
+      callback
+    };
   }
 
   // 解绑自定义事件
@@ -140,7 +143,7 @@ class Observer {
     }
     return arr;
   }
-  
+
   // 删除对象中空数组的属性
   removeEmptyArr(obj, key) {
     if (!obj || !Array.isArray(obj[key])) return;

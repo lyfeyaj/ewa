@@ -6,12 +6,11 @@ const obInstance = Observer.getInstance();
 let uid = 0;
 
 class Watcher {
-  constructor() {
-    const argsData = arguments[0] ? arguments[0] : {};
+  constructor(argsData = {}, updateFn) {
     // 备份data数据
     this.$data = cloneDeep(argsData);
     // 更新函数
-    this.updateFn = arguments[1] ? arguments[1] : {};
+    this.updateFn = updateFn;
     // watcherId
     this.id = ++uid;
     // 收集data和globalData的交集作为响应式对象
@@ -26,7 +25,9 @@ class Watcher {
   // 初始化数据并首次更新
   initReactiveData() {
     const props = Object.keys(this.$data);
-    const { reactiveObj } = obInstance;
+    const {
+      reactiveObj
+    } = obInstance;
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
       if (prop in reactiveObj) {
@@ -39,7 +40,7 @@ class Watcher {
   // 添加订阅
   createObserver() {
     const props = Object.keys(this.reactiveData);
-    if (props.length > 0) { 
+    if (props.length > 0) {
       props.forEach(prop => {
         obInstance.onReactive(prop, this);
       });
@@ -57,7 +58,9 @@ class Watcher {
 
   // 更新数据和视图
   update(key, value) {
-    if (isFunction(this.updateFn)) this.updateFn({ [key]: value });
+    if (isFunction(this.updateFn)) this.updateFn({
+      [key]: value
+    });
   }
 }
 

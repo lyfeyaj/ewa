@@ -9,14 +9,14 @@ var initStore = require('./init');
 var Observer = require('./Observer');
 
 var obInstance = Observer.getInstance();
-/* 
+/*
   使obj响应式化，即 obj修改 => 全局data(同字段)更新
 
-  支持默认修改:     
+  支持默认修改:
     obj.a = 'xxx'
   支持属性嵌套修改:
     obj.a.b.c = 'yyy'
-  支持数组下标修改:   
+  支持数组下标修改:
     obj.a[3] = 'zzz'
     obj.a.3 = 'zzz'
 */

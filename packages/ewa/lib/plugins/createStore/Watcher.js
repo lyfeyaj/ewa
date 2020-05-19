@@ -17,15 +17,19 @@ var Observer = require('./Observer');
 var obInstance = Observer.getInstance();
 var uid = 0;
 
-var Watcher = /*#__PURE__*/function () {
+var Watcher =
+/*#__PURE__*/
+function () {
   function Watcher() {
+    var argsData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var updateFn = arguments.length > 1 ? arguments[1] : undefined;
+
     _classCallCheck(this, Watcher);
 
-    var argsData = arguments[0] ? arguments[0] : {}; // 备份data数据
-
+    // 备份data数据
     this.$data = cloneDeep(argsData); // 更新函数
 
-    this.updateFn = arguments[1] ? arguments[1] : {}; // watcherId
+    this.updateFn = updateFn; // watcherId
 
     this.id = ++uid; // 收集data和globalData的交集作为响应式对象
 

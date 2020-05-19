@@ -17,7 +17,9 @@ var has = require('lodash.has');
 var _require = require('./reactive'),
     trigger = _require.trigger;
 
-var Observer = /*#__PURE__*/function () {
+var Observer =
+/*#__PURE__*/
+function () {
   function Observer() {
     _classCallCheck(this, Observer);
 
@@ -44,7 +46,7 @@ var Observer = /*#__PURE__*/function () {
     value: function onReactive(key, obj) {
       if (!this.reactiveBus[key]) this.reactiveBus[key] = [];
       if (!this.isExistSameId(this.reactiveBus[key], obj.id)) this.reactiveBus[key].push(obj);
-    } // 收集自定义事件 
+    } // 收集自定义事件
 
   }, {
     key: "onEvent",

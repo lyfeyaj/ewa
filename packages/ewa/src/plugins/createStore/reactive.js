@@ -4,20 +4,20 @@ const initStore = require('./init');
 const Observer = require('./Observer');
 const obInstance = Observer.getInstance();
 
-/* 
+/*
   使obj响应式化，即 obj修改 => 全局data(同字段)更新
 
-  支持默认修改:     
+  支持默认修改:
     obj.a = 'xxx'
   支持属性嵌套修改:
     obj.a.b.c = 'yyy'
-  支持数组下标修改:   
+  支持数组下标修改:
     obj.a[3] = 'zzz'
     obj.a.3 = 'zzz'
 */
 let hasStore = false;
 // 创建全局store对象
-function createStore (obj) {
+function createStore(obj) {
   if (hasStore) return;
   hasStore = true;
   initStore();
@@ -31,7 +31,7 @@ function createStore (obj) {
 }
 
 // 遍历对象使其响应式化
-function reactive (obj, key) {
+function reactive(obj, key) {
   const keys = Object.keys(obj);
   for (let i = 0; i < keys.length; i++) {
     defineReactive(obj, keys[i], key);
@@ -53,11 +53,11 @@ function defineReactive(obj, key, path) {
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
-    get: function reactiveGetter () {
+    get: function reactiveGetter() {
       const value = getter ? getter.call(obj) : val;
       return value;
     },
-    set: function reactiveSetter (newVal) {
+    set: function reactiveSetter(newVal) {
       const value = getter ? getter.call(obj) : val;
       if (newVal === value || (newVal !== newVal && value !== value)) return;
       if (getter && !setter) return;
@@ -76,7 +76,7 @@ function trigger(key, value) {
   obInstance.emitReactive(key, value);
 }
 
-module.exports = { 
+module.exports = {
   createStore,
   trigger
 };
