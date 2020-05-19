@@ -20,7 +20,7 @@ function deepPick(obj, props = []) {
 }
 
 // 日志打印
-const logger = function (type, name, timeConsumption = 0, changes) {
+const logger = function (type, name, stack = [], timeConsumption = 0, changes) {
   if (!console) return;
   let timeConsumptionMsg = `Diff 耗时: ${timeConsumption}ms`;
   try {
@@ -28,14 +28,75 @@ const logger = function (type, name, timeConsumption = 0, changes) {
       console.group(type, name, '触发更新');
       console.log(timeConsumptionMsg);
       console.log('Diff 结果: ', changes);
+      // 打印调用堆栈
+      if (stack && stack.length) {
+        let _spaces = '';
+        let _stack = stack.reduce((res, item, i) => {
+          if (i === 0) return `${res}\n    ${item}`;
+          _spaces = '    ' + _spaces;
+          return `${res}\n${_spaces}└── ${item}`;
+        }, '调用栈: ')
+        console.log(_stack);
+      }
       console.groupEnd();
     } else {
-      console.log(type, name, timeConsumptionMsg, 'Diff 结果: ', changes);
+      console.log(type, name, stack, timeConsumptionMsg, 'Diff 结果: ', changes);
     }
   } catch (e) {
     // Do nothing
   }
 };
+
+// 打印 Diff 相关 信息
+const printDiffInfo = function(ctx, debug, time, changes) {
+  let timeConsumption = time ? +new Date() - time : 0;
+  let type = ctx.__isPage ? '页面:' : '组件:';
+  let name = ctx.__isPage ? ctx.route : ctx.is;
+  let stack = ctx.__invokeStack || [];
+  if (debug === true || debug === 'all') logger(type, name, stack, timeConsumption, changes);
+  if (debug === 'page' && ctx.__isPage) logger(type, name, stack, timeConsumption, changes);
+  if (debug === 'component' && ctx.__isComponent) logger(type, name, stack, timeConsumption, changes);
+};
+
+// 添加调用堆栈属性
+const addInvokeStackProp = function(ctx) {
+  Object.defineProperty(ctx, '__invokeStack', {
+    get() {
+      if (this.__invokeStack__) return this.__invokeStack__;
+
+      let stack = [];
+
+      if (typeof this.selectOwnerComponent === 'function') {
+        let parent = this.selectOwnerComponent();
+        if (parent) {
+          if (parent.__isComponent) stack = parent.__invokeStack || [];
+          if (parent.__isPage) stack = [parent.route];
+        }
+      }
+
+      this.__invokeStack__ = stack.concat(this.is);
+
+      return this.__invokeStack__;
+    }
+  });
+}
+
+// 检查并警告 Component 中，data 和 properties 属性冲突
+const checkPropertyAndDataConflict = function(ctx, obj) {
+  if (!ctx.__isComponent) return;
+
+  let changedKeys = keys(obj);
+  let conflictKeys = [];
+  for (let i = 0; i < changedKeys.length; i++) {
+    let k = changedKeys[i];
+    if (k in ctx.$$properties) {
+      conflictKeys.push(k);
+    }
+  }
+  if (conflictKeys.length) {
+    console.warn(`组件: ${ctx.is} 中, properties 和 data 存在字段冲突: ${conflictKeys.join('、')}, 请尽快调整`);
+  }
+}
 
 // 开启 state 支持
 function enableState(opts = {}) {
@@ -141,6 +202,9 @@ function enableState(opts = {}) {
     this.__setData = this.setData;
 
     this.setData = (obj, callback) => {
+      // 开启调试
+      if (debug) printDiffInfo(this, debug, null, '手动调用 setData 无法 diff');
+
       // 调用原 setData
       this.__setData(obj, function () {
         // 如果开启自动同步，则在调用 setData 完成后，自动同步所有数据到 state 中
@@ -157,42 +221,19 @@ function enableState(opts = {}) {
     // 初始化状态
     if (!this.$$state) this.initState();
 
-    let time;
-    // 输出 debug 信息
-    if (debug) {
-      // 记录当前时间
-      time = +new Date();
+    // 记录当前时间
+    let time = +new Date();
 
-      // 警告 Component 中，data 和 properties 属性冲突
-      if (this.__isComponent) {
-        let changedKeys = keys(obj);
-        let conflictKeys = [];
-        for (let i = 0; i < changedKeys.length; i++) {
-          let k = changedKeys[i];
-          if (k in this.$$properties) {
-            conflictKeys.push(k);
-          }
-        }
-        if (conflictKeys.length) {
-          console.warn(`组件: ${this.is} 中, properties 和 data 存在字段冲突: ${conflictKeys.join('、')}, 请尽快调整`);
-        }
-      }
-    }
+    // 输出 debug 信息
+    if (debug === 'conflict' || debug === true) checkPropertyAndDataConflict(this, obj);
 
     // 计算变更
     let changes = diffAndMergeChanges(this.$$state, obj);
 
     // 如果有变更，则触发更新
     if (changes) {
-      // 开启调试模式
-      if (debug) {
-        let timeConsumption = +new Date() - time;
-        let type = this.__isPage ? '页面:' : '组件:';
-        if (debug === true) logger(type, this.route || this.is, timeConsumption, changes);
-        if (debug === 'page' && this.__isPage) logger(type, this.route, timeConsumption, changes);
-        if (debug === 'component' && this.__isComponent) logger(type, this.is, timeConsumption, changes);
-      }
-
+      // 开启调试
+      if (debug) printDiffInfo(this, debug, time, changes);
       this.__setData(changes, callback);
     } else if (typeof callback === 'function') {
       callback();
@@ -237,6 +278,9 @@ function enableState(opts = {}) {
 
           // 标识组件
           this.__isComponent = true;
+
+          // 打印调用堆栈
+          if (debug) addInvokeStackProp(this);
 
           // 保存属性设置
           this.$$properties = properties;

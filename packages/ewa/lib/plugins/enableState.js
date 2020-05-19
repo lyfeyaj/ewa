@@ -29,8 +29,9 @@ function deepPick(obj) {
 
 
 var logger = function logger(type, name) {
-  var timeConsumption = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-  var changes = arguments.length > 3 ? arguments[3] : undefined;
+  var stack = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var timeConsumption = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+  var changes = arguments.length > 4 ? arguments[4] : undefined;
   if (!console) return;
   var timeConsumptionMsg = "Diff \u8017\u65F6: ".concat(timeConsumption, "ms");
 
@@ -38,12 +39,77 @@ var logger = function logger(type, name) {
     if (console.group) {
       console.group(type, name, '触发更新');
       console.log(timeConsumptionMsg);
-      console.log('Diff 结果: ', changes);
+      console.log('Diff 结果: ', changes); // 打印调用堆栈
+
+      if (stack && stack.length) {
+        var _spaces = '';
+
+        var _stack = stack.reduce(function (res, item, i) {
+          if (i === 0) return "".concat(res, "\n    ").concat(item);
+          _spaces = '    ' + _spaces;
+          return "".concat(res, "\n").concat(_spaces, "\u2514\u2500\u2500 ").concat(item);
+        }, '调用栈: ');
+
+        console.log(_stack);
+      }
+
       console.groupEnd();
     } else {
-      console.log(type, name, timeConsumptionMsg, 'Diff 结果: ', changes);
+      console.log(type, name, stack, timeConsumptionMsg, 'Diff 结果: ', changes);
     }
   } catch (e) {// Do nothing
+  }
+}; // 打印 Diff 相关 信息
+
+
+var printDiffInfo = function printDiffInfo(ctx, debug, time, changes) {
+  var timeConsumption = time ? +new Date() - time : 0;
+  var type = ctx.__isPage ? '页面:' : '组件:';
+  var name = ctx.__isPage ? ctx.route : ctx.is;
+  var stack = ctx.__invokeStack || [];
+  if (debug === true || debug === 'all') logger(type, name, stack, timeConsumption, changes);
+  if (debug === 'page' && ctx.__isPage) logger(type, name, stack, timeConsumption, changes);
+  if (debug === 'component' && ctx.__isComponent) logger(type, name, stack, timeConsumption, changes);
+}; // 添加调用堆栈属性
+
+
+var addInvokeStackProp = function addInvokeStackProp(ctx) {
+  Object.defineProperty(ctx, '__invokeStack', {
+    get: function get() {
+      if (this.__invokeStack__) return this.__invokeStack__;
+      var stack = [];
+
+      if (typeof this.selectOwnerComponent === 'function') {
+        var parent = this.selectOwnerComponent();
+
+        if (parent) {
+          if (parent.__isComponent) stack = parent.__invokeStack || [];
+          if (parent.__isPage) stack = [parent.route];
+        }
+      }
+
+      this.__invokeStack__ = stack.concat(this.is);
+      return this.__invokeStack__;
+    }
+  });
+}; // 检查并警告 Component 中，data 和 properties 属性冲突
+
+
+var checkPropertyAndDataConflict = function checkPropertyAndDataConflict(ctx, obj) {
+  if (!ctx.__isComponent) return;
+  var changedKeys = keys(obj);
+  var conflictKeys = [];
+
+  for (var i = 0; i < changedKeys.length; i++) {
+    var k = changedKeys[i];
+
+    if (k in ctx.$$properties) {
+      conflictKeys.push(k);
+    }
+  }
+
+  if (conflictKeys.length) {
+    console.warn("\u7EC4\u4EF6: ".concat(ctx.is, " \u4E2D, properties \u548C data \u5B58\u5728\u5B57\u6BB5\u51B2\u7A81: ").concat(conflictKeys.join('、'), ", \u8BF7\u5C3D\u5FEB\u8C03\u6574"));
   }
 }; // 开启 state 支持
 
@@ -130,7 +196,9 @@ function enableState() {
     this.__setData = this.setData;
 
     this.setData = function (obj, callback) {
-      // 调用原 setData
+      // 开启调试
+      if (debug) printDiffInfo(_this, debug, null, '手动调用 setData 无法 diff'); // 调用原 setData
+
       _this.__setData(obj, function () {
         // 如果开启自动同步，则在调用 setData 完成后，自动同步所有数据到 state 中
         if (autoSync) initState.call(this);
@@ -144,43 +212,17 @@ function enableState() {
 
   function setState(obj, callback) {
     // 初始化状态
-    if (!this.$$state) this.initState();
-    var time; // 输出 debug 信息
+    if (!this.$$state) this.initState(); // 记录当前时间
 
-    if (debug) {
-      // 记录当前时间
-      time = +new Date(); // 警告 Component 中，data 和 properties 属性冲突
+    var time = +new Date(); // 输出 debug 信息
 
-      if (this.__isComponent) {
-        var changedKeys = keys(obj);
-        var conflictKeys = [];
-
-        for (var i = 0; i < changedKeys.length; i++) {
-          var k = changedKeys[i];
-
-          if (k in this.$$properties) {
-            conflictKeys.push(k);
-          }
-        }
-
-        if (conflictKeys.length) {
-          console.warn("\u7EC4\u4EF6: ".concat(this.is, " \u4E2D, properties \u548C data \u5B58\u5728\u5B57\u6BB5\u51B2\u7A81: ").concat(conflictKeys.join('、'), ", \u8BF7\u5C3D\u5FEB\u8C03\u6574"));
-        }
-      }
-    } // 计算变更
-
+    if (debug === 'conflict' || debug === true) checkPropertyAndDataConflict(this, obj); // 计算变更
 
     var changes = diffAndMergeChanges(this.$$state, obj); // 如果有变更，则触发更新
 
     if (changes) {
-      // 开启调试模式
-      if (debug) {
-        var timeConsumption = +new Date() - time;
-        var type = this.__isPage ? '页面:' : '组件:';
-        if (debug === true) logger(type, this.route || this.is, timeConsumption, changes);
-        if (debug === 'page' && this.__isPage) logger(type, this.route, timeConsumption, changes);
-        if (debug === 'component' && this.__isComponent) logger(type, this.is, timeConsumption, changes);
-      }
+      // 开启调试
+      if (debug) printDiffInfo(this, debug, time, changes);
 
       this.__setData(changes, callback);
     } else if (typeof callback === 'function') {
@@ -231,7 +273,9 @@ function enableState() {
         obj.lifetimes.created = obj.created = function () {
           patchSetData.call(this); // 标识组件
 
-          this.__isComponent = true; // 保存属性设置
+          this.__isComponent = true; // 打印调用堆栈
+
+          if (debug) addInvokeStackProp(this); // 保存属性设置
 
           this.$$properties = properties;
           return _created.apply(this, arguments);
