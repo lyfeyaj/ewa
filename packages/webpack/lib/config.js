@@ -35,7 +35,9 @@ const DEFAULT_COPY_FILE_TYPES = [
   'jpg',
   'gif',
   'svg',
-  'ico'
+  'ico',
+  'webp',
+  'apng'
 ];
 const DEFAULT_COMMON_MODULE_PATTERN = /[\\/](node_modules|utils|vendor)[\\/].+\.js/;
 const DEFAULT_CSS_PARSER = 'sass';

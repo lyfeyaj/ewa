@@ -26,7 +26,9 @@ module.exports = {
     'jpg',
     'gif',
     'svg',
-    'ico'
+    'ico',
+    'webp',
+    'apng'
   ],
 
   // webpack loader 规则
