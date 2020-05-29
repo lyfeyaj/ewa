@@ -1,6 +1,6 @@
 {
   "name": "ewa-cli",
-  "version": "0.4.14",
+  "version": "0.4.15",
   "description": "EWA Command line tool",
   "main": "lib/cli.js",
   "bin": {
