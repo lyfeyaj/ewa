@@ -172,6 +172,7 @@ function makeConfig() {
     require('./rules/image')(ruleOpts),
     require('./rules/wxml')(ruleOpts),
     require('./rules/json')(ruleOpts),
+    require('./rules/wxs')(ruleOpts),
     cssRule
   ]);
 

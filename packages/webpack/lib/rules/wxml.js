@@ -11,7 +11,14 @@ module.exports = function wxmlRule(options = {}) {
     removeComments: false,
     removeAttributeQuotes: false,
     removeEmptyElements: false,
-    keepClosingSlash: false
+    keepClosingSlash: false,
+    ignoreCustomFragments: [
+      /<%[\s\S]*?%>/,
+      /<\?[\s\S]*?\?>/,
+
+      // 忽略 wxs 标签的处理
+      /<wxs[\s\S]*?<\/wxs>/
+    ]
   };
 
   if (!options.IS_DEV) {
@@ -43,7 +50,7 @@ module.exports = function wxmlRule(options = {}) {
   if (options.cache) htmlRules = ['cache-loader'].concat(htmlRules);
 
   return {
-    test: /\.(wxml|wxs)$/i,
+    test: /\.wxml$/i,
     use: ExtractTextPlugin.extract(htmlRules)
   };
 };
