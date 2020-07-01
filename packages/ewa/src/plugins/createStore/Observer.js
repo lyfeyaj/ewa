@@ -2,7 +2,6 @@ const isFunction = require('lodash.isfunction');
 const get = require('lodash.get');
 const set = require('lodash.set');
 const has = require('lodash.has');
-const { trigger } = require('./reactive');
 
 class Observer {
   constructor() {
@@ -116,7 +115,7 @@ class Observer {
       if (get(this.reactiveObj, key) !== value) {
         set(this.reactiveObj, key, value);
       } else {
-        trigger(key, value);
+        this.emitReactive(key, value);
       }
     } else {
       // key不在reactiveObj中 手动更新所有watcher中的$data

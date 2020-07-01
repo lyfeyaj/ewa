@@ -1,4 +1,4 @@
-const { createStore } = require('./reactive');
+const createStore = require('./reactive');
 
 module.exports = createStore;
 

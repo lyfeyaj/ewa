@@ -14,12 +14,7 @@ var set = require('lodash.set');
 
 var has = require('lodash.has');
 
-var _require = require('./reactive'),
-    trigger = _require.trigger;
-
-var Observer =
-/*#__PURE__*/
-function () {
+var Observer = /*#__PURE__*/function () {
   function Observer() {
     _classCallCheck(this, Observer);
 
@@ -150,7 +145,7 @@ function () {
         if (get(this.reactiveObj, key) !== value) {
           set(this.reactiveObj, key, value);
         } else {
-          trigger(key, value);
+          this.emitReactive(key, value);
         }
       } else {
         // key不在reactiveObj中 手动更新所有watcher中的$data

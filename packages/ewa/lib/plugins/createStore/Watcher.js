@@ -17,9 +17,7 @@ var Observer = require('./Observer');
 var obInstance = Observer.getInstance();
 var uid = 0;
 
-var Watcher =
-/*#__PURE__*/
-function () {
+var Watcher = /*#__PURE__*/function () {
   function Watcher() {
     var argsData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     var updateFn = arguments.length > 1 ? arguments[1] : undefined;

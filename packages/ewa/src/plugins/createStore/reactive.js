@@ -65,18 +65,10 @@ function defineReactive(obj, key, path) {
         setter.call(obj, newVal);
       } else {
         val = newVal;
-        trigger(path || key, val);
+        obInstance.emitReactive(path || key, val);
       }
     }
   });
 }
 
-// 自动更新
-function trigger(key, value) {
-  obInstance.emitReactive(key, value);
-}
-
-module.exports = {
-  createStore,
-  trigger
-};
+module.exports = createStore

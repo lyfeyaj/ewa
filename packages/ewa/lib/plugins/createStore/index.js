@@ -1,7 +1,6 @@
 "use strict";
 
-var _require = require('./reactive'),
-    createStore = _require.createStore;
+var createStore = require('./reactive');
 
 module.exports = createStore;
 /* 
