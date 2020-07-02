@@ -14,7 +14,7 @@ function initStore() {
     var prePage = Page;
 
     Page = function Page() {
-      var obj = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       var _onLoad = obj.onLoad || noop;
 
@@ -22,7 +22,7 @@ function initStore() {
 
       obj.onLoad = function () {
         var updateMethod = this.setState || this.setData;
-        var data = obj.data || {}; // 页面初始化添加watcher
+        var data = this.data || {}; // 页面初始化添加watcher
 
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
           this.__watcher = new Watcher(data, updateMethod.bind(this));
@@ -46,7 +46,7 @@ function initStore() {
     var preComponent = Component;
 
     Component = function Component() {
-      var obj = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       obj.lifetimes = obj.lifetimes || {};
       obj.methods = obj.methods || {};
 
@@ -56,7 +56,7 @@ function initStore() {
 
       obj.lifetimes.attached = obj.attached = function () {
         var updateMethod = this.setState || this.setData;
-        var data = obj.data || {}; // 组件初始化添加watcher
+        var data = this.data || {}; // 组件初始化添加watcher
 
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
           this.__watcher = new Watcher(data, updateMethod.bind(this));

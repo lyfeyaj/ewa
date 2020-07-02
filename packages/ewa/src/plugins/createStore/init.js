@@ -8,14 +8,13 @@ function noop() {}
 function initStore() {
   try {
     const prePage = Page;
-    Page = function () {
-      const obj = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+    Page = function (obj = {}) {
       const _onLoad = obj.onLoad || noop;
       const _onUnload = obj.onUnload || noop;
 
       obj.onLoad = function () {
         const updateMethod = this.setState || this.setData;
-        const data = obj.data || {};
+        const data = this.data || {};
         // 页面初始化添加watcher
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
           this.__watcher = new Watcher(data, updateMethod.bind(this));
@@ -34,8 +33,7 @@ function initStore() {
     };
 
     const preComponent = Component;
-    Component = function () {
-      const obj = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+    Component = function (obj = {}) {
       obj.lifetimes = obj.lifetimes || {};
       obj.methods = obj.methods || {};
       const _attached = obj.lifetimes.attached || obj.attached || noop;
@@ -43,7 +41,7 @@ function initStore() {
 
       obj.lifetimes.attached = obj.attached = function () {
         const updateMethod = this.setState || this.setData;
-        const data = obj.data || {};
+        const data = this.data || {};
         // 组件初始化添加watcher
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
           this.__watcher = new Watcher(data, updateMethod.bind(this));
