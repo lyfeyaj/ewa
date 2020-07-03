@@ -61,7 +61,7 @@ class Watcher {
         const cb = get(this, ['$watch', prop, 'handler']) || get(this, ['$watch', prop])
         const deep = get(this, ['$watch', prop, 'deep'])
         const immediate = get(this, ['$watch', prop, 'immediate'])
-        this.reactiveUserWatcher(this.$data, prop, cb, deep);
+        this.reactiveWatcher(this.$data, prop, cb, deep);
         // 首次触发回调
         if (immediate) this.handleCallback(cb, this.$data[prop])
       }
@@ -69,7 +69,7 @@ class Watcher {
   }
 
   // 响应式化自定义watcher
-  reactiveUserWatcher(obj, key, cb, deep) {
+  reactiveWatcher(obj, key, cb, deep) {
     let val = obj[key];
     if (isObject(val) && deep) {
       Object.keys(val).forEach(childKey => {
