@@ -38,7 +38,7 @@ function initStore() {
       const _detached = obj.lifetimes.detached || obj.detached || noop;
 
       obj.lifetimes.attached = obj.attached = function () {
-        // 组件初始化添加watcher
+        // 组件初始化添加watcher 兼容$watch
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
           this.$watch = obj.$watch
           this.__watcher = new Watcher(this);

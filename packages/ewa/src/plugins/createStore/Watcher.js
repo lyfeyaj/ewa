@@ -9,7 +9,7 @@ let ctx
 
 class Watcher {
   constructor(options) {
-    // 上下文环境
+    // 执行环境
     ctx = options
     // data数据
     this.$data = options.data || {};
@@ -21,10 +21,10 @@ class Watcher {
     this.id = ++uid;
     // 收集data和globalData的交集作为响应式对象
     this.reactiveData = {};
-    // 初始化数据
+    // 初始化操作
     this.initReactiveData();
     this.createObserver();
-    this.setUserWatcher();
+    this.setCustomWatcher();
     // 收集watcher
     obInstance.setGlobalWatcher(this);
   }
@@ -53,7 +53,7 @@ class Watcher {
   }
 
   // 初始化收集自定义watcher
-  setUserWatcher() {
+  setCustomWatcher() {
     const props = Object.keys(this.$watch);
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
@@ -63,9 +63,7 @@ class Watcher {
         const immediate = get(this, ['$watch', prop, 'immediate'])
         this.reactiveUserWatcher(this.$data, prop, cb, deep);
         // 首次触发回调
-        if (immediate) {
-          this.handleCallback(cb, this.$data[prop])
-        }
+        if (immediate) this.handleCallback(cb, this.$data[prop])
       }
     }
   }
@@ -93,7 +91,7 @@ class Watcher {
     });
   }
 
-  // 执行回调
+  // 执行自定义watcher回调
   handleCallback(cb, newVal, oldVal) {
     if (!isFunction(cb)) return
     try {

@@ -86,12 +86,11 @@ var Watcher = /*#__PURE__*/function () {
         if (prop in this.$data) {
           var cb = get(this, ['$watch', prop, 'handler']) || get(this, ['$watch', prop]);
           var deep = get(this, ['$watch', prop, 'deep']);
-          var immediate = get(this, ['$watch', prop, 'immediate']);
+          var immediate = get(this, ['$watch', prop, 'immediate']); // 收集依赖
+
           this.reactiveUserWatcher(this.$data, prop, cb, deep); // 首次触发回调
 
-          if (immediate) {
-            this.handleCallback(cb, this.$data[prop]);
-          }
+          if (immediate) this.handleCallback(cb, this.$data[prop]);
         }
       }
     } // 响应式化自定义watcher
@@ -124,7 +123,7 @@ var Watcher = /*#__PURE__*/function () {
           if (deep) _this2.reactiveUserWatcher(obj, key, cb, deep);
         }
       });
-    } // 执行回调
+    } // 执行自定义watcher回调
 
   }, {
     key: "handleCallback",
