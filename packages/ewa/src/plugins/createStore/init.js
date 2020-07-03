@@ -13,11 +13,9 @@ function initStore() {
       const _onUnload = obj.onUnload || noop;
 
       obj.onLoad = function () {
-        const updateMethod = this.setState || this.setData;
-        const data = this.data || {};
         // 页面初始化添加watcher
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
-          this.__watcher = new Watcher(data, updateMethod.bind(this));
+          this.__watcher = new Watcher(this);
         }
         return _onLoad.apply(this, arguments);
       };
@@ -40,11 +38,10 @@ function initStore() {
       const _detached = obj.lifetimes.detached || obj.detached || noop;
 
       obj.lifetimes.attached = obj.attached = function () {
-        const updateMethod = this.setState || this.setData;
-        const data = this.data || {};
         // 组件初始化添加watcher
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
-          this.__watcher = new Watcher(data, updateMethod.bind(this));
+          this.$watch = obj.$watch
+          this.__watcher = new Watcher(this);
         }
         return _attached.apply(this, arguments);
       };

@@ -21,11 +21,9 @@ function initStore() {
       var _onUnload = obj.onUnload || noop;
 
       obj.onLoad = function () {
-        var updateMethod = this.setState || this.setData;
-        var data = this.data || {}; // 页面初始化添加watcher
-
+        // 页面初始化添加watcher
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
-          this.__watcher = new Watcher(data, updateMethod.bind(this));
+          this.__watcher = new Watcher(this);
         }
 
         return _onLoad.apply(this, arguments);
@@ -55,11 +53,10 @@ function initStore() {
       var _detached = obj.lifetimes.detached || obj.detached || noop;
 
       obj.lifetimes.attached = obj.attached = function () {
-        var updateMethod = this.setState || this.setData;
-        var data = this.data || {}; // 组件初始化添加watcher
-
+        // 组件初始化添加watcher
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
-          this.__watcher = new Watcher(data, updateMethod.bind(this));
+          this.$watch = obj.$watch;
+          this.__watcher = new Watcher(this);
         }
 
         return _attached.apply(this, arguments);
