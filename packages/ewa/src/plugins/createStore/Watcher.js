@@ -31,41 +31,40 @@ class Watcher {
 
   // 初始化数据并首次更新
   initReactiveData() {
-    const props = Object.keys(this.$data);
     const { reactiveObj } = obInstance;
-    for (let i = 0; i < props.length; i++) {
-      const prop = props[i];
-      if (prop in reactiveObj) {
-        this.reactiveData[prop] = reactiveObj[prop];
-        this.update(prop, reactiveObj[prop]);
+    Object.keys(this.$data).forEach(key => {
+      if (key in reactiveObj) {
+        this.reactiveData[key] = reactiveObj[key];
+        this.update(key, reactiveObj[key]);
       }
-    }
+    })
   }
 
   // 添加订阅
   createObserver() {
-    const props = Object.keys(this.reactiveData);
-    if (props.length > 0) {
-      props.forEach(prop => {
-        obInstance.onReactive(prop, this);
-      });
-    }
+    Object.keys(this.reactiveData).forEach(key => {
+      obInstance.onReactive(key, this);
+    });
   }
 
   // 初始化收集自定义watcher
   setCustomWatcher() {
-    const props = Object.keys(this.$watch);
-    for (let i = 0; i < props.length; i++) {
-      const prop = props[i];
-      if (prop in this.$data) {
-        const cb = get(this, ['$watch', prop, 'handler']) || get(this, ['$watch', prop])
-        const deep = get(this, ['$watch', prop, 'deep'])
-        const immediate = get(this, ['$watch', prop, 'immediate'])
-        this.reactiveWatcher(this.$data, prop, cb, deep);
-        // 首次触发回调
-        if (immediate) this.handleCallback(cb, this.$data[prop])
+    const watch = this.$watch
+    Object.keys(watch).forEach(key => {
+      // 记录参数路径
+      const keyArr = key.split('.');
+      let obj = this.$data;
+      for (let i = 0; i < keyArr.length - 1; i++) {
+        if (!obj) return
+        obj = get(obj, keyArr[i]);
       }
-    }
+      if (!obj) return
+      const property = keyArr[keyArr.length - 1];
+      const cb = watch[key].handler || watch[key];
+      const deep = watch[key].deep;
+      this.reactiveWatcher(obj, property, cb, deep);
+      if (watch[key].immediate) this.handleCallback(cb, obj[property])
+    });
   }
 
   // 响应式化自定义watcher
@@ -73,7 +72,7 @@ class Watcher {
     let val = obj[key];
     if (isObject(val) && deep) {
       Object.keys(val).forEach(childKey => {
-        this.reactiveUserWatcher(val, childKey, cb, deep);
+        this.reactiveWatcher(val, childKey, cb, deep);
       })
     }
     Object.defineProperty(obj, key, {
@@ -86,7 +85,7 @@ class Watcher {
         if (newVal === val || (newVal !== newVal && val !== val)) return;
         this.handleCallback(cb, newVal, val)
         val = newVal;
-        if (deep) this.reactiveUserWatcher(obj, key, cb, deep);
+        if (deep) this.reactiveWatcher(obj, key, cb, deep);
       }
     });
   }
@@ -103,11 +102,11 @@ class Watcher {
 
   // 移除订阅
   removeObserver() {
-    const props = Object.keys(this.reactiveData);
-    if (props.length > 0) obInstance.removeReactive(props, this.id);
-    // 移除相关事件及全局watcher
+    // 移除相关依赖并释放内存
+    obInstance.removeReactive(Object.keys(this.reactiveData), this.id);
     obInstance.removeEvent(this.id);
     obInstance.removeWatcher(this.id);
+    ctx = null
   }
 
   // 更新数据和视图

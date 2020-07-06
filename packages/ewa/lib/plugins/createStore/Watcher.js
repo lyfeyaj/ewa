@@ -24,7 +24,7 @@ var Watcher = /*#__PURE__*/function () {
   function Watcher(options) {
     _classCallCheck(this, Watcher);
 
-    // 上下文环境
+    // 执行环境
     ctx = options; // data数据
 
     this.$data = options.data || {}; // $watch数据
@@ -35,11 +35,11 @@ var Watcher = /*#__PURE__*/function () {
 
     this.id = ++uid; // 收集data和globalData的交集作为响应式对象
 
-    this.reactiveData = {}; // 初始化数据
+    this.reactiveData = {}; // 初始化操作
 
     this.initReactiveData();
     this.createObserver();
-    this.setUserWatcher(); // 收集watcher
+    this.setCustomWatcher(); // 收集watcher
 
     obInstance.setGlobalWatcher(this);
   } // 初始化数据并首次更新
@@ -48,63 +48,65 @@ var Watcher = /*#__PURE__*/function () {
   _createClass(Watcher, [{
     key: "initReactiveData",
     value: function initReactiveData() {
-      var props = Object.keys(this.$data);
+      var _this = this;
+
       var reactiveObj = obInstance.reactiveObj;
+      Object.keys(this.$data).forEach(function (key) {
+        if (key in reactiveObj) {
+          _this.reactiveData[key] = reactiveObj[key];
 
-      for (var i = 0; i < props.length; i++) {
-        var prop = props[i];
-
-        if (prop in reactiveObj) {
-          this.reactiveData[prop] = reactiveObj[prop];
-          this.update(prop, reactiveObj[prop]);
+          _this.update(key, reactiveObj[key]);
         }
-      }
+      });
     } // 添加订阅
 
   }, {
     key: "createObserver",
     value: function createObserver() {
-      var _this = this;
+      var _this2 = this;
 
-      var props = Object.keys(this.reactiveData);
-
-      if (props.length > 0) {
-        props.forEach(function (prop) {
-          obInstance.onReactive(prop, _this);
-        });
-      }
+      Object.keys(this.reactiveData).forEach(function (key) {
+        obInstance.onReactive(key, _this2);
+      });
     } // 初始化收集自定义watcher
 
   }, {
-    key: "setUserWatcher",
-    value: function setUserWatcher() {
-      var props = Object.keys(this.$watch);
+    key: "setCustomWatcher",
+    value: function setCustomWatcher() {
+      var _this3 = this;
 
-      for (var i = 0; i < props.length; i++) {
-        var prop = props[i];
+      var watch = this.$watch;
+      Object.keys(watch).forEach(function (key) {
+        // 记录参数路径
+        var keyArr = key.split('.');
+        var obj = _this3.$data;
 
-        if (prop in this.$data) {
-          var cb = get(this, ['$watch', prop, 'handler']) || get(this, ['$watch', prop]);
-          var deep = get(this, ['$watch', prop, 'deep']);
-          var immediate = get(this, ['$watch', prop, 'immediate']); // 收集依赖
-
-          this.reactiveUserWatcher(this.$data, prop, cb, deep); // 首次触发回调
-
-          if (immediate) this.handleCallback(cb, this.$data[prop]);
+        for (var i = 0; i < keyArr.length - 1; i++) {
+          if (!obj) return;
+          obj = get(obj, keyArr[i]);
         }
-      }
+
+        if (!obj) return;
+        var property = keyArr[keyArr.length - 1];
+        var cb = watch[key].handler || watch[key];
+        var deep = watch[key].deep;
+
+        _this3.reactiveWatcher(obj, property, cb, deep);
+
+        if (watch[key].immediate) _this3.handleCallback(cb, obj[property]);
+      });
     } // 响应式化自定义watcher
 
   }, {
-    key: "reactiveUserWatcher",
-    value: function reactiveUserWatcher(obj, key, cb, deep) {
-      var _this2 = this;
+    key: "reactiveWatcher",
+    value: function reactiveWatcher(obj, key, cb, deep) {
+      var _this4 = this;
 
       var val = obj[key];
 
       if (isObject(val) && deep) {
         Object.keys(val).forEach(function (childKey) {
-          _this2.reactiveUserWatcher(val, childKey, cb, deep);
+          _this4.reactiveWatcher(val, childKey, cb, deep);
         });
       }
 
@@ -117,10 +119,10 @@ var Watcher = /*#__PURE__*/function () {
         set: function set(newVal) {
           if (newVal === val || newVal !== newVal && val !== val) return;
 
-          _this2.handleCallback(cb, newVal, val);
+          _this4.handleCallback(cb, newVal, val);
 
           val = newVal;
-          if (deep) _this2.reactiveUserWatcher(obj, key, cb, deep);
+          if (deep) _this4.reactiveWatcher(obj, key, cb, deep);
         }
       });
     } // 执行自定义watcher回调
@@ -140,11 +142,11 @@ var Watcher = /*#__PURE__*/function () {
   }, {
     key: "removeObserver",
     value: function removeObserver() {
-      var props = Object.keys(this.reactiveData);
-      if (props.length > 0) obInstance.removeReactive(props, this.id); // 移除相关事件及全局watcher
-
+      // 移除相关依赖并释放内存
+      obInstance.removeReactive(Object.keys(this.reactiveData), this.id);
       obInstance.removeEvent(this.id);
       obInstance.removeWatcher(this.id);
+      ctx = null;
     } // 更新数据和视图
 
   }, {
