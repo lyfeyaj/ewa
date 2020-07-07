@@ -51,4 +51,30 @@ module.exports = createStore;
   注: 所有页面或组件销毁时会自动解绑所有的事件(无需使用this.$off(...))
 
   this.$set('coinName', '金币') 更新所有页面和组件data中'coinName'的值为'金币'（支持嵌套属性和数组下标修改）
+
+  2020/07 更新 
+  $watch监听页面或组件data中属性 支持监听属性路径形式如'a[1].b'  使用示例：
+
+  data: {
+    prop: '',
+    obj: {
+      key: ''
+    }
+  },
+  ...
+  $watch: {
+    // 方式一
+    'prop': function(newVal, oldVal) {
+      ...
+    },
+    // 方式二
+    'obj': {
+      handler: function(newVal, oldVal) {
+        ...
+      },
+      deep: Boolean, // 深度遍历
+      immediate: Boolean // 立即触发
+    }
+  }
+
  */
