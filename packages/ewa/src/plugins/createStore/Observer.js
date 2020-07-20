@@ -2,7 +2,6 @@ const isFunction = require('lodash.isfunction');
 const get = require('lodash.get');
 const set = require('lodash.set');
 const has = require('lodash.has');
-const { trigger } = require('./reactive');
 
 class Observer {
   constructor() {
@@ -36,12 +35,12 @@ class Observer {
   }
 
   // 收集自定义事件
-  onEvent(key, obj, watcherId) {
+  onEvent(key, callback, ctx, watcherId) {
     if (!this.eventBus[key]) this.eventBus[key] = [];
     if (this.isExistSameId(this.eventBus[key], watcherId)) {
       if (console && console.warn) console.warn(`自定义事件 '${key}' 无法重复添加，请尽快调整`);
     } else {
-      this.eventBus[key].push(this.toEventObj(watcherId, obj));
+      this.eventBus[key].push(this.toEventObj(watcherId, callback.bind(ctx)));
     }
   }
 
@@ -116,7 +115,7 @@ class Observer {
       if (get(this.reactiveObj, key) !== value) {
         set(this.reactiveObj, key, value);
       } else {
-        trigger(key, value);
+        this.emitReactive(key, value);
       }
     } else {
       // key不在reactiveObj中 手动更新所有watcher中的$data

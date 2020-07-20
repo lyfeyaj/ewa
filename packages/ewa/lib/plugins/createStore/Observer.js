@@ -14,12 +14,7 @@ var set = require('lodash.set');
 
 var has = require('lodash.has');
 
-var _require = require('./reactive'),
-    trigger = _require.trigger;
-
-var Observer =
-/*#__PURE__*/
-function () {
+var Observer = /*#__PURE__*/function () {
   function Observer() {
     _classCallCheck(this, Observer);
 
@@ -50,13 +45,13 @@ function () {
 
   }, {
     key: "onEvent",
-    value: function onEvent(key, obj, watcherId) {
+    value: function onEvent(key, callback, ctx, watcherId) {
       if (!this.eventBus[key]) this.eventBus[key] = [];
 
       if (this.isExistSameId(this.eventBus[key], watcherId)) {
         if (console && console.warn) console.warn("\u81EA\u5B9A\u4E49\u4E8B\u4EF6 '".concat(key, "' \u65E0\u6CD5\u91CD\u590D\u6DFB\u52A0\uFF0C\u8BF7\u5C3D\u5FEB\u8C03\u6574"));
       } else {
-        this.eventBus[key].push(this.toEventObj(watcherId, obj));
+        this.eventBus[key].push(this.toEventObj(watcherId, callback.bind(ctx)));
       }
     } // 收集仅执行一次事件
 
@@ -150,7 +145,7 @@ function () {
         if (get(this.reactiveObj, key) !== value) {
           set(this.reactiveObj, key, value);
         } else {
-          trigger(key, value);
+          this.emitReactive(key, value);
         }
       } else {
         // key不在reactiveObj中 手动更新所有watcher中的$data
