@@ -5,7 +5,7 @@
   "main": "lib/ewa.js",
   "scripts": {
     "test": "mocha",
-    "build": "babel src -d ./lib",
+    "build": "babel src -d ./lib --no-comments",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
     "clean": "rm -rf lib"
