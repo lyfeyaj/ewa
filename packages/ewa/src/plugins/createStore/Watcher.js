@@ -96,7 +96,7 @@ class Watcher {
       configurable: true,
       get: () => val,
       set: (newVal) => {
-        if (newVal === val || (newVal !== newVal && val !== val)) return;
+        if (newVal === val) return;
         // 触发回调函数
         this.handleCallback(cb, newVal, val);
         val = newVal;

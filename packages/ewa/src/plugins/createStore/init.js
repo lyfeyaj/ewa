@@ -24,7 +24,9 @@ const injectStoreMethods = (ctx) => {
   };
   // 添加注册事件函数
   ctx.$on = function (key, callback) {
-    if (this.__watcher && this.__watcher.id) obInstance.onEvent(key, callback, ctx, this.__watcher.id);
+    if (this.__watcher && this.__watcher.id) {
+      obInstance.onEvent(key, callback, ctx, this.__watcher.id);
+    }
   };
   // 添加通知更新函数
   ctx.$emit = function (key, obj) {
@@ -32,11 +34,15 @@ const injectStoreMethods = (ctx) => {
   };
   // 添加解绑事件函数
   ctx.$off = function (key) {
-    if (this.__watcher && this.__watcher.id) obInstance.off(key, this.__watcher.id);
+    if (this.__watcher && this.__watcher.id) {
+      obInstance.off(key, this.__watcher.id);
+    }
   };
   // 添加执行一次事件函数
   ctx.$once = function (key, callback) {
-    if (this.__watcher && this.__watcher.id) obInstance.once(key, callback, this.__watcher.id);
+    if (this.__watcher && this.__watcher.id) {
+      obInstance.once(key, callback, this.__watcher.id);
+    }
   };
 };
 
@@ -95,7 +101,7 @@ function initStore() {
       return preComponent(obj);
     };
   } catch (e) {
-    console.log('覆盖小程序 Page 或 Component 出错', e);
+    console.warn('覆盖小程序 Page 或 Component 出错', e);
   }
 }
 

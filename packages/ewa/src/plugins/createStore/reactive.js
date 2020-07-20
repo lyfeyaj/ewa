@@ -59,7 +59,7 @@ function defineReactive(obj, key, path) {
     },
     set: function reactiveSetter(newVal) {
       const value = getter ? getter.call(obj) : val;
-      if (newVal === value || (newVal !== newVal && value !== value)) return;
+      if (newVal === value) return;
       if (getter && !setter) return;
       if (setter) {
         setter.call(obj, newVal);

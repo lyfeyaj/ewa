@@ -41,6 +41,9 @@
       "functions": "never"
     }],
     "no-prototype-builtins": 0,
-    "no-useless-escape": 0
+    "no-useless-escape": 0,
+    "class-methods-use-this": "off",
+    "no-use-before-define": ["error", { "functions": false, "classes": true }],
+    "no-console": ["warn", { "allow": ["warn", "error"] }]
   }
 }
