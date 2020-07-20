@@ -202,7 +202,7 @@ module.exports = function install(ewa, removeFromPromisify) {
         let fixArgs = args[0];
         let failFn = args.pop();
         let successFn = args.pop();
-        if (simplifyArgs[key] && typeof fixArgs !== 'object') {
+        if (simplifyArgs[key] && Object.prototype.toString.call(fixArgs) !== '[object Object]') {
           fixArgs = {};
           let ps = simplifyArgs[key];
           if (args.length) {
