@@ -46,7 +46,7 @@ class Observer {
 
   // 收集仅执行一次事件
   once(key, callback, watcherId) {
-    //创建一个调用后立即解绑函数
+    // 创建一个调用后立即解绑函数
     const wrapFanc = (args) => {
       callback(args);
       this.off(key, watcherId);
@@ -58,7 +58,7 @@ class Observer {
   toEventObj(id, callback) {
     return {
       id,
-      callback
+      callback,
     };
   }
 
@@ -71,7 +71,7 @@ class Observer {
 
   // 移除reactiveBus
   removeReactive(watcherKeys, id) {
-    watcherKeys.forEach(key => {
+    watcherKeys.forEach((key) => {
       this.reactiveBus[key] = this.removeById(this.reactiveBus[key], id);
       this.removeEmptyArr(this.reactiveBus, key);
     });
@@ -80,7 +80,7 @@ class Observer {
   // 移除eventBus
   removeEvent(id) {
     const eventKeys = Object.keys(this.eventBus);
-    eventKeys.forEach(key => {
+    eventKeys.forEach((key) => {
       this.eventBus[key] = this.removeById(this.eventBus[key], id);
       this.removeEmptyArr(this.eventBus, key);
     });
@@ -95,7 +95,7 @@ class Observer {
   emitReactive(key, value) {
     const mergeKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
     if (!has(this.reactiveBus, mergeKey)) return;
-    this.reactiveBus[mergeKey].forEach(obj => {
+    this.reactiveBus[mergeKey].forEach((obj) => {
       if (isFunction(obj.update)) obj.update(key, value);
     });
   }
@@ -103,7 +103,7 @@ class Observer {
   // 触发自定义事件更新
   emitEvent(key, value) {
     if (!has(this.eventBus, key)) return;
-    this.eventBus[key].forEach(obj => {
+    this.eventBus[key].forEach((obj) => {
       if (isFunction(obj.callback)) obj.callback(value);
     });
   }
@@ -119,7 +119,7 @@ class Observer {
       }
     } else {
       // key不在reactiveObj中 手动更新所有watcher中的$data
-      this.globalWatchers.forEach(watcher => {
+      this.globalWatchers.forEach((watcher) => {
         if (has(watcher.$data, key)) {
           watcher.update(key, value);
         }
@@ -130,7 +130,7 @@ class Observer {
   // 判断数组中是否存在相同id的元素
   isExistSameId(arr, id) {
     if (Array.isArray(arr) && arr.length) {
-      return arr.findIndex(item => item.id === id) > -1;
+      return arr.findIndex((item) => item.id === id) > -1;
     }
     return false;
   }
@@ -138,7 +138,7 @@ class Observer {
   // 根据id删除数组中元素
   removeById(arr, id) {
     if (Array.isArray(arr) && arr.length) {
-      return arr.filter(item => item.id !== id);
+      return arr.filter((item) => item.id !== id);
     }
     return arr;
   }

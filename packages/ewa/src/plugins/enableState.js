@@ -33,9 +33,9 @@ const logger = function (type, name, stack = [], timeConsumption = 0, changes) {
         let _spaces = '';
         let _stack = stack.reduce((res, item, i) => {
           if (i === 0) return `${res}\n    ${item}`;
-          _spaces = '    ' + _spaces;
+          _spaces = `    ${_spaces}`;
           return `${res}\n${_spaces}└── ${item}`;
-        }, '调用栈: ')
+        }, '调用栈: ');
         console.log(_stack);
       }
       console.groupEnd();
@@ -48,7 +48,7 @@ const logger = function (type, name, stack = [], timeConsumption = 0, changes) {
 };
 
 // 打印 Diff 相关 信息
-const printDiffInfo = function(ctx, debug, time, changes) {
+const printDiffInfo = function (ctx, debug, time, changes) {
   let timeConsumption = time ? +new Date() - time : 0;
   let type = ctx.__isPage ? '页面:' : '组件:';
   let name = ctx.__isPage ? ctx.route : ctx.is;
@@ -59,7 +59,7 @@ const printDiffInfo = function(ctx, debug, time, changes) {
 };
 
 // 添加调用堆栈属性
-const addInvokeStackProp = function(ctx) {
+const addInvokeStackProp = function (ctx) {
   Object.defineProperty(ctx, '__invokeStack', {
     get() {
       if (this.__invokeStack__) return this.__invokeStack__;
@@ -77,12 +77,12 @@ const addInvokeStackProp = function(ctx) {
       this.__invokeStack__ = stack.concat(this.is);
 
       return this.__invokeStack__;
-    }
+    },
   });
-}
+};
 
 // 检查并警告 Component 中，data 和 properties 属性冲突
-const checkPropertyAndDataConflict = function(ctx, obj) {
+const checkPropertyAndDataConflict = function (ctx, obj) {
   if (!ctx.__isComponent) return;
 
   let changedKeys = keys(obj);
@@ -96,7 +96,7 @@ const checkPropertyAndDataConflict = function(ctx, obj) {
   if (conflictKeys.length) {
     console.warn(`组件: ${ctx.is} 中, properties 和 data 存在字段冲突: ${conflictKeys.join('、')}, 请尽快调整`);
   }
-}
+};
 
 // 开启 state 支持
 function enableState(opts = {}) {

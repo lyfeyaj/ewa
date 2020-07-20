@@ -2,6 +2,7 @@ const isObject = require('lodash.isobject');
 const isPlainObject = require('lodash.isplainobject');
 const initStore = require('./init');
 const Observer = require('./Observer');
+
 const obInstance = Observer.getInstance();
 
 /*
@@ -25,9 +26,8 @@ function createStore(obj) {
     obInstance.reactiveObj = obj;
     reactive(obj);
     return obj;
-  } else {
-    if (console && console.warn) console.warn('createStore方法只能接收纯对象，请尽快调整');
   }
+  if (console && console.warn) console.warn('createStore方法只能接收纯对象，请尽快调整');
 }
 
 // 遍历对象使其响应式化
@@ -67,8 +67,8 @@ function defineReactive(obj, key, path) {
         val = newVal;
         obInstance.emitReactive(path || key, val);
       }
-    }
+    },
   });
 }
 
-module.exports = createStore
+module.exports = createStore;

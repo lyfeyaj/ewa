@@ -2,7 +2,7 @@ const createStore = require('./reactive');
 
 module.exports = createStore;
 
-/* 
+/*
   使用方法:
   1.创建store:对任意纯对象调用createStore使其响应式化（以app.js中globalData为例）
   // app.js
@@ -12,8 +12,8 @@ module.exports = createStore;
     ...
     globalData: createStore ({
       a: 'old1',
-      b: { 
-        c: 'old2' 
+      b: {
+        c: 'old2'
       }
     })
   })
@@ -23,14 +23,14 @@ module.exports = createStore;
   Page({
     data: {
       a: '',
-      b: { 
-        c: '' 
+      b: {
+        c: ''
       }
     }
   })
 
   onLoad() {
-    App().globalData.a = 'new1' 
+    App().globalData.a = 'new1'
     console.log(this.data.a === 'new1')  // true
 
     App().globalData.b.c = 'new2'
@@ -51,7 +51,7 @@ module.exports = createStore;
 
   this.$set('coinName', '金币') 更新所有页面和组件data中'coinName'的值为'金币'（支持嵌套属性和数组下标修改）
 
-  2020/07 更新 
+  2020/07 更新
   $watch监听页面或组件data中属性 支持监听属性路径形式如'a[1].b'  使用示例：
 
   data: {

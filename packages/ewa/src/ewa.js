@@ -7,7 +7,7 @@ const mixin = require('./mixins/mixin');
 const ewa = {
   mixin,
   enableState,
-  createStore
+  createStore,
 };
 
 wxPromisify(ewa);
