@@ -23,7 +23,9 @@ function initStore() {
       };
       obj.onUnload = function () {
         // 页面销毁时移除watcher
-        this.__watcher.removeObserver();
+        if (this.__watcher && (this.__watcher instanceof Watcher)) {
+          this.__watcher.removeObserver();
+        }
         return _onUnload.apply(this, arguments);
       };
 
@@ -37,7 +39,7 @@ function initStore() {
       const _detached = obj.lifetimes.detached || obj.detached || noop;
 
       obj.lifetimes.attached = obj.attached = function () {
-        // 组件初始化添加watcher 兼容$watch
+        // 组件初始化添加watcher 兼容$watch属性
         if (!this.__watcher || !(this.__watcher instanceof Watcher)) {
           this.$watch = obj.$watch
           this.__watcher = new Watcher(this);
@@ -48,7 +50,9 @@ function initStore() {
       };
       obj.lifetimes.detached = obj.detached = function () {
         // 页面销毁时移除watcher
-        this.__watcher.removeObserver();
+        if (this.__watcher && (this.__watcher instanceof Watcher)) {
+          this.__watcher.removeObserver();
+        }
         return _detached.apply(this, arguments);
       };
 

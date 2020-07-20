@@ -50,6 +50,17 @@ class Watcher {
   // 初始化收集自定义watcher
   setCustomWatcher() {
     const watch = this.$watch
+    /* $watch为一个对象，键是需要观察的属性名或带参数的路径，值是对应回调函数，值也可以是包含选项的对象，
+    其中选项包括 {function} handler   {boolean} deep   {boolean} immediate
+    回调函数中参数分别为新值和旧值
+    $watch: {
+      'key': function(newVal, oldVal) {},
+      'obj.key': {
+        handler: function(newVal, oldVal) {},
+        deep: true,
+        immediate: true
+      }
+    } */
     Object.keys(watch).forEach(key => {
       // 记录参数路径
       const keyArr = key.split('.');
@@ -60,9 +71,12 @@ class Watcher {
       }
       if (!obj) return
       const property = keyArr[keyArr.length - 1];
+      // 兼容两种回调函数的形式
       const cb = watch[key].handler || watch[key];
+      // deep参数 支持对象/数组深度遍历
       const deep = watch[key].deep;
       this.reactiveWatcher(obj, property, cb, deep);
+      // immediate参数 支持立即触发回调
       if (watch[key].immediate) this.handleCallback(cb, obj[property])
     });
   }
@@ -70,6 +84,7 @@ class Watcher {
   // 响应式化自定义watcher
   reactiveWatcher(obj, key, cb, deep) {
     let val = obj[key];
+    // 如果需要深度监听 递归调用
     if (isObject(val) && deep) {
       Object.keys(val).forEach(childKey => {
         this.reactiveWatcher(val, childKey, cb, deep);
@@ -83,8 +98,10 @@ class Watcher {
       },
       set: newVal => {
         if (newVal === val || (newVal !== newVal && val !== val)) return;
+        // 触发回调函数
         this.handleCallback(cb, newVal, val)
         val = newVal;
+        // 如果深度监听 重新监听该对象
         if (deep) this.reactiveWatcher(obj, key, cb, deep);
       }
     });
