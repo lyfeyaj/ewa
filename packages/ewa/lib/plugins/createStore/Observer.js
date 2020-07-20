@@ -45,13 +45,13 @@ var Observer = /*#__PURE__*/function () {
 
   }, {
     key: "onEvent",
-    value: function onEvent(key, obj, watcherId) {
+    value: function onEvent(key, callback, ctx, watcherId) {
       if (!this.eventBus[key]) this.eventBus[key] = [];
 
       if (this.isExistSameId(this.eventBus[key], watcherId)) {
         if (console && console.warn) console.warn("\u81EA\u5B9A\u4E49\u4E8B\u4EF6 '".concat(key, "' \u65E0\u6CD5\u91CD\u590D\u6DFB\u52A0\uFF0C\u8BF7\u5C3D\u5FEB\u8C03\u6574"));
       } else {
-        this.eventBus[key].push(this.toEventObj(watcherId, obj));
+        this.eventBus[key].push(this.toEventObj(watcherId, callback.bind(ctx)));
       }
     } // 收集仅执行一次事件
 

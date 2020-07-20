@@ -35,12 +35,12 @@ class Observer {
   }
 
   // 收集自定义事件
-  onEvent(key, obj, watcherId) {
+  onEvent(key, callback, ctx, watcherId) {
     if (!this.eventBus[key]) this.eventBus[key] = [];
     if (this.isExistSameId(this.eventBus[key], watcherId)) {
       if (console && console.warn) console.warn(`自定义事件 '${key}' 无法重复添加，请尽快调整`);
     } else {
-      this.eventBus[key].push(this.toEventObj(watcherId, obj));
+      this.eventBus[key].push(this.toEventObj(watcherId, callback.bind(ctx)));
     }
   }
 
