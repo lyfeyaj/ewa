@@ -1,4 +1,3 @@
-
 module.exports = class Queue {
   constructor(maxCocurrency) {
     // 队列

@@ -1,4 +1,3 @@
-
 const assign = require('lodash.assign');
 const buildArgs = require('../utils/buildArgs');
 

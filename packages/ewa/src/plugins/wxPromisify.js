@@ -1,4 +1,3 @@
-
 const assign = require('lodash.assign');
 const keys = require('lodash.keys');
 const Queue = require('../utils/Queue');
