@@ -20,30 +20,21 @@ var obInstance = Observer.getInstance();
 var uid = 0;
 var ctx;
 
-var Watcher = /*#__PURE__*/function () {
+var Watcher = function () {
   function Watcher(options) {
     _classCallCheck(this, Watcher);
 
-    // 执行环境
-    ctx = options; // data数据
-
-    this.$data = options.data || {}; // $watch数据
-
-    this.$watch = options.$watch || {}; // 更新函数
-
-    this.updateFn = options.setState || options.setData; // watcherId
-
-    this.id = ++uid; // 收集data和globalData的交集作为响应式对象
-
-    this.reactiveData = {}; // 初始化操作
-
+    ctx = options;
+    this.$data = options.data || {};
+    this.$watch = options.$watch || {};
+    this.updateFn = options.setState || options.setData;
+    this.id = ++uid;
+    this.reactiveData = {};
     this.initReactiveData();
     this.createObserver();
-    this.setCustomWatcher(); // 收集watcher
-
+    this.setCustomWatcher();
     obInstance.setGlobalWatcher(this);
-  } // 初始化数据并首次更新
-
+  }
 
   _createClass(Watcher, [{
     key: "initReactiveData",
@@ -58,8 +49,7 @@ var Watcher = /*#__PURE__*/function () {
           _this.update(key, reactiveObj[key]);
         }
       });
-    } // 添加订阅
-
+    }
   }, {
     key: "createObserver",
     value: function createObserver() {
@@ -68,8 +58,7 @@ var Watcher = /*#__PURE__*/function () {
       Object.keys(this.reactiveData).forEach(function (key) {
         obInstance.onReactive(key, _this2);
       });
-    } // 初始化收集自定义watcher
-
+    }
   }, {
     key: "setCustomWatcher",
     value: function setCustomWatcher() {
@@ -77,7 +66,6 @@ var Watcher = /*#__PURE__*/function () {
 
       var watch = this.$watch;
       Object.keys(watch).forEach(function (key) {
-        // 记录参数路径
         var keyArr = key.split('.');
         var obj = _this3.$data;
 
@@ -95,8 +83,7 @@ var Watcher = /*#__PURE__*/function () {
 
         if (watch[key].immediate) _this3.handleCallback(cb, obj[property]);
       });
-    } // 响应式化自定义watcher
-
+    }
   }, {
     key: "reactiveWatcher",
     value: function reactiveWatcher(obj, key, cb, deep) {
@@ -117,7 +104,7 @@ var Watcher = /*#__PURE__*/function () {
           return val;
         },
         set: function set(newVal) {
-          if (newVal === val || newVal !== newVal && val !== val) return;
+          if (newVal === val) return;
 
           _this4.handleCallback(cb, newVal, val);
 
@@ -125,8 +112,7 @@ var Watcher = /*#__PURE__*/function () {
           if (deep) _this4.reactiveWatcher(obj, key, cb, deep);
         }
       });
-    } // 执行自定义watcher回调
-
+    }
   }, {
     key: "handleCallback",
     value: function handleCallback(cb, newVal, oldVal) {
@@ -137,18 +123,15 @@ var Watcher = /*#__PURE__*/function () {
       } catch (e) {
         console.warn("[$watch error]: callback for watcher \n ".concat(cb, " \n"), e);
       }
-    } // 移除订阅
-
+    }
   }, {
     key: "removeObserver",
     value: function removeObserver() {
-      // 移除相关依赖并释放内存
       obInstance.removeReactive(Object.keys(this.reactiveData), this.id);
       obInstance.removeEvent(this.id);
       obInstance.removeWatcher(this.id);
       ctx = null;
-    } // 更新数据和视图
-
+    }
   }, {
     key: "update",
     value: function update(key, value) {

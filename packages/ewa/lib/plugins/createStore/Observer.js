@@ -14,35 +14,27 @@ var set = require('lodash.set');
 
 var has = require('lodash.has');
 
-var Observer = /*#__PURE__*/function () {
+var Observer = function () {
   function Observer() {
     _classCallCheck(this, Observer);
 
-    // 初始化响应式对象
-    this.reactiveObj = {}; // 响应式对象集合
-
-    this.reactiveBus = {}; // 自定义事件集合
-
-    this.eventBus = {}; // 全局watcher集合
-
+    this.reactiveObj = {};
+    this.reactiveBus = {};
+    this.eventBus = {};
     this.globalWatchers = [];
-  } // 获取唯一实例
-
+  }
 
   _createClass(Observer, [{
     key: "setGlobalWatcher",
-    // 收集全局watcher
     value: function setGlobalWatcher(obj) {
       if (!this.isExistSameId(this.globalWatchers, obj.id)) this.globalWatchers.push(obj);
-    } // 收集响应式数据
-
+    }
   }, {
     key: "onReactive",
     value: function onReactive(key, obj) {
       if (!this.reactiveBus[key]) this.reactiveBus[key] = [];
       if (!this.isExistSameId(this.reactiveBus[key], obj.id)) this.reactiveBus[key].push(obj);
-    } // 收集自定义事件
-
+    }
   }, {
     key: "onEvent",
     value: function onEvent(key, callback, ctx, watcherId) {
@@ -53,14 +45,12 @@ var Observer = /*#__PURE__*/function () {
       } else {
         this.eventBus[key].push(this.toEventObj(watcherId, callback.bind(ctx)));
       }
-    } // 收集仅执行一次事件
-
+    }
   }, {
     key: "once",
     value: function once(key, callback, watcherId) {
       var _this = this;
 
-      //创建一个调用后立即解绑函数
       var wrapFanc = function wrapFanc(args) {
         callback(args);
 
@@ -68,8 +58,7 @@ var Observer = /*#__PURE__*/function () {
       };
 
       this.onEvent(key, wrapFanc, watcherId);
-    } // 转为eventBus对象
-
+    }
   }, {
     key: "toEventObj",
     value: function toEventObj(id, callback) {
@@ -77,16 +66,14 @@ var Observer = /*#__PURE__*/function () {
         id: id,
         callback: callback
       };
-    } // 解绑自定义事件
-
+    }
   }, {
     key: "off",
     value: function off(key, watcherId) {
       if (!has(this.eventBus, key)) return;
       this.eventBus[key] = this.removeById(this.eventBus[key], watcherId);
       this.removeEmptyArr(this.eventBus, key);
-    } // 移除reactiveBus
-
+    }
   }, {
     key: "removeReactive",
     value: function removeReactive(watcherKeys, id) {
@@ -97,8 +84,7 @@ var Observer = /*#__PURE__*/function () {
 
         _this2.removeEmptyArr(_this2.reactiveBus, key);
       });
-    } // 移除eventBus
-
+    }
   }, {
     key: "removeEvent",
     value: function removeEvent(id) {
@@ -110,14 +96,12 @@ var Observer = /*#__PURE__*/function () {
 
         _this3.removeEmptyArr(_this3.eventBus, key);
       });
-    } // 移除全局watcher
-
+    }
   }, {
     key: "removeWatcher",
     value: function removeWatcher(id) {
       this.globalWatchers = this.removeById(this.globalWatchers, id);
-    } // 触发响应式数据更新
-
+    }
   }, {
     key: "emitReactive",
     value: function emitReactive(key, value) {
@@ -126,8 +110,7 @@ var Observer = /*#__PURE__*/function () {
       this.reactiveBus[mergeKey].forEach(function (obj) {
         if (isFunction(obj.update)) obj.update(key, value);
       });
-    } // 触发自定义事件更新
-
+    }
   }, {
     key: "emitEvent",
     value: function emitEvent(key, value) {
@@ -135,12 +118,10 @@ var Observer = /*#__PURE__*/function () {
       this.eventBus[key].forEach(function (obj) {
         if (isFunction(obj.callback)) obj.callback(value);
       });
-    } // 手动更新
-
+    }
   }, {
     key: "handleUpdate",
     value: function handleUpdate(key, value) {
-      // key在reactiveObj中 更新reactiveObj
       if (has(this.reactiveObj, key)) {
         if (get(this.reactiveObj, key) !== value) {
           set(this.reactiveObj, key, value);
@@ -148,15 +129,13 @@ var Observer = /*#__PURE__*/function () {
           this.emitReactive(key, value);
         }
       } else {
-        // key不在reactiveObj中 手动更新所有watcher中的$data
         this.globalWatchers.forEach(function (watcher) {
           if (has(watcher.$data, key)) {
             watcher.update(key, value);
           }
         });
       }
-    } // 判断数组中是否存在相同id的元素
-
+    }
   }, {
     key: "isExistSameId",
     value: function isExistSameId(arr, id) {
@@ -167,8 +146,7 @@ var Observer = /*#__PURE__*/function () {
       }
 
       return false;
-    } // 根据id删除数组中元素
-
+    }
   }, {
     key: "removeById",
     value: function removeById(arr, id) {
@@ -179,8 +157,7 @@ var Observer = /*#__PURE__*/function () {
       }
 
       return arr;
-    } // 删除对象中空数组的属性
-
+    }
   }, {
     key: "removeEmptyArr",
     value: function removeEmptyArr(obj, key) {
