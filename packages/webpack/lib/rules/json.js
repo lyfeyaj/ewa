@@ -7,6 +7,9 @@ module.exports = function jsonRule() {
   return {
     type: 'javascript/auto',
     test: /\.json$/i,
-    use: ExtractTextPlugin.extract(['raw-loader'])
+    use: ExtractTextPlugin.extract([{
+      loader: 'raw-loader',
+      options: { esModule: false }
+    }])
   };
 };

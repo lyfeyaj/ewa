@@ -9,7 +9,8 @@ module.exports = function imageRule() {
         loader: 'url-loader',
         options: {
           // 16k
-          limit: 8192 * 2
+          limit: 8192 * 2,
+          esModule: false
         }
       }
     ]

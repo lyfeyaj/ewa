@@ -6,6 +6,9 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = function wxsRule() {
   return {
     test: /\.wxs$/i,
-    use: ExtractTextPlugin.extract(['raw-loader'])
+    use: ExtractTextPlugin.extract([{
+      loader: 'raw-loader',
+      options: { esModule: false }
+    }])
   };
 };

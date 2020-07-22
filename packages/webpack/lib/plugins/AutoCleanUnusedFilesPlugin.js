@@ -43,6 +43,8 @@ module.exports = class AutoCleanUnusedFilesPlugin {
       );
 
       // run delete
+      // NOTE: del 5.0 版本开始更换了 glob 的库，导致现有的 glob 失效
+      // 所以暂时锁定 del 版本为 4.1.1
       return del(includePatterns, {
         ignore: excludePatterns,
         nodir: true
