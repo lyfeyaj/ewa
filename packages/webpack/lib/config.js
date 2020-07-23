@@ -157,7 +157,9 @@ function makeConfig() {
           loader: 'eslint-loader',
           options: {
             cache: true,
-            fix: true
+            fix: true,
+            eslintPath: path.dirname(require.resolve('eslint/package.json')),
+            parser: path.dirname(require.resolve('babel-eslint/package.json'))
           }
         }]
       }
