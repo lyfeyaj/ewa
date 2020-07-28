@@ -6,12 +6,11 @@ const Observer = require('./Observer');
 const obInstance = Observer.getInstance();
 
 let uid = 0;
-let ctx;
 
 class Watcher {
   constructor(options) {
     // 执行环境
-    ctx = options;
+    this.ctx = options;
     // data数据
     this.$data = options.data || {};
     // $watch数据
@@ -108,9 +107,9 @@ class Watcher {
 
   // 执行自定义watcher回调
   handleCallback(cb, newVal, oldVal) {
-    if (!isFunction(cb)) return;
+    if (!isFunction(cb) || !this.ctx) return;
     try {
-      cb.call(ctx, newVal, oldVal);
+      cb.call(this.ctx, newVal, oldVal);
     } catch (e) {
       console.warn(`[$watch error]: callback for watcher \n ${cb} \n`, e);
     }
@@ -122,13 +121,12 @@ class Watcher {
     obInstance.removeReactive(Object.keys(this.reactiveData), this.id);
     obInstance.removeEvent(this.id);
     obInstance.removeWatcher(this.id);
-    ctx = null;
   }
 
   // 更新数据和视图
   update(key, value) {
-    if (isFunction(this.updateFn)) {
-      this.updateFn.call(ctx, { [key]: value });
+    if (isFunction(this.updateFn) && this.ctx) {
+      this.updateFn.call(this.ctx, { [key]: value });
     }
   }
 }
