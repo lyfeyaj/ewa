@@ -16,7 +16,14 @@ module.exports = function cssRule(options = {}) {
         loader: 'sass-loader',
         options: {
           // resolve-url-loader 需要开启 sourceMap 才能工作
-          sourceMap: true
+          sourceMap: true,
+          // NOTE: sass-loader 7.3.0 版本开始
+          // 生产环境会默认修改为 compressed
+          // 这会导致地址转换失败，这里强制为 nested
+          // 压缩的任务，交给 postcss
+          sassOptions: {
+            outputStyle: 'nested'
+          }
         }
       },
       {
@@ -42,8 +49,9 @@ module.exports = function cssRule(options = {}) {
     {
       loader: 'css-loader',
       options: {
-        minimize: !options.IS_DEV,
-        // 不处理 css 的 @import, 充分利用 wxss 本身的 @import
+        // 不处理 css 的 @import
+        // 充分利用小程序 wxss 本身的 @import
+        // 降低 css 的重复合并，降低样式文件大小
         import: false
       }
     },

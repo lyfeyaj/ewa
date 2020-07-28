@@ -95,16 +95,18 @@ function makeConfig() {
     new NodeCommonModuleTemplatePlugin({
       commonModuleName: options.commonModuleName
     }),
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(
-          ROOT,
-          `src/**/*.{${options.copyFileTypes.join(',')}}`
-        ),
-        to: OUTPUT_DIR,
-        context: path.resolve(ROOT, 'src')
-      }
-    ])
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(
+            ROOT,
+            `src/**/*.{${options.copyFileTypes.join(',')}}`
+          ),
+          to: OUTPUT_DIR,
+          context: path.resolve(ROOT, 'src')
+        }
+      ]
+    })
   ];
 
   // 生产环境进一步压缩代码
@@ -155,14 +157,16 @@ function makeConfig() {
           loader: 'eslint-loader',
           options: {
             cache: true,
-            fix: true
+            fix: true,
+            eslintPath: path.dirname(require.resolve('eslint/package.json')),
+            parser: path.dirname(require.resolve('babel-eslint/package.json'))
           }
         }]
       }
     );
   }
 
-  let ruleOpts = { ...options, IS_DEV, ROOT };
+  let ruleOpts = { ...options, IS_DEV, ROOT, OUTPUT_DIR, ENTRY_DIR };
   const { cssRule, cssExtensions } = require('./rules/css')(ruleOpts);
 
   // 不同文件类型的处理

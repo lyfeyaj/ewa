@@ -5,32 +5,34 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // 处理 wxml 文件
 module.exports = function wxmlRule(options = {}) {
   let htmlOptions = {
-    attrs: false,
-    minifyCSS: false,
+    attributes: false,
     minimize: false,
-    removeComments: false,
-    removeAttributeQuotes: false,
-    removeEmptyElements: false,
-    keepClosingSlash: false,
-    ignoreCustomFragments: [
-      /<%[\s\S]*?%>/,
-      /<\?[\s\S]*?\?>/,
-
-      // 忽略 wxs 标签的处理
-      /<wxs[\s\S]*?<\/wxs>/
-    ]
+    esModule: false
   };
 
+  // 非开发环境开启压缩
   if (!options.IS_DEV) {
-    htmlOptions = Object.assign(htmlOptions, {
-      minimize: true,
+    htmlOptions.minimize = {
+      minifyCSS: false,
       removeComments: true,
-      keepClosingSlash: true
-    });
+      keepClosingSlash: true,
+      removeAttributeQuotes: false,
+      removeEmptyElements: false,
+      ignoreCustomFragments: [
+        /<%[\s\S]*?%>/,
+        /<\?[\s\S]*?\?>/,
+
+        // 忽略 wxs 标签的处理
+        /<wxs[\s\S]*?<\/wxs>/
+      ],
+    };
   }
 
   let htmlRules = [
-    'raw-loader',
+    {
+      loader: 'raw-loader',
+      options: { esModule: false }
+    },
     'extract-loader',
     {
       loader: './loaders/fix-unary-element-loader',

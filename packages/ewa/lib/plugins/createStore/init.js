@@ -67,7 +67,9 @@ function initStore() {
       };
 
       obj.onUnload = function () {
-        _onUnload.apply(this, arguments);
+        if (this.__watcher && this.__watcher instanceof Watcher) {
+          this.__watcher.removeObserver();
+        }
 
         if (this.__watcher && this.__watcher instanceof Watcher) {
           this.__watcher.removeObserver();
@@ -98,7 +100,9 @@ function initStore() {
       };
 
       obj.lifetimes.detached = obj.detached = function () {
-        _detached.apply(this, arguments);
+        if (this.__watcher && this.__watcher instanceof Watcher) {
+          this.__watcher.removeObserver();
+        }
 
         if (this.__watcher && this.__watcher instanceof Watcher) {
           this.__watcher.removeObserver();
