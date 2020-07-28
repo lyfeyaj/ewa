@@ -64,11 +64,11 @@ function initStore() {
         return _onLoad.apply(this, arguments);
       };
       obj.onUnload = function () {
+        _onUnload.apply(this, arguments);
         // 页面销毁时移除watcher
         if (this.__watcher && (this.__watcher instanceof Watcher)) {
           this.__watcher.removeObserver();
         }
-        return _onUnload.apply(this, arguments);
       };
 
       return prePage(obj);
@@ -91,11 +91,11 @@ function initStore() {
         return _attached.apply(this, arguments);
       };
       obj.lifetimes.detached = obj.detached = function () {
+        _detached.apply(this, arguments);
         // 页面销毁时移除watcher
         if (this.__watcher && (this.__watcher instanceof Watcher)) {
           this.__watcher.removeObserver();
         }
-        return _detached.apply(this, arguments);
       };
 
       return preComponent(obj);
