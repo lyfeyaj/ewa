@@ -6,15 +6,12 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-module.exports = /*#__PURE__*/function () {
+module.exports = function () {
   function Queue(maxCocurrency) {
     _classCallCheck(this, Queue);
 
-    // 队列
-    this._queue = []; // 并发数
-
-    this._maxCocurrency = maxCocurrency || 10; // 当前并发数
-
+    this._queue = [];
+    this._maxCocurrency = maxCocurrency || 10;
     this._currentCocurrency = 0;
   }
 
@@ -28,19 +25,16 @@ module.exports = /*#__PURE__*/function () {
     value: function shift() {
       var _this = this;
 
-      // 当前并发数大于最大并发数时, 不做任何操作
       if (this._currentCocurrency >= this._maxCocurrency) {
         return Promise.resolve();
-      } // 执行队列下一个请求
-
+      }
 
       var next = this._queue.shift();
 
       if (next) {
-        this._currentCocurrency++; // 处理下一个请求
+        this._currentCocurrency++;
 
         var _handleNext = function _handleNext(e) {
-          // eslint-disable-next-line
           if (e) console.log(e.message, e.stack);
           _this._currentCocurrency--;
           return _this.shift();
