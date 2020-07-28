@@ -33,7 +33,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 
 ## 安装
 
-需要 node 版本 >= 8
+***需要 node 版本 >= 10.13***
 
 ```bash
 npm i -g ewa-cli 或者 yarn global add ewa-cli
