@@ -127,7 +127,7 @@ class Watcher {
 
   // 更新数据和视图
   update(key, value) {
-    if (isFunction(this.updateFn)) {
+    if (isFunction(this.updateFn) && ctx) {
       this.updateFn.call(ctx, { [key]: value });
     }
   }

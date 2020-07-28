@@ -135,7 +135,7 @@ var Watcher = function () {
   }, {
     key: "update",
     value: function update(key, value) {
-      if (isFunction(this.updateFn)) {
+      if (isFunction(this.updateFn) && ctx) {
         this.updateFn.call(ctx, _defineProperty({}, key, value));
       }
     }
