@@ -24,7 +24,6 @@ module.exports = function tsRule(options) {
       {
         loader: 'ts-loader',
         options: {
-          transpileOnly: true,
           configFile
         }
       }

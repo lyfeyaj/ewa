@@ -57,6 +57,7 @@ const USER_CONFIG = existsSync(USER_CONFIG_FILE) ? require(USER_CONFIG_FILE): {}
  *   cssParser: sass 或者 less，默认为 sass
  *   hashedModuleIds: 是否开启 hashed module id
  *   cache: 是否开启缓存, 默认为 true
+ *   eslintEnable: 是否开启eslint-loader检查 默认为 true
  *   webpack: 修改并自定义 webpack 配置，如：function(config) { return config; }
  */
 function makeConfig() {
@@ -71,6 +72,7 @@ function makeConfig() {
   options.simplifyPath = options.simplifyPath === true;
   options.autoCleanUnusedFiles = options.autoCleanUnusedFiles !== false;
   options.cache = options.cache !== false;
+  options.eslintEnable = options.eslintEnable !== false;
   options.rules = options.rules || [];
   options.plugins = options.plugins || [];
 
@@ -146,7 +148,7 @@ function makeConfig() {
   // Loaders
   let rules = [];
 
-  if (IS_DEV) {
+  if (IS_DEV && options.eslintEnable) {
     // 开发环境下增加 eslint 检查
     rules.push(
       {
