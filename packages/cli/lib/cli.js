@@ -30,7 +30,7 @@ require('yargs')
   .command('upgrade', '升级 EWA 工具', {}, (argv) => {
     require('./commands/upgrade')(argv);
   })
-  .command(['generate <type> <name>', 'g'], '快速生成模版', (yargs) => {
+  .command(['generate <type> <name> <style>', 'g'], '快速生成模版', (yargs) => {
     yargs
       .positional('type', {
         describe: '类型(page|component|template)',
@@ -38,6 +38,10 @@ require('yargs')
         type: 'string'
       }).positional('name', {
         describe: '名称',
+        type: 'string'
+      }).positional('style', {
+        describe: '使用js或者ts方式开发',
+        choices: ['js', 'ts'],
         type: 'string'
       }).option('target-dir', {
         alias: 'd',
@@ -54,6 +58,7 @@ require('yargs')
     require('./commands/generate')(
       argv.type,
       argv.name,
+      argv.style,
       argv.targetDir,
       argv.index
     );

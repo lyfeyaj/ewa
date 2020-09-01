@@ -8,7 +8,7 @@ const SUPPORT_TYPES = ['page', 'component', 'template'];
 const ROOT = process.cwd();
 const BASE_GENERATOR_DIR = path.resolve(__dirname, '../../templates/generators');
 
-module.exports = function generate(type, name, dest, index) {
+module.exports = function generate(type, name, style, dest, index) {
   utils.ensureEwaProject();
 
   if (SUPPORT_TYPES.indexOf(type) === -1) {
@@ -47,9 +47,12 @@ module.exports = function generate(type, name, dest, index) {
   };
 
   if (type === 'component' || type === 'page') {
-    fileMappings = Object.assign(fileMappings, {
-      [`${type}/${type}.js`]: `${name}.js`,
-      [`${type}/${type}.json`]: `${name}.json`
+    fileMappings = style === 'js' ? Object.assign(fileMappings, {
+      [`${type}/${type}.json`]: `${name}.json`,
+      [`${type}/${type}.js`]: `${name}.js`
+    }) : Object.assign(fileMappings, {
+      [`${type}/${type}.json`]: `${name}.json`,
+      [`${type}/${type}.ts`]: `${name}.ts`
     });
   }
 
