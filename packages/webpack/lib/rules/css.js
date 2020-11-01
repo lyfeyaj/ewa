@@ -19,10 +19,10 @@ module.exports = function cssRule(options = {}) {
           sourceMap: true,
           // NOTE: sass-loader 7.3.0 版本开始
           // 生产环境会默认修改为 compressed
-          // 这会导致地址转换失败，这里强制为 nested
+          // 这会导致地址转换失败，这里强制为 expanded
           // 压缩的任务，交给 postcss
           sassOptions: {
-            outputStyle: 'nested'
+            outputStyle: 'expanded'
           }
         }
       },
@@ -45,6 +45,26 @@ module.exports = function cssRule(options = {}) {
     cssExtensions = cssExtensions.concat(['.less']);
   }
 
+  // PostCSS 插件
+  let postCssPlugins = [
+    require('autoprefixer')({ remove: false, overrideBrowserslist: ['iOS 7']})
+  ];
+  if (!options.IS_DEV) {
+    postCssPlugins.push(
+      require('cssnano')({
+        preset: [
+          'default',
+          {
+            discardComments: { removeAll: true },
+            // calc 无法计算 rpx，此处禁止
+            calc: false
+          }
+        ]
+      })
+    );
+  }
+
+  // 构建 CSS rule
   cssRules = [
     {
       loader: 'css-loader',
@@ -52,36 +72,17 @@ module.exports = function cssRule(options = {}) {
         // 不处理 css 的 @import
         // 充分利用小程序 wxss 本身的 @import
         // 降低 css 的重复合并，降低样式文件大小
-        import: false
+        import: false,
+        esModule: false
       }
     },
     // PostCSS 配置
     {
       loader: 'postcss-loader',
       options: {
-        plugins: function() {
-          let p = [
-            require('autoprefixer')({ remove: false, overrideBrowserslist: ['iOS 7']})
-          ];
-
-          if (!options.IS_DEV) {
-            p = p.concat(
-              require('cssnano')({
-                preset: [
-                  'default',
-                  {
-                    discardComments: { removeAll: true },
-                    // calc 无法计算 rpx，此处禁止
-                    calc: false
-                  }
-                ]
-              })
-            );
-          }
-
-          return p;
-        },
-        sourceMap: 'inline'
+        postcssOptions: {
+          plugins: postCssPlugins
+        }
       }
     }
   ].concat(cssRules);
@@ -89,13 +90,14 @@ module.exports = function cssRule(options = {}) {
   // 开启 cache
   if (options.cache) cssRules = ['cache-loader'].concat(cssRules);
 
-  const cssRule = {
-    test: cssPattern,
-    use: ExtractTextPlugin.extract({
-      fallback: 'style-loader',
-      use: cssRules
-    })
+  return {
+    cssRule: {
+      test: cssPattern,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: cssRules
+      })
+    },
+    cssExtensions
   };
-
-  return { cssRule, cssExtensions };
 };

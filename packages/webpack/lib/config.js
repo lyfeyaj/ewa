@@ -194,7 +194,7 @@ function makeConfig() {
   };
 
   // 开发工具
-  const devtool = IS_DEV ? 'source-map' : '';
+  const devtool = IS_DEV ? 'source-map' : false;
 
   // 构建模式
   const mode = IS_DEV ? 'development' : 'production';
