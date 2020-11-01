@@ -20,20 +20,13 @@ module.exports = function jsRule() {
               regenerator: true
             }
           ],
-          require('@babel/plugin-proposal-class-properties'),
           [
             require('@babel/plugin-proposal-decorators'),
             { decoratorsBeforeExport: true }
           ],
-          require('@babel/plugin-proposal-export-namespace-from'),
           require('@babel/plugin-proposal-function-sent'),
-          require('@babel/plugin-proposal-json-strings'),
-          require('@babel/plugin-proposal-numeric-separator'),
           require('@babel/plugin-proposal-throw-expressions'),
-          require('@babel/plugin-syntax-dynamic-import'),
           require('@babel/plugin-syntax-import-meta'),
-          require('@babel/plugin-transform-async-to-generator'),
-          require('@babel/plugin-transform-regenerator'),
         ]
       }
     }],
