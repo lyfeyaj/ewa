@@ -60,4 +60,4 @@ typings/
 .next
 
 # Directory for built wechat app
-dist
+dist*

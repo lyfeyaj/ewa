@@ -4,6 +4,16 @@
 
 'use strict';
 
+const BUILD_TARGET_TYPES_CONFIG = {
+  alias: 't',
+  describe: '构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt`',
+  type: 'string',
+  choices: ['weapp', 'swan', 'alipay', 'tt'],
+  default: 'weapp',
+  demandOption: false
+};
+
+// 命令行配置
 require('yargs')
   .locale('zh_CN')
   .usage('$0 <cmd> [args]')
@@ -18,14 +28,20 @@ require('yargs')
   .command('init', '在现有的小程序项目中初始化 EWA', {}, (argv) => {
     require('./commands/init')(argv);
   })
-  .command(['start', 'dev'], '启动 EWA 小程序项目实时编译', {}, (argv) => {
-    require('./commands/start')(argv);
+  .command(['start', 'dev'], '启动 EWA 小程序项目实时编译', (yargs) => {
+    yargs.option('type', BUILD_TARGET_TYPES_CONFIG);
+  }, (argv) => {
+    require('./commands/start')(argv.type);
   })
-  .command('build', '编译小程序静态文件', {}, (argv) => {
-    require('./commands/build')(argv);
+  .command('build', '编译小程序静态文件', (yargs) => {
+    yargs.option('type', BUILD_TARGET_TYPES_CONFIG);
+  }, (argv) => {
+    require('./commands/build')(argv.type);
   })
-  .command('clean', '清理小程序静态文件', {}, (argv) => {
-    require('./commands/clean')(argv);
+  .command('clean', '清理小程序静态文件', (yargs) => {
+    yargs.option('type', BUILD_TARGET_TYPES_CONFIG);
+  }, (argv) => {
+    require('./commands/clean')(argv.type);
   })
   .command('upgrade', '升级 EWA 工具', {}, (argv) => {
     require('./commands/upgrade')(argv);
@@ -33,7 +49,7 @@ require('yargs')
   .command(['generate <type> <name>', 'g'], '快速生成模版', (yargs) => {
     yargs
       .positional('type', {
-        describe: '类型(page|component|template)',
+        describe: '类型 `page` 或 `component` 或 `template`',
         choices: ['page', 'component', 'template'],
         type: 'string'
       }).positional('name', {

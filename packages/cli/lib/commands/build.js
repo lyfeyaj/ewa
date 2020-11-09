@@ -5,7 +5,7 @@
 const execSync = require('child_process').execSync;
 const utils = require('../utils');
 
-module.exports = function build() {
+module.exports = function build(type) {
   utils.ensureEwaProject();
 
   const ROOT = process.cwd();
@@ -18,7 +18,8 @@ module.exports = function build() {
     `cd ${ROOT} && node ${script}`,
     {
       env: Object.assign({}, {
-        NODE_ENV: 'production'
+        NODE_ENV: 'production',
+        EWA_ENV: type
       }, process.env),
       stdio: ['pipe', process.stdout, process.stderr]
     }

@@ -24,6 +24,13 @@ function isEwaProject() {
   return fs.existsSync(ewaDir);
 }
 
+// 根据构架类型选择输出文件夹
+function outputDirByType(type) {
+  if (!type) throw new Error('无效构建类型');
+  if (type === 'weapp') return 'dist';
+  return `dist-${type}`;
+}
+
 // 检查是否为 ewa 目录
 function ensureEwaProject() {
   if (isEwaProject()) return;
@@ -102,5 +109,6 @@ module.exports = {
   ensureEwaProject,
   log,
   request,
-  checkUpdates
+  checkUpdates,
+  outputDirByType
 };
