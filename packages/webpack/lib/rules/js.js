@@ -1,10 +1,13 @@
 'use strict';
 
 // 解析 js 文件
-module.exports = function jsRule() {
+module.exports = function jsRule(options = {}) {
   return {
     test: /\.js$/,
     use: [{
+      loader: './loaders/js-transform-loader',
+      options: { type: options.EWA_ENV }
+    } ,{
       loader: 'babel-loader',
       options: {
         cacheDirectory: true,

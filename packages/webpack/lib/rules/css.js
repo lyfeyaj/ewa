@@ -6,12 +6,15 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = function cssRule(options = {}) {
   let cssPattern;
   let cssRules = [];
-  let cssExtensions = ['.css', '.wxss'];
+  let cssExtensions = ['.css', '.wxss', '.acss', 'ttss'];
   if (options.cssParser === 'sass') {
     cssPattern = /\.(css|scss|sass|wxss)$/;
     cssRules = [
       { loader: 'resolve-url-loader' },
-      { loader: './loaders/fix-import-wxss-loader.js' },
+      {
+        loader: './loaders/fix-import-wxss-loader.js',
+        options: { type: options.EWA_ENV }
+      },
       {
         loader: 'sass-loader',
         options: {

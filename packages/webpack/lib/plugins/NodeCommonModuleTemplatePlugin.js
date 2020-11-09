@@ -27,7 +27,10 @@ module.exports = class NodeCommonModuleTemplatePlugin {
         );
 
         // remove js ext for saving dist space
-        vendorPath = vendorPath.replace(/\.js$/, '').replace(/\\/g,'/');
+        vendorPath = vendorPath.replace(/\.js$/, '').replace(/\\/g, '/');
+
+        // 转换地址, vendor.js => ./vendor.js
+        if (!/^((\.\/)|(\.\.\/))/.test(vendorPath)) vendorPath = `./${vendorPath}`;
 
         return Template.asString([
           source,
