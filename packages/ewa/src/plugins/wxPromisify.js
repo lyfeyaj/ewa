@@ -182,7 +182,32 @@ const makeObj = function (arr) {
  * ewa.login().then().catch()
  */
 module.exports = function install(ewa, removeFromPromisify) {
-  let _wx = (ewa.wx = ewa.wx || assign({}, wx));
+  let _api;
+  let api;
+
+  // 微信小程序支持
+  if (typeof wx === 'object') {
+    api = wx;
+    _api = (ewa.wx = ewa.wx || assign({}, wx));
+  }
+
+  // 百度小程序支持
+  if (typeof swan === 'object') {
+    api = swan;
+    _api = (ewa.swan = ewa.swan || assign({}, swan));
+  }
+
+  // 头条小程序支持
+  if (typeof tt === 'object') {
+    api = tt;
+    _api = (ewa.tt = ewa.tt || assign({}, tt));
+  }
+
+  // 支付宝小程序支持
+  if (typeof my === 'object') {
+    api = my;
+    _api = (ewa.my = ewa.my || assign({}, my));
+  }
 
   let noPromiseMap = {};
   if (removeFromPromisify) {
@@ -193,9 +218,9 @@ module.exports = function install(ewa, removeFromPromisify) {
     }
   }
 
-  keys(_wx).forEach((key) => {
+  keys(_api).forEach((key) => {
     if (!noPromiseMap[key] && key.substr(0, 2) !== 'on' && key.substr(-4) !== 'Sync') {
-      _wx[key] = promisify(function () {
+      _api[key] = promisify(function () {
         let args = buildArgs.apply(null, arguments);
 
         let fixArgs = args[0];
@@ -215,18 +240,18 @@ module.exports = function install(ewa, removeFromPromisify) {
         fixArgs.success = successFn;
         fixArgs.fail = failFn;
 
-        return wx[key].call(wx, fixArgs);
-      }, _wx, 'weapp-fix');
+        return api[key].call(api, fixArgs);
+      }, _api, 'weapp-fix');
 
       // enhanced request with queue
       if (key === 'request') {
-        let rq = _wx[key];
+        let rq = _api[key];
 
         // overwrite request method
-        _wx[key] = function request() {
+        _api[key] = function request() {
           let args = buildArgs.apply(null, arguments);
           return new Promise(((resolve, reject) => {
-            queue.push(() => rq.apply(_wx, args).then(resolve, reject));
+            queue.push(() => rq.apply(_api, args).then(resolve, reject));
           }));
         };
       }

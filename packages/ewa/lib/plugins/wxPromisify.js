@@ -1,5 +1,7 @@
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 var assign = require('lodash.assign');
 
 var keys = require('lodash.keys');
@@ -104,7 +106,19 @@ var makeObj = function makeObj(arr) {
 };
 
 module.exports = function install(ewa, removeFromPromisify) {
-  var _wx = ewa.wx = ewa.wx || assign({}, wx);
+  var _api;
+
+  var api;
+
+  if ((typeof wx === "undefined" ? "undefined" : _typeof(wx)) === 'object') {
+    api = wx;
+    _api = ewa.wx = ewa.wx || assign({}, wx);
+  }
+
+  if ((typeof swan === "undefined" ? "undefined" : _typeof(swan)) === 'object') {
+    api = swan;
+    _api = ewa.swan = ewa.swan || assign({}, swan);
+  }
 
   var noPromiseMap = {};
 
@@ -116,9 +130,9 @@ module.exports = function install(ewa, removeFromPromisify) {
     }
   }
 
-  keys(_wx).forEach(function (key) {
+  keys(_api).forEach(function (key) {
     if (!noPromiseMap[key] && key.substr(0, 2) !== 'on' && key.substr(-4) !== 'Sync') {
-      _wx[key] = promisify(function () {
+      _api[key] = promisify(function () {
         var args = buildArgs.apply(null, arguments);
         var fixArgs = args[0];
         var failFn = args.pop();
@@ -139,17 +153,17 @@ module.exports = function install(ewa, removeFromPromisify) {
 
         fixArgs.success = successFn;
         fixArgs.fail = failFn;
-        return wx[key].call(wx, fixArgs);
-      }, _wx, 'weapp-fix');
+        return api[key].call(api, fixArgs);
+      }, _api, 'weapp-fix');
 
       if (key === 'request') {
-        var rq = _wx[key];
+        var rq = _api[key];
 
-        _wx[key] = function request() {
+        _api[key] = function request() {
           var args = buildArgs.apply(null, arguments);
           return new Promise(function (resolve, reject) {
             queue.push(function () {
-              return rq.apply(_wx, args).then(resolve, reject);
+              return rq.apply(_api, args).then(resolve, reject);
             });
           });
         };
