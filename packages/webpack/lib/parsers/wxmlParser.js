@@ -3,6 +3,7 @@
 const htmlparser2 = require('htmlparser2');
 const serialize = require('dom-serializer').default;
 const path = require('path');
+const utils = require('../utils');
 
 /**
  * 转换 import 和 include 标签
@@ -107,6 +108,11 @@ function transformDirective(node, file, type) {
     }
   }
 
+  // 百度小程序 swan 中不支持组件包含 type 属性
+  if (type === 'swan' && ('type' in attribs)) {
+    utils.log(`文件: \`${file}\` 中包含 \`type\` 属性，会导致百度小程序报错，请替换属性名称`, 'warning');
+  }
+
   // 替换对应的 directive
   DIRECTIVES_MAP_KEYS[type].forEach(attr => {
     if (!Object.prototype.hasOwnProperty.call(attribs, attr)) return;
@@ -115,7 +121,9 @@ function transformDirective(node, file, type) {
       // 百度小程序需要删除花括号
       if (type === 'swan') {
         attribs[newAttr] = removeBrackets(attribs[attr]);
-      } else {
+      }
+      // 其他小程序仅需要做替换
+      else {
         attribs[newAttr] = attribs[attr];
       }
     }
