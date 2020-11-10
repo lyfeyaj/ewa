@@ -1,4 +1,6 @@
-/**index.wxss**/
+/** index.wxss **/
+/** 支持在 wxss 文件中直接使用 scss 或 less 语法 **/
+
 .userinfo {
   display: flex;
   flex-direction: column;
