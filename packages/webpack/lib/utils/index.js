@@ -60,22 +60,24 @@ function buildDynamicEntries(baseDir, simplifyPath = false) {
     if (entryDirs[path.dirname(file)]) {
       let relativePath = resolveOrSimplifyPath(baseDir, file, simplifyPath);
 
+      let entryName = relativePath;
+
       // 支持直接使用 ts
-      if (TS_PATTERN.test(relativePath)) relativePath = relativePath.replace(TS_PATTERN, '.js');
+      if (TS_PATTERN.test(relativePath)) entryName = relativePath.replace(TS_PATTERN, '.js');
 
       // 支持直接使用 less 或 scss, 需要对应的 cssParser 设置支持
-      if (CSS_PATTERN.test(relativePath)) relativePath = relativePath.replace(CSS_PATTERN, '.wxss');
+      if (CSS_PATTERN.test(relativePath)) entryName = relativePath.replace(CSS_PATTERN, '.wxss');
 
       // 如果 已存在，则提示错误
       // js 文件优先级 高于 ts
       // wxss 文件优先级 高于 less 和 sass
-      if (entries[relativePath]) {
-        log(`入口文件 \`${relativePath}\` 已存在，忽略 \`${file}\``);
+      if (entries[entryName]) {
+        log(`入口文件 \`${entryName}\` 已存在，忽略文件 \`${relativePath}\``, 'warning');
         return;
       }
 
       // 添加入 entry 对象
-      entries[relativePath] = file;
+      entries[entryName] = file;
     }
   });
 
