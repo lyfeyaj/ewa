@@ -6,12 +6,17 @@ const chalk = require('chalk');
 const path = require('path');
 const glob = require('glob');
 
-// 基于构建环境替换文件后缀
-// NOTE: 仅支持 从 微信小程序 转换为其他小程序，不支持 其他小程序 转换为 微信小程序
-// NOTE: 无关逻辑需要清理
+// 常量
+const TS_PATTERN = /\.ts$/;
+const CSS_PATTERN = /\.(less|sass|scss)$/;
+
 const WXML_LIKE_PATTERN = /\.(swan|wxml|axml|ttml)$/;
 const WXSS_LIKE_PATTERN = /\.(wxss|css|acss|ttss)$/;
 const WXS_LIKE_PATTERN = /\.(wxs|sjs)$/;
+
+// 基于构建环境替换文件后缀
+// NOTE: 仅支持 从 微信小程序 转换为其他小程序，不支持 其他小程序 转换为 微信小程序
+// NOTE: 无关逻辑需要清理
 function chooseCorrectExtnameByBuildTarget(file, target) {
   // 替换 ts 后缀 为 js 文件
   if (/\.ts$/.test(file)) return file.replace(/\.ts$/, '.js');
@@ -66,33 +71,62 @@ function resolveOrSimplifyPath(baseDir, filepath, simplifyPath) {
 }
 
 // 构建 entries
-function buildDynamicEntries(baseDir, simplifyPath = false, target = 'weapp') {
+function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
+  // 查找所有微信小程序文件
   let wxFiles = glob.sync(
     path.join(baseDir, '**/*.{wxss,wxs,sjs,wxml,swan,css,acss,ttml,ttss}')
   );
 
+  // 其他小程序相关文件
+  // 支持 scss 和 less 当做 wxss 用
+  // 支持 ts 编译为 js
   let otherFiles = glob.sync(
-    path.join(baseDir, '**/*.{ts,js,json}')
+    path.join(baseDir, '**/*.{ts,js,json,scss,sass,less}')
   );
 
   let entryDirs = { [baseDir]: true };
 
   let entries = {};
 
+  // 遍历所有的微信文件用于生成 entry 对象
   wxFiles.map(function(file) {
     // 标记为微信页面或组件文件夹
     entryDirs[path.dirname(file)] = true;
 
     let relativePath = resolveOrSimplifyPath(baseDir, file, simplifyPath);
+
+    // 根据构建类型决定文件后缀名
     relativePath = chooseCorrectExtnameByBuildTarget(relativePath, target);
+
     entries[relativePath] = file;
   });
 
+  // 仅当被标记为微信小程序的页面或者组件文件夹的内容才会被作为 entry
   otherFiles.map(function(file) {
     if (entryDirs[path.dirname(file)]) {
       let relativePath = resolveOrSimplifyPath(baseDir, file, simplifyPath);
-      relativePath = chooseCorrectExtnameByBuildTarget(relativePath, target);
-      entries[relativePath] = file;
+
+      let entryName = relativePath;
+
+      // 支持直接使用 ts
+      if (TS_PATTERN.test(relativePath)) entryName = relativePath.replace(TS_PATTERN, '.js');
+
+      // 支持直接使用 less 或 scss, 需要对应的 cssParser 设置支持
+      if (CSS_PATTERN.test(relativePath)) entryName = relativePath.replace(CSS_PATTERN, '.wxss');
+
+      // 根据构建类型决定文件后缀名
+      entryName = chooseCorrectExtnameByBuildTarget(entryName, target);
+
+      // 如果 已存在，则提示错误
+      // js 文件优先级 高于 ts
+      // wxss 文件优先级 高于 less 和 sass
+      if (entries[entryName]) {
+        log(`入口文件 \`${entryName}\` 已存在，忽略文件 \`${relativePath}\``, 'warning');
+        return;
+      }
+
+      // 添加入 entry 对象
+      entries[entryName] = file;
     }
   });
 
