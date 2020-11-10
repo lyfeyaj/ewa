@@ -60,8 +60,6 @@
     "less": "^3.12.2",
     "less-loader": "^7.0.2",
     "nodemon": "^2.0.6",
-    "parse5": "^6.0.1",
-    "parse5-htmlparser2-tree-adapter": "^6.0.1",
     "postcss": "^8.1.4",
     "postcss-loader": "^4.0.4",
     "raw-loader": "^4.0.2",
