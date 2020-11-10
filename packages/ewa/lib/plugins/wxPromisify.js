@@ -120,6 +120,16 @@ module.exports = function install(ewa, removeFromPromisify) {
     _api = ewa.swan = ewa.swan || assign({}, swan);
   }
 
+  if ((typeof tt === "undefined" ? "undefined" : _typeof(tt)) === 'object') {
+    api = tt;
+    _api = ewa.tt = ewa.tt || assign({}, tt);
+  }
+
+  if ((typeof my === "undefined" ? "undefined" : _typeof(my)) === 'object') {
+    api = my;
+    _api = ewa.my = ewa.my || assign({}, my);
+  }
+
   var noPromiseMap = {};
 
   if (removeFromPromisify) {
