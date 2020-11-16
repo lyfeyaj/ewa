@@ -110,7 +110,10 @@ function transformDirective(node, file, type) {
 
   // 百度小程序 swan 中不支持组件包含 type 属性
   if (type === 'swan' && ('type' in attribs)) {
-    utils.log(`文件: \`${file}\` 中包含 \`type\` 属性，会导致百度小程序报错，请替换属性名称`, 'warning');
+    utils.log(
+      `文件: \`${file}\` 中的 ${node.name} 元素包含 \`type\` 属性，会导致百度小程序报错，请替换属性名称`,
+      'warning'
+    );
   }
 
   // 替换对应的 directive
