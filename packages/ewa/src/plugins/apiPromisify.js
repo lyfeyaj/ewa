@@ -176,12 +176,9 @@ const makeObj = function (arr) {
 /*
  * wx basic api promisify
  * useage:
- * ewa.use(ewa-use-promisify)
- * ewa.use(ewa-use-promisify([nopromise1, nopromise2]));
- * ewa.use(ewa-use-promisify({nopromise1: true, promise: false}));
  * ewa.login().then().catch()
  */
-module.exports = function install(ewa, removeFromPromisify) {
+module.exports = function install(ewa = {}, removeFromPromisify) {
   let _api;
   let api;
 
@@ -259,4 +256,8 @@ module.exports = function install(ewa, removeFromPromisify) {
   });
 
   ewa.promisify = promisify;
+
+  // 通用接口支持
+  // TODO: 添加接口差异提示
+  ewa.api = _api;
 };

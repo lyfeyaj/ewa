@@ -7,6 +7,9 @@ module.exports = {
     },
     "globals": {
         "wx": true,
+        "tt": true,
+        "swan": true,
+        "my": true,
         "App": true,
         "Page": true,
         "getApp": true,
