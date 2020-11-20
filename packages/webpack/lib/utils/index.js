@@ -120,7 +120,6 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
 
       // 选择合适的小程序开发工具配置文件
       if (/project\.(config|swan|alipay|tt)\.json$/.test(file)) {
-        console.log(entryName, file);
         if (target === 'weapp' && entryName === 'project.config.json') {
           entries[entryName] = file;
         }
