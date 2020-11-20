@@ -250,7 +250,7 @@ function enableState() {
         };
 
         obj.setState = function () {
-          setState.apply(this, arguments);
+          return setState.apply(this, arguments);
         };
 
         return $Page(obj);
@@ -288,7 +288,7 @@ function enableState() {
         };
 
         obj.methods.setState = function () {
-          setState.apply(this, arguments);
+          return setState.apply(this, arguments);
         };
 
         return $Component(obj);

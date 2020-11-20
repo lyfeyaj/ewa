@@ -292,7 +292,7 @@ function enableState(opts = {}) {
         // 的情况，则最好在 调用完 setData 之后，手动调用下 syncState 以保持 data 和 state 状态一致
         obj.initState = function () { initState.call(this); };
         obj.syncState = function () { initState.call(this); };
-        obj.setState = function () { setState.apply(this, arguments); };
+        obj.setState = function () { return setState.apply(this, arguments); };
 
         return $Page(obj);
       };
@@ -334,7 +334,7 @@ function enableState(opts = {}) {
         // 如果 patchSetData 运行失败，如果在 Page 或 Component 中有混用 setData 和 setState
         // 的情况，则最好在 调用完 setData 之后，手动调用下 syncState 以保持 data 和 state 状态一致
         obj.methods.initState = function () { initState.call(this); };
-        obj.methods.setState = function () { setState.apply(this, arguments); };
+        obj.methods.setState = function () { return setState.apply(this, arguments); };
 
         return $Component(obj);
       };
