@@ -1,0 +1,26 @@
+{
+  "appid": "touristappid",
+  "compilation-args": {
+    "common": {
+      "ignorePrefixCss": false,
+      "ignoreTransJs": true,
+      "ignoreUglify": true,
+      "imgCompress": false,
+      "lint": true,
+      "useStrict": true
+    },
+    "options": [],
+    "selected": -2
+  },
+  "host": "baiduboxapp",
+  "projectname": "baidu mini app sample",
+  "setting": {
+    "urlCheck": false
+  },
+  "swan": {
+    "baiduboxapp": {
+      "extensionJsVersion": "1.18.3",
+      "swanJsVersion": "3.220.16"
+    }
+  }
+}
