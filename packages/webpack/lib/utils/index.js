@@ -74,7 +74,7 @@ function resolveOrSimplifyPath(baseDir, filepath, simplifyPath) {
 function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
   // 查找所有微信小程序文件
   let wxFiles = glob.sync(
-    path.join(baseDir, '**/*.{wxss,wxs,sjs,wxml,swan,css,acss,ttml,ttss}')
+    path.join(baseDir, '**/*.{wxss,wxs,wxml}')
   );
 
   // 其他小程序相关文件
@@ -84,6 +84,7 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
     path.join(baseDir, '**/*.{ts,js,json,scss,sass,less}')
   );
 
+  // 标记为入口文件夹
   let entryDirs = { [baseDir]: true };
 
   let entries = {};
@@ -102,7 +103,7 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
   });
 
   // 仅当被标记为微信小程序的页面或者组件文件夹的内容才会被作为 entry
-  otherFiles.map(function(file) {
+  otherFiles.forEach(function(file) {
     if (entryDirs[path.dirname(file)]) {
       let relativePath = resolveOrSimplifyPath(baseDir, file, simplifyPath);
 
@@ -117,16 +118,33 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
       // 根据构建类型决定文件后缀名
       entryName = chooseCorrectExtnameByBuildTarget(entryName, target);
 
-      // 如果 已存在，则提示错误
-      // js 文件优先级 高于 ts
-      // wxss 文件优先级 高于 less 和 sass
-      if (entries[entryName]) {
-        log(`入口文件 \`${entryName}\` 已存在，忽略文件 \`${relativePath}\``, 'warning');
-        return;
-      }
+      // 选择合适的小程序开发工具配置文件
+      if (/project\.(config|swan|alipay|tt)\.json$/.test(file)) {
+        console.log(entryName, file);
+        if (target === 'weapp' && entryName === 'project.config.json') {
+          entries[entryName] = file;
+        }
+        if (target === 'tt' && entryName === 'project.tt.json') {
+          entries['project.config.json'] = file;
+        }
+        if (target === 'alipay' && entryName === 'project.alipay.json') {
+          entries['project.config.json'] = file;
+        }
+        if (target === 'swan' && entryName === 'project.swan.json') {
+          entries[entryName] = file;
+        }
+      } else {
+        // 如果 已存在，则提示错误
+        // js 文件优先级 高于 ts
+        // wxss 文件优先级 高于 less 和 sass
+        if (entries[entryName]) {
+          log(`入口文件 \`${entryName}\` 已存在，忽略文件 \`${relativePath}\``, 'warning');
+          return;
+        }
 
-      // 添加入 entry 对象
-      entries[entryName] = file;
+        // 添加入 entry 对象
+        entries[entryName] = file;
+      }
     }
   });
 
