@@ -105,7 +105,10 @@ var makeObj = function makeObj(arr) {
   return obj;
 };
 
-module.exports = function install(ewa, removeFromPromisify) {
+module.exports = function install() {
+  var ewa = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var removeFromPromisify = arguments.length > 1 ? arguments[1] : undefined;
+
   var _api;
 
   var api;
@@ -181,4 +184,5 @@ module.exports = function install(ewa, removeFromPromisify) {
     }
   });
   ewa.promisify = promisify;
+  ewa.api = _api;
 };

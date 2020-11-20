@@ -14,12 +14,19 @@ const utils = require('./utils');
 
 // 常量
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const EWA_ENV = process.env.EWA_ENV || 'weapp';
 const IS_DEV = NODE_ENV === 'development';
 const ROOT = process.cwd();
 const ENTRY_DIR = path.join(ROOT, 'src');
-const OUTPUT_DIR = path.join(ROOT, 'dist');
-const OUTPUT_GLOBAL_OBJECT = 'wx';
+const OUTPUT_DIR = path.join(ROOT, EWA_ENV === 'weapp' ? 'dist' : `dist-${EWA_ENV}`);
 const USER_CONFIG_FILE = path.join(ROOT, 'ewa.config.js');
+const OUTPUT_GLOBAL_OBJECT_MAP = {
+  weapp: 'wx',
+  swan: 'swan',
+  tt: 'tt',
+  alipay: 'my',
+};
+const OUTPUT_GLOBAL_OBJECT = OUTPUT_GLOBAL_OBJECT_MAP[EWA_ENV];
 
 // 默认常量
 const DEFAULT_COMMON_MODULE_NAME = 'vendors.js';
@@ -79,6 +86,7 @@ function makeConfig() {
 
   // 插件
   let plugins = [
+    new webpack.EnvironmentPlugin(['NODE_ENV', 'EWA_ENV']),
     new WebpackBar(),
     // Mock node env
     new NodeSourcePlugin({
@@ -166,7 +174,7 @@ function makeConfig() {
     );
   }
 
-  let ruleOpts = { ...options, IS_DEV, ROOT, OUTPUT_DIR, ENTRY_DIR };
+  let ruleOpts = { ...options, IS_DEV, ROOT, OUTPUT_DIR, ENTRY_DIR, EWA_ENV };
   const { cssRule, cssExtensions } = require('./rules/css')(ruleOpts);
 
   // 不同文件类型的处理
@@ -220,7 +228,7 @@ function makeConfig() {
     devtool,
     mode,
     context: __dirname,
-    entry: utils.buildDynamicEntries(ENTRY_DIR, options.simplifyPath),
+    entry: utils.buildDynamicEntries(ENTRY_DIR, options.simplifyPath, EWA_ENV),
     target: 'node',
     output: {
       path: OUTPUT_DIR,
@@ -237,7 +245,7 @@ function makeConfig() {
         path.resolve(__dirname, '../../'),
         path.resolve(__dirname, '../../../node_modules')
       ],
-      extensions: ['.ts', '.js', '.html', '.wxml', '.wxs'].concat(cssExtensions),
+      extensions: ['.ts', '.js', '.html', '.wxml', '.swan', '.ttml', '.wxs', '.sjs'].concat(cssExtensions),
       alias: Object.assign(aliasDirs, {
         '@': path.resolve(ROOT, 'src/')
       })

@@ -20,12 +20,12 @@
   "author": "Felix Liu",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^2.4.2",
-    "ewa-webpack": "^0.4.18",
-    "fs-extra": "^7.0.1",
+    "chalk": "^4.1.0",
+    "ewa-webpack": "^0.4.19",
+    "fs-extra": "^9.0.1",
     "glob": "^7.1.4",
-    "semver": "^5.7.1",
-    "yargs": "^12.0.5"
+    "semver": "^7.3.2",
+    "yargs": "^16.1.0"
   },
   "gitHead": "a280118f8557069fc383c105d1301b8175d74c13"
 }

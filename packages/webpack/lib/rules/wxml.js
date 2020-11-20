@@ -22,8 +22,9 @@ module.exports = function wxmlRule(options = {}) {
         /<%[\s\S]*?%>/,
         /<\?[\s\S]*?\?>/,
 
-        // 忽略 wxs 标签的处理
-        /<wxs[\s\S]*?<\/wxs>/
+        // 忽略 wxs 和 sjs 标签的处理
+        /<wxs[\s\S]*?<\/wxs>/,
+        /<sjs[\s\S]*?<\/sjs>/
       ],
     };
   }
@@ -43,6 +44,10 @@ module.exports = function wxmlRule(options = {}) {
       options: htmlOptions
     },
     {
+      loader: './loaders/wxml-transform-loader',
+      options: { type: options.EWA_ENV, ENTRY_DIR: options.ENTRY_DIR }
+    },
+    {
       loader: './loaders/fix-unary-element-loader',
       options: { action: 'addPrefix' }
     },
@@ -52,7 +57,7 @@ module.exports = function wxmlRule(options = {}) {
   if (options.cache) htmlRules = ['cache-loader'].concat(htmlRules);
 
   return {
-    test: /\.wxml$/i,
+    test: /\.(wxml|swan|axml|ttml)$/i,
     use: ExtractTextPlugin.extract(htmlRules)
   };
 };

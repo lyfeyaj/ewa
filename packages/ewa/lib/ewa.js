@@ -1,6 +1,6 @@
 "use strict";
 
-var wxPromisify = require('./plugins/wxPromisify');
+var apiPromisify = require('./plugins/apiPromisify');
 
 var enableState = require('./plugins/enableState');
 
@@ -13,5 +13,5 @@ var ewa = {
   enableState: enableState,
   createStore: createStore
 };
-wxPromisify(ewa);
+apiPromisify(ewa);
 module.exports = ewa;

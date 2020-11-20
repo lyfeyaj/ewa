@@ -4,8 +4,8 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports = function tsRule(options) {
-  const defaultConfigPath = path.resolve(__dirname, '../../tsconfig.json')
-  const userConfigPath = path.resolve(options.ROOT, './tsconfig.json')
+  const defaultConfigPath = path.resolve(__dirname, '../../tsconfig.json');
+  const userConfigPath = path.resolve(options.ROOT, './tsconfig.json');
 
   function fetchTsConfigFile(path) {
     try {
@@ -15,9 +15,9 @@ module.exports = function tsRule(options) {
     }
     return path;
   }
-  
+
   const configFile = fetchTsConfigFile(userConfigPath);
-  
+
   return {
     test: /\.ts$/,
     use: [

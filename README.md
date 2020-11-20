@@ -22,8 +22,8 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 11. 支持 WXSS 和 SCSS(或 LESS) 混用
 12. 代码混淆及高度压缩，节省包大小
 13. Typescript 支持
-14. 支持全局数据状态管理中心
-15. 支持全局事件调度中心
+14. 支持转换成 百度 / 字节跳动 / 支付宝 小程序
+15. 多种小程序开发插件，为小程序开发减负，解放生产力
 
 更多特性正在赶来 ... 敬请期待 👇
 
@@ -99,6 +99,8 @@ cd your_project_dir && ewa init
 ### 命令行
 
 ```
+# 命令行概览👇
+
 ewa <cmd> [args]
 
 命令：
@@ -111,20 +113,161 @@ ewa <cmd> [args]
   ewa generate <type> <name>  快速生成模版                          [别名: g]
 
 选项：
-  --version, -v  当前版本号                                               [布尔]
-  --help, -h     获取使用帮助                                             [布尔]
+  -v, --version  当前版本号                                               [布尔]
+  -h, --help     获取使用帮助                                             [布尔]
+
+
+# 多平台编译支持, 默认为 weapp (微信小程序)
+
+# 实时编译命令 👇
+ewa start
+
+启动 EWA 小程序项目实时编译
+
+选项：
+  -v, --version  当前版本号                                               [布尔]
+  -h, --help     获取使用帮助                                             [布尔]
+  -t, --type     构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt`
+            [字符串] [可选值: "weapp", "swan", "alipay", "tt"] [默认值: "weapp"]
+
+# 构建命令 👇
+ewa build
+
+编译小程序静态文件
+
+选项：
+  -v, --version  当前版本号                                               [布尔]
+  -h, --help     获取使用帮助                                             [布尔]
+  -t, --type     构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt`
+            [字符串] [可选值: "weapp", "swan", "alipay", "tt"] [默认值: "weapp"]
 ```
 
-## 微信接口 Promise 化
+## 功能插件
+
+### 微信接口 Promise 化
 
 ```javascript
-const { wx } = require('ewa');
+// 引入
+const { api } = require('ewa');
 
+// 例：
 Page({
   async onLoad() {
-    let { data } = await wx.request({ url: 'http://your_api_endpoint' });
+    let { data } = await api.request({ url: 'http://your_api_endpoint' });
   }
 })
+```
+
+### enableState 插件
+
+```javascript
+// 在 app.js 中引入插件，并初始化
+require('ewa').enableState();
+
+// 上述插件会引入 this.setState 方法，在 Page 和 Component 中均可调用
+// setState 方法会自动 diff 并仅提交数据变更
+// 例：
+Page({
+  data: { a: 1, b: 1, c: { d: 1, e: 1 } }
+  async onLoad() {
+    // 自动 diff 变化
+    // 相当于 this.setData({ b: 2, 'c.d': 2 });
+    this.setState({ a: 1, b: 2, c: { d: 2, e: 1 } });
+  }
+})
+```
+
+### createStore 插件
+
+使用方法： 👇
+
+1. 创建 store:对任意纯对象调用 createStore 使其响应式化（以 app.js 中 globalData 为例）
+
+```javascript
+// app.js 中引入
+const { createStore } = require('ewa');
+
+App({
+  ...
+  globalData: createStore ({
+    a: 'old1',
+    b: {
+      c: 'old2'
+    }
+  })
+})
+```
+
+2. 改变globalData，globalData以及全局状态更新（支持嵌套属性和数组下标修改）
+
+```javascript
+// pageA.js
+Page({
+  data: {
+    a: '',
+    b: {
+      c: ''
+    }
+  }
+})
+
+onLoad() {
+  App().globalData.a = 'new1'
+  console.log(this.data.a === 'new1')  // true
+
+  App().globalData.b.c = 'new2'
+  console.log(this.data.b.c === 'new2') // true
+}
+```
+
+3. 注入全局方法 使用示例:
+
+```javascript
+this.$on('test', (val) => { console.log(val) })
+
+this.$emit('test', 'value') // 'value'
+
+this.$once // 使用方法同this.$on 只会触发一次
+
+this.$off('test') // 解绑当前实例通过this.$on(...)注册的事件
+```
+
+以上方法适用于
+1. 页面与页面
+2. 页面与组件
+3. 组件与组件
+
+* 注: 所有页面或组件销毁时会自动解绑所有的事件(无需使用 `this.$off(...)`) *
+
+`this.$set('coinName', '金币')` 更新所有页面和组件 data 中 'coinName' 的值为 '金币'（支持嵌套属性和数组下标修改）
+
+2020/07 更新
+
+$watch 监听页面或组件 data 中属性 支持监听属性路径形式如 'a[1].b'
+
+使用示例：
+```
+data: {
+  prop: '',
+  obj: {
+    key: ''
+  }
+},
+...
+$watch: {
+  // 方式一
+  'prop': function(newVal, oldVal) {
+    ...
+  },
+  // 方式二
+  'obj': {
+    handler: function(newVal, oldVal) {
+      ...
+    },
+    deep: Boolean, // 深度遍历
+    immediate: Boolean // 立即触发
+  }
+}
 ```
 
 ## 配置

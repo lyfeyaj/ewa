@@ -59,5 +59,6 @@ typings/
 # next.js build output
 .next
 
-# Directory for built wechat app
+# Directory for built mini program app
 dist
+dist-*

@@ -1,4 +1,4 @@
-const wxPromisify = require('./plugins/wxPromisify');
+const apiPromisify = require('./plugins/apiPromisify');
 const enableState = require('./plugins/enableState');
 const createStore = require('./plugins/createStore');
 const mixin = require('./mixins/mixin');
@@ -9,6 +9,6 @@ const ewa = {
   createStore,
 };
 
-wxPromisify(ewa);
+apiPromisify(ewa);
 
 module.exports = ewa;

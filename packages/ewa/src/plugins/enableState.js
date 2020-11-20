@@ -275,6 +275,7 @@ function enableState(opts = {}) {
     if (page) {
       let $Page = Page;
       // Page 功能扩展
+      // eslint-disable-next-line
       Page = function (obj = {}) {
         obj.__isPage = true;
 
@@ -301,6 +302,7 @@ function enableState(opts = {}) {
     if (component) {
       let $Component = Component;
       // Component 功能扩展
+      // eslint-disable-next-line
       Component = function (obj = {}) {
         let properties = obj.properties || {};
         obj.lifetimes = obj.lifetimes || {};
