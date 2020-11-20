@@ -6,7 +6,7 @@ const execSync = require('child_process').execSync;
 const utils = require('../utils');
 
 module.exports = function build(type) {
-  utils.ensureEwaProject();
+  utils.ensureEwaProject(type);
 
   const ROOT = process.cwd();
 

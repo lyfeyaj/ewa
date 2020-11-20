@@ -4,7 +4,7 @@ const execSync = require('child_process').execSync;
 const utils = require('../utils');
 
 module.exports = async function start(type) {
-  utils.ensureEwaProject();
+  utils.ensureEwaProject(type);
 
   utils.checkUpdates();
 
