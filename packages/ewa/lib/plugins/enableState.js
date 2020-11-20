@@ -193,11 +193,13 @@ function enableState() {
   }
 
   function setState(obj, callback) {
+    var _this2 = this;
+
     return new Promise(function (resolve, reject) {
-      if (!this.$$state) this.initState();
+      if (!_this2.$$state) _this2.initState();
       var time = +new Date();
-      if (debug === 'conflict' || debug === true) checkPropertyAndDataConflict(this, obj);
-      var changes = diffAndMergeChanges(this.$$state, obj);
+      if (debug === 'conflict' || debug === true) checkPropertyAndDataConflict(_this2, obj);
+      var changes = diffAndMergeChanges(_this2.$$state, obj);
       var cb;
 
       if (typeof callback === 'function') {
@@ -216,9 +218,9 @@ function enableState() {
       }
 
       if (changes) {
-        if (debug) printDiffInfo(this, debug, time, changes);
+        if (debug) printDiffInfo(_this2, debug, time, changes);
 
-        this.__setData(changes, cb);
+        _this2.__setData(changes, cb);
       } else {
         cb();
       }
