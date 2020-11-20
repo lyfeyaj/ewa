@@ -201,43 +201,74 @@ function enableState(opts = {}) {
 
     this.__setData = this.setData;
 
-    this.setData = (obj, callback) => {
-      // 开启调试
-      if (debug) printDiffInfo(this, debug, null, '手动调用 setData 无法 diff');
+    // 防止覆盖 setData 方法失败
+    try {
+      this.setData = (obj, callback) => {
+        // 开启调试
+        if (debug) printDiffInfo(this, debug, null, '手动调用 setData 无法 diff');
 
-      // 调用原 setData
-      this.__setData(obj, function () {
-        // 如果开启自动同步，则在调用 setData 完成后，自动同步所有数据到 state 中
-        if (autoSync) initState.call(this);
-        if (typeof callback === 'function') return callback();
-      });
-    };
+        // 调用原 setData
+        this.__setData(obj, function () {
+          // 如果开启自动同步，则在调用 setData 完成后，自动同步所有数据到 state 中
+          if (autoSync) initState.call(this);
+          if (typeof callback === 'function') return callback();
+        });
+      };
 
-    this.__setDataPatched = true;
+      this.__setDataPatched = true;
+    } catch (error) {
+      if (!patchSetData.warningPrinted && console && console.warn) {
+        console.warn(
+          '注意: setData 补丁失败, 如在 Page 或 Component 中混用 setData 和 setState, '
+          + '请在每次调用 setData 之后, 手动调用 syncState 以保持 data 和 state 数据同步'
+        );
+      }
+      // 仅打印一次
+      patchSetData.warningPrinted = true;
+    }
   }
 
   // 设置状态函数
+  // 使用方式和 setData 相同
+  // 返回值为 Promise, 所以支持 async/await
   function setState(obj, callback) {
-    // 初始化状态
-    if (!this.$$state) this.initState();
+    return new Promise(function(resolve, reject) {
+      // 初始化状态
+      if (!this.$$state) this.initState();
 
-    // 记录当前时间
-    let time = +new Date();
+      // 记录当前时间
+      let time = +new Date();
 
-    // 输出 debug 信息
-    if (debug === 'conflict' || debug === true) checkPropertyAndDataConflict(this, obj);
+      // 输出 debug 信息
+      if (debug === 'conflict' || debug === true) checkPropertyAndDataConflict(this, obj);
 
-    // 计算变更
-    let changes = diffAndMergeChanges(this.$$state, obj);
+      // 计算变更
+      let changes = diffAndMergeChanges(this.$$state, obj);
 
-    // 如果有变更，则触发更新
-    if (changes) {
-      // 开启调试
-      if (debug) printDiffInfo(this, debug, time, changes);
-      this.__setData(changes, callback);
-    } else if (typeof callback === 'function') {
-      callback();
-    }
+      // 构造回调函数，确保 promise 在 callback 调用完成之后 resolve
+      let cb;
+      if (typeof callback === 'function') {
+        cb = function () {
+          try {
+            callback();
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        };
+      } else {
+        cb = () => resolve();
+      }
+
+      // 如果有变更，则触发更新
+      if (changes) {
+        // 开启调试
+        if (debug) printDiffInfo(this, debug, time, changes);
+        this.__setData(changes, cb);
+      } else {
+        cb();
+      }
+    });
   }
 
   try {
@@ -256,9 +287,13 @@ function enableState(opts = {}) {
           return _onLoad.apply(this, arguments);
         };
 
-        // 注入 initState 和 setState 方法
+        // 注入 initState, syncState, setState 方法
+        // initState 和 syncState 意义相同
+        // 如果 patchSetData 运行失败，如果在 Page 或 Component 中有混用 setData 和 setState
+        // 的情况，则最好在 调用完 setData 之后，手动调用下 syncState 以保持 data 和 state 状态一致
         obj.initState = function () { initState.call(this); };
-        obj.setState = function () { setState.apply(this, arguments); };
+        obj.syncState = function () { initState.call(this); };
+        obj.setState = function () { return setState.apply(this, arguments); };
 
         return $Page(obj);
       };
@@ -296,9 +331,12 @@ function enableState(opts = {}) {
           return _attached.apply(this, arguments);
         };
 
-        // 注入 initState 和 setState 方法
+        // 注入 initState, syncState, setState 方法
+        // initState 和 syncState 意义相同
+        // 如果 patchSetData 运行失败，如果在 Page 或 Component 中有混用 setData 和 setState
+        // 的情况，则最好在 调用完 setData 之后，手动调用下 syncState 以保持 data 和 state 状态一致
         obj.methods.initState = function () { initState.call(this); };
-        obj.methods.setState = function () { setState.apply(this, arguments); };
+        obj.methods.setState = function () { return setState.apply(this, arguments); };
 
         return $Component(obj);
       };
