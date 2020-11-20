@@ -172,31 +172,57 @@ function enableState() {
     if (this.__setDataPatched) return;
     this.__setData = this.setData;
 
-    this.setData = function (obj, callback) {
-      if (debug) printDiffInfo(_this, debug, null, '手动调用 setData 无法 diff');
+    try {
+      this.setData = function (obj, callback) {
+        if (debug) printDiffInfo(_this, debug, null, '手动调用 setData 无法 diff');
 
-      _this.__setData(obj, function () {
-        if (autoSync) initState.call(this);
-        if (typeof callback === 'function') return callback();
-      });
-    };
+        _this.__setData(obj, function () {
+          if (autoSync) initState.call(this);
+          if (typeof callback === 'function') return callback();
+        });
+      };
 
-    this.__setDataPatched = true;
+      this.__setDataPatched = true;
+    } catch (error) {
+      if (!patchSetData.warningPrinted && console && console.warn) {
+        console.warn('注意: setData 补丁失败, 如在 Page 或 Component 中混用 setData 和 setState, ' + '请在每次调用 setData 之后, 手动调用 syncState 以保持 data 和 state 数据同步');
+      }
+
+      patchSetData.warningPrinted = true;
+    }
   }
 
   function setState(obj, callback) {
-    if (!this.$$state) this.initState();
-    var time = +new Date();
-    if (debug === 'conflict' || debug === true) checkPropertyAndDataConflict(this, obj);
-    var changes = diffAndMergeChanges(this.$$state, obj);
+    return new Promise(function (resolve, reject) {
+      if (!this.$$state) this.initState();
+      var time = +new Date();
+      if (debug === 'conflict' || debug === true) checkPropertyAndDataConflict(this, obj);
+      var changes = diffAndMergeChanges(this.$$state, obj);
+      var cb;
 
-    if (changes) {
-      if (debug) printDiffInfo(this, debug, time, changes);
+      if (typeof callback === 'function') {
+        cb = function cb() {
+          try {
+            callback();
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        };
+      } else {
+        cb = function cb() {
+          return resolve();
+        };
+      }
 
-      this.__setData(changes, callback);
-    } else if (typeof callback === 'function') {
-      callback();
-    }
+      if (changes) {
+        if (debug) printDiffInfo(this, debug, time, changes);
+
+        this.__setData(changes, cb);
+      } else {
+        cb();
+      }
+    });
   }
 
   try {
@@ -216,6 +242,10 @@ function enableState() {
         };
 
         obj.initState = function () {
+          initState.call(this);
+        };
+
+        obj.syncState = function () {
           initState.call(this);
         };
 
