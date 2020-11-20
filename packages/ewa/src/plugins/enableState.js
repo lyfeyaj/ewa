@@ -232,7 +232,7 @@ function enableState(opts = {}) {
   // 使用方式和 setData 相同
   // 返回值为 Promise, 所以支持 async/await
   function setState(obj, callback) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) =>{
       // 初始化状态
       if (!this.$$state) this.initState();
 
