@@ -111,7 +111,8 @@ function makeConfig() {
             `src/**/*.{${options.copyFileTypes.join(',')}}`
           ),
           to: OUTPUT_DIR,
-          context: path.resolve(ROOT, 'src')
+          context: path.resolve(ROOT, 'src'),
+          noErrorOnMissing: true
         }
       ]
     })

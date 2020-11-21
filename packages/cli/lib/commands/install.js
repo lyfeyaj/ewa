@@ -13,8 +13,9 @@ module.exports = function install(projectDir, successTip) {
   // 重命名 gitignore => .gitignore
   // https://github.com/npm/npm/issues/3763
   let gitignoreFile = path.resolve(projectDir, 'gitignore');
-  if (fs.existsSync(gitignoreFile)) {
-    fs.moveSync(gitignoreFile, path.resolve(projectDir, '.gitignore'));
+  let dotGitignoreFile = path.resolve(projectDir, '.gitignore');
+  if (fs.existsSync(gitignoreFile) && !fs.existsSync(dotGitignoreFile)) {
+    fs.moveSync(gitignoreFile, dotGitignoreFile);
   }
 
   successTip = successTip || `cd ${projectName} && npm start`;
