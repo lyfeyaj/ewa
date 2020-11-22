@@ -127,7 +127,7 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
           entries['project.config.json'] = file;
         }
         if (target === 'alipay' && entryName === 'project.alipay.json') {
-          entries['project.config.json'] = file;
+          entries['mini.project.json'] = file;
         }
         if (target === 'swan' && entryName === 'project.swan.json') {
           entries[entryName] = file;

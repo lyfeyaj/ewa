@@ -12,6 +12,7 @@ module.exports = function install(projectDir, successTip) {
 
   // 重命名 gitignore => .gitignore
   // https://github.com/npm/npm/issues/3763
+  // 仅当 有 gitignore 但 没有 .gitignore 的时候
   let gitignoreFile = path.resolve(projectDir, 'gitignore');
   let dotGitignoreFile = path.resolve(projectDir, '.gitignore');
   if (fs.existsSync(gitignoreFile) && !fs.existsSync(dotGitignoreFile)) {

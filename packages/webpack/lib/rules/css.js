@@ -6,7 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = function cssRule(options = {}) {
   let cssPattern;
   let cssRules = [];
-  let cssExtensions = ['.css', '.wxss', '.acss', 'ttss'];
+  let cssExtensions = ['.css', '.wxss'];
   if (options.cssParser === 'sass') {
     cssPattern = /\.(css|scss|sass|wxss)$/;
     cssRules = [

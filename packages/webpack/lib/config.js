@@ -246,7 +246,7 @@ function makeConfig() {
         path.resolve(__dirname, '../../'),
         path.resolve(__dirname, '../../../node_modules')
       ],
-      extensions: ['.ts', '.js', '.html', '.wxml', '.swan', '.ttml', '.wxs', '.sjs'].concat(cssExtensions),
+      extensions: ['.ts', '.js', '.html', '.wxml', '.wxs'].concat(cssExtensions),
       alias: Object.assign(aliasDirs, {
         '@': path.resolve(ROOT, 'src/')
       })

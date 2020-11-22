@@ -327,8 +327,8 @@ module.exports = function wxmlParser(content = '', file = '', type = '') {
   );
 
   // NOTE: 文本替换 &quot; => '
-  // 由于wxml代码编写不规范，导致单双引号混用，解析时无法正确还原，这里做下替换
-  // 可能会导致显示的问题
+  // 由于wxml代码编写不规范，导致单双引号混用，解析时无法正确还原
+  // 由于每个属性都检查一遍比较消耗性能，这里直接做替换，可能会导致显示的问题
   // eslint-disable-next-line quotes
   return html.replace(/&quot;/g, "'");
 };

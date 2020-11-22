@@ -61,15 +61,13 @@ function outputDirByType(type) {
 // 确保当前目录为 ewa 项目目录，否则报错
 function ensureEwaProject(type = 'weapp') {
   if (isEwaProject()) {
-    // 百度小程序的开发工具配置文件名称为 project.swan.json
-    // 启动时检查该文件是否存在，如果不存在，则创建一个
-    // 考虑模版里面增加支付宝，头条，百度配置
+    // 模版里面增加支付宝，头条，百度配置
     // 配置文件映射关系为 project.[type].json
     // 如：
     //    微信 project.config.json => project.config.json
     //    百度 project.swan.json  => project.swan.json
     //    头条 project.tt.json => project.config.json
-    //    支付宝 project.alipay.json => project.config.json
+    //    支付宝 project.alipay.json => mini.project.json
     let configFileName = DEV_TOOL_CONFIG_FILES[type];
     let configFile = path.resolve(ROOT, `src/${configFileName}`);
 

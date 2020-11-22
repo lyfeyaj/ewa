@@ -57,7 +57,7 @@ module.exports = function wxmlRule(options = {}) {
   if (options.cache) htmlRules = ['cache-loader'].concat(htmlRules);
 
   return {
-    test: /\.(wxml|swan|axml|ttml)$/i,
+    test: /\.wxml$/i,
     use: ExtractTextPlugin.extract(htmlRules)
   };
 };
