@@ -6,9 +6,11 @@
 
 const BUILD_TARGET_TYPES_CONFIG = {
   alias: 't',
-  describe: '构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt`',
+  // describe: '构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt`',
+  describe: '构建目标 `weapp` 或 `swan` 或 `tt`',
   type: 'string',
-  choices: ['weapp', 'swan', 'alipay', 'tt'],
+  // choices: ['weapp', 'swan', 'alipay', 'tt'],
+  choices: ['weapp', 'swan', 'tt'],
   default: 'weapp',
   demandOption: false
 };
