@@ -30,6 +30,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 + 可跨项目复用的小程序组件或页面（通过NPM包管理）
 + Redux 支持
 + Mixin 支持
++ 允许使用 `webpack-chain` 来修改 webpack 配置
 
 ## 安装
 
