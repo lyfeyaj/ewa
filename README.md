@@ -160,9 +160,34 @@ Page({
 
 ### enableState 插件
 
+#### 用途
+
+在 `Page` 和 `Component` 中引入 `this.setState(data, callback)` 方法, 并根据 data 数据自动 diff 出变更, 减少单次 data 提交的数据量，避免超过小程序 1mb 的限制
+
+#### 常见问题
+
+1. 由于小程序本身的 bug, 当增量更新数组元素的时候, wxml 中无法正确获取到数组元素的 length
+
+#### 使用示例
+
 ```javascript
 // 在 app.js 中引入插件，并初始化
-require('ewa').enableState();
+const { enableState } = require('ewa');
+
+// 参数支持：
+//   opts: 参数对象
+//     debug: 是否开启 debug 模式，支持3种参数： true, 'page', 'component', 默认为 false
+//     component: 是否开启 component 支持, 默认为 true
+//     page: 是否开启 page 支持, 默认为 true
+//     overwriteArrayOnDeleted: 是否在数组发生删除操作是覆盖整个数组 true 或者 false, 默认为 true
+//     autoSync: 是否在 调用 setData 时自动同步 state, 默认为 true; 如果关闭此操作，在同一个页面或组件中混用 setState 或 setData 的时候，可能会导致BUG, 也可以手动调用 this.syncState() 来手动同步
+enableState({
+  debug: true,
+  component: true,
+  page: true,
+  overwriteArrayOnDeleted: true,
+  autoSync: true
+});
 
 // 上述插件会引入 this.setState 方法，在 Page 和 Component 中均可调用
 // setState 方法会自动 diff 并仅提交数据变更
@@ -173,6 +198,15 @@ Page({
     // 自动 diff 变化
     // 相当于 this.setData({ b: 2, 'c.d': 2 });
     this.setState({ a: 1, b: 2, c: { d: 2, e: 1 } });
+
+    // this.setState 支持使用 promise 来代替回调函数，如
+    this.setState({ info: { name: 'My Page Title' } }).then(() => {
+      // 数据已更新到视图, 这里写完成视图更新后的逻辑
+    });
+
+    // 同理，这里可以使用 await 来简化
+    await this.setState({ info: { name: 'My Page Title' } });
+    // 数据已更新到视图, 这里写完成视图更新后的逻辑
   }
 })
 ```
