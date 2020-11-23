@@ -31,6 +31,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 + Redux 支持
 + Mixin 支持
 + 允许使用 `webpack-chain` 来修改 webpack 配置
++ 增加不同平台的接口差异性描述和兼容
 
 ## 安装
 
