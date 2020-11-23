@@ -1,6 +1,5 @@
 'use strict';
 
-// let A = 1;
 const path = require('path');
 const jsonParser = require('../parsers/jsonParser');
 
