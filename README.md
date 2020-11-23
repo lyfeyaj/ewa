@@ -160,7 +160,7 @@ Page({
 })
 ```
 
-### enableState 插件
+### 插件: `enableState`
 
 #### 用途
 
@@ -213,14 +213,17 @@ Page({
 })
 ```
 
-### createStore 插件
+### 插件: `createStore`
 
-使用方法： 👇
+#### 用途
 
-1. 创建 store:对任意纯对象调用 createStore 使其响应式化（以 app.js 中 globalData 为例）
+支持设置全局响应式对象, 能够监听对象属性并自动更新到 data 中
+
+#### 使用示例
 
 ```javascript
-// app.js 中引入
+// 1. 创建 store: 对任意纯对象调用 createStore 使其响应式化（以 app.js 中 globalData 为例）
+//    app.js 中引入
 const { createStore } = require('ewa');
 
 App({
@@ -232,11 +235,9 @@ App({
     }
   })
 })
-```
 
-2. 改变globalData，globalData以及全局状态更新（支持嵌套属性和数组下标修改）
+// 2. 改变 globalData 以及全局状态更新（支持嵌套属性和数组下标修改）
 
-```javascript
 // pageA.js
 Page({
   data: {
@@ -254,56 +255,51 @@ onLoad() {
   App().globalData.b.c = 'new2'
   console.log(this.data.b.c === 'new2') // true
 }
-```
 
-3. 注入全局方法 使用示例:
 
-```javascript
+// 3. 注入全局方法 使用示例:
 this.$on('test', (val) => { console.log(val) })
 
-this.$emit('test', 'value') // 'value'
+// 发射数据变化
+this.$emit('test', 'value');
 
-this.$once // 使用方法同this.$on 只会触发一次
+// 使用方法同 this.$on 只会触发一次
+this.$once('test', (val) => {});
 
-this.$off('test') // 解绑当前实例通过this.$on(...)注册的事件
-```
+// 解绑当前实例通过 this.$on(...) 注册的事件
+this.$off('test');
 
-以上方法适用于
-1. 页面与页面
-2. 页面与组件
-3. 组件与组件
+// 以上方法适用于
+// 1. 页面与页面
+// 2. 页面与组件
+// 3. 组件与组件
 
-* 注: 所有页面或组件销毁时会自动解绑所有的事件(无需使用 `this.$off(...)`) *
+// 注: 所有页面或组件销毁时会自动解绑所有的事件(无需手动调用 `this.$off(...)`)
+// `this.$set('coinName', '金币')` 更新所有页面和组件 data 中 'coinName' 的值为 '金币'（支持嵌套属性和数组下标修改）
 
-`this.$set('coinName', '金币')` 更新所有页面和组件 data 中 'coinName' 的值为 '金币'（支持嵌套属性和数组下标修改）
+// $watch 监听页面或组件 data 中属性 支持监听属性路径形式如 'a[1].b'
 
-2020/07 更新
-
-$watch 监听页面或组件 data 中属性 支持监听属性路径形式如 'a[1].b'
-
-使用示例：
-```
-data: {
-  prop: '',
-  obj: {
-    key: ''
-  }
-},
-...
-$watch: {
-  // 方式一
-  'prop': function(newVal, oldVal) {
-    ...
-  },
-  // 方式二
-  'obj': {
-    handler: function(newVal, oldVal) {
-      ...
-    },
-    deep: Boolean, // 深度遍历
-    immediate: Boolean // 立即触发
-  }
-}
+// 使用示例：
+Page({
+  data: {
+     prop: '',
+     obj: {
+       key: ''
+     }
+   },
+   $watch: {
+     // 方式一
+     'prop': function(newVal, oldVal) {
+     },
+     // 方式二
+     'obj': {
+       handler: function(newVal, oldVal) {
+       },
+       deep: Boolean, // 深度遍历
+       immediate: Boolean // 立即触发
+     }
+   }
+});
 ```
 
 ## 配置
