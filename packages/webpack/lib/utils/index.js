@@ -130,7 +130,7 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
         if (target === 'weapp' && entryName === 'project.config.json') {
           entries[entryName] = file;
         }
-        if (target === 'tt' && entryName === 'project.tt.json') {
+        if ((target === 'tt' && entryName === 'project.tt.json') || (target === 'qq' && entryName === 'project.qq.json')) {
           entries['project.config.json'] = file;
         }
         if (target === 'alipay' && entryName === 'project.alipay.json') {
@@ -138,9 +138,6 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
         }
         if (target === 'swan' && entryName === 'project.swan.json') {
           entries[entryName] = file;
-        }
-        if (target === 'qq' && entryName === 'project.qq.json') {
-          entries['project.config.json'] = file;
         }
       } else {
         // 如果 已存在，则提示错误
