@@ -15,7 +15,15 @@ const FILE_TYPES_MAP = {
   tt: '.ttml',
   swan: '.swan',
   alipay: '.axml',
+  qq: '.qml'
 };
+
+const WXS_TYPES_MAP = {
+  tt: 'sjs',
+  swan: 'sjs',
+  alipay: 'sjs',
+  qq: 'qs'
+}
 function tranformImport(node, type) {
   if (node.name !== 'import' && node.name !== 'include') return;
 
@@ -43,6 +51,22 @@ function tranformTemplate(node, type) {
   if (!attribs.data) return;
 
   attribs.data = `{${attribs.data}}`;
+}
+
+/**
+ * 转换wxs 
+ * 
+ * @param {Object} node 节点对象
+ * @param {String} type 构建类型
+ */
+function transformWxs(node, type) {
+  if (type === 'weapp') return;
+  if (node.name === 'wxs') {
+    node.name = WXS_TYPES_MAP[type]
+
+    const attribs = node.attribs;
+    attribs.src = attribs.src.replace(/\.wxs$/i, `.${WXS_TYPES_MAP[type]}`)
+  }
 }
 
 /**
@@ -86,6 +110,17 @@ const DIRECTIVES_MAP = {
     'wx:for-item': 'a:for-item',
     'wx:for-index': 'a:for-index',
     'wx:key': 'a:key'
+  },
+  qq: {
+    'wx:if': 'qq:if',
+    'wx:elif': 'qq:elif',
+    'wx:else': 'qq:else',
+
+    'wx:for': 'qq:for',
+    'wx:for-items': 'qq:for-items',
+    'wx:for-item': 'qq:for-item',
+    'wx:for-index': 'qq:for-index',
+    'wx:key': 'qq:key'
   }
 };
 const DIRECTIVES_MAP_KEYS = {};
@@ -102,7 +137,7 @@ function transformDirective(node, file, type) {
     if (!/^((\.\/)|(http))/.test(attribs.src)) {
       // 如果路径中包含判断逻辑，则不支持转换
       if (attribs.src.indexOf('{{') === -1) {
-        let relativePath = path.relative('/'+path.dirname(file), attribs.src);
+        let relativePath = path.relative('/' + path.dirname(file), attribs.src);
         attribs.src = relativePath;
       }
     }
@@ -293,6 +328,7 @@ function transformToTargetType(node, file, type) {
   transformForIFDirective(node, type);
   transformDirective(node, file, type);
   transformStyle(node);
+  transformWxs(node, type);
 
   node.children.map(n => transformToTargetType(n, file, type));
 

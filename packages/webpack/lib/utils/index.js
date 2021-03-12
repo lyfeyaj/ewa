@@ -10,9 +10,9 @@ const glob = require('glob');
 const TS_PATTERN = /\.ts$/;
 const CSS_PATTERN = /\.(less|sass|scss)$/;
 
-const WXML_LIKE_PATTERN = /\.(swan|wxml|axml|ttml)$/;
-const WXSS_LIKE_PATTERN = /\.(wxss|css|acss|ttss)$/;
-const WXS_LIKE_PATTERN = /\.(wxs|sjs)$/;
+const WXML_LIKE_PATTERN = /\.(swan|wxml|axml|ttml|qml)$/;
+const WXSS_LIKE_PATTERN = /\.(wxss|css|acss|ttss|qss)$/;
+const WXS_LIKE_PATTERN = /\.(wxs|sjs|qs)$/;
 
 // 基于构建环境替换文件后缀
 // NOTE: 仅支持 从 微信小程序 转换为其他小程序，不支持 其他小程序 转换为 微信小程序
@@ -47,6 +47,13 @@ function chooseCorrectExtnameByBuildTarget(file, target) {
     if (WXML_LIKE_PATTERN.test(file)) return file.replace(WXML_LIKE_PATTERN, '.ttml');
     if (WXSS_LIKE_PATTERN.test(file)) return file.replace(WXSS_LIKE_PATTERN, '.ttss');
     if (WXS_LIKE_PATTERN.test(file)) return file.replace(WXS_LIKE_PATTERN, '.sjs');
+  }
+
+  // 如果构建目标为 qq小程序
+  if (target === 'qq') {
+    if (WXML_LIKE_PATTERN.test(file)) return file.replace(WXML_LIKE_PATTERN, '.qml');
+    if (WXSS_LIKE_PATTERN.test(file)) return file.replace(WXSS_LIKE_PATTERN, '.qss');
+    if (WXS_LIKE_PATTERN.test(file)) return file.replace(WXS_LIKE_PATTERN, '.qs');
   }
 
   // 其他文件直接返回
@@ -90,7 +97,7 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
   let entries = {};
 
   // 遍历所有的微信文件用于生成 entry 对象
-  wxFiles.map(function(file) {
+  wxFiles.map(function (file) {
     // 标记为微信页面或组件文件夹
     entryDirs[path.dirname(file)] = true;
 
@@ -103,7 +110,7 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
   });
 
   // 仅当被标记为微信小程序的页面或者组件文件夹的内容才会被作为 entry
-  otherFiles.forEach(function(file) {
+  otherFiles.forEach(function (file) {
     if (entryDirs[path.dirname(file)]) {
       let relativePath = resolveOrSimplifyPath(baseDir, file, simplifyPath);
 
@@ -119,7 +126,7 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
       entryName = chooseCorrectExtnameByBuildTarget(entryName, target);
 
       // 选择合适的小程序开发工具配置文件
-      if (/project\.(config|swan|alipay|tt)\.json$/.test(file)) {
+      if (/project\.(config|swan|alipay|tt|qq)\.json$/.test(file)) {
         if (target === 'weapp' && entryName === 'project.config.json') {
           entries[entryName] = file;
         }
@@ -131,6 +138,9 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
         }
         if (target === 'swan' && entryName === 'project.swan.json') {
           entries[entryName] = file;
+        }
+        if (target === 'qq' && entryName === 'project.qq.json') {
+          entries['project.config.json'] = file;
         }
       } else {
         // 如果 已存在，则提示错误

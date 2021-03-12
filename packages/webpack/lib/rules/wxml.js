@@ -22,9 +22,10 @@ module.exports = function wxmlRule(options = {}) {
         /<%[\s\S]*?%>/,
         /<\?[\s\S]*?\?>/,
 
-        // 忽略 wxs 和 sjs 标签的处理
+        // 忽略 wxs、qs 和 sjs 标签的处理
         /<wxs[\s\S]*?<\/wxs>/,
-        /<sjs[\s\S]*?<\/sjs>/
+        /<sjs[\s\S]*?<\/sjs>/,
+        /<qs[\s\S]*?<\/qs>/,
       ],
     };
   }
