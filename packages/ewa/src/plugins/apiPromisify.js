@@ -206,6 +206,12 @@ module.exports = function install(ewa = {}, removeFromPromisify) {
     _api = (ewa.my = ewa.my || assign({}, my));
   }
 
+  // qq小程序支持
+  if (typeof qq === 'object') {
+    api = qq;
+    _api = (ewa.qq = ewa.qq || assign({}, qq));
+  }
+
   let noPromiseMap = {};
   if (removeFromPromisify) {
     if (Array.isArray(removeFromPromisify)) {

@@ -28,11 +28,13 @@ const DEV_TOOL_CONFIG_FILES = {
   // 微信小程序
   weapp: 'project.config.json',
   // 百度小程序
-  swan : 'project.swan.json',
+  swan: 'project.swan.json',
   // 头条小程序
   tt: 'project.tt.json',
   // 支付宝小程序
   alipay: 'project.alipay.json',
+  // qq小程序
+  qq: 'project.qq.json'
 };
 
 // 模版文件地址
@@ -44,6 +46,7 @@ const TYPE_NAME_MAPPINGS = {
   swan: '百度',
   tt: '头条',
   alipay: '支付宝',
+  qq: 'qq'
 };
 
 // 判断是否为 ewa 目录
@@ -67,6 +70,7 @@ function ensureEwaProject(type = 'weapp') {
     //    微信 project.config.json => project.config.json
     //    百度 project.swan.json  => project.swan.json
     //    头条 project.tt.json => project.config.json
+    //    qq project.qq.json => project.config.json
     //    支付宝 project.alipay.json => mini.project.json
     let configFileName = DEV_TOOL_CONFIG_FILES[type];
     let configFile = path.resolve(ROOT, `src/${configFileName}`);
@@ -99,15 +103,15 @@ function log(msg, type = 'info') {
 
 // 基础 https 请求
 function request(url) {
-  return new Promise(function(resolve ,reject) {
+  return new Promise(function (resolve, reject) {
     https.get(url, res => {
       let buffers = [];
 
-      res.on('data', function(buffer) {
+      res.on('data', function (buffer) {
         buffers.push(buffer);
       });
 
-      res.on('end', function() {
+      res.on('end', function () {
         resolve(JSON.parse(Buffer.concat(buffers).toString('utf8')));
       });
     }).on('error', (e) => {

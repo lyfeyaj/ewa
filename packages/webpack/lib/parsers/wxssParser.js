@@ -5,6 +5,7 @@ module.exports = function wxssParser(content, type) {
   if (type === 'swan') content = content.replace(/\.wxss/g, '.css');
   if (type === 'tt') content = content.replace(/\.wxss/g, '.ttss');
   if (type === 'alipay') content = content.replace(/\.wxss/g, '.acss');
+  if (type === 'qq') content = content.replace(/\.wxss/g, '.qss');
 
   return content;
 };
