@@ -23,7 +23,8 @@ const WXS_TYPES_MAP = {
   swan: 'sjs',
   alipay: 'sjs',
   qq: 'qs'
-}
+};
+
 function tranformImport(node, type) {
   if (node.name !== 'import' && node.name !== 'include') return;
 
@@ -54,8 +55,8 @@ function tranformTemplate(node, type) {
 }
 
 /**
- * 转换wxs 
- * 
+ * 转换wxs
+ *
  * @param {Object} node 节点对象
  * @param {String} type 构建类型
  */

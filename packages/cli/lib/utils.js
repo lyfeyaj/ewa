@@ -33,7 +33,7 @@ const DEV_TOOL_CONFIG_FILES = {
   tt: 'project.tt.json',
   // 支付宝小程序
   alipay: 'project.alipay.json',
-  // qq小程序
+  // QQ小程序
   qq: 'project.qq.json'
 };
 
@@ -46,7 +46,7 @@ const TYPE_NAME_MAPPINGS = {
   swan: '百度',
   tt: '头条',
   alipay: '支付宝',
-  qq: 'qq'
+  qq: 'QQ'
 };
 
 // 判断是否为 ewa 目录

@@ -133,6 +133,11 @@ module.exports = function install() {
     _api = ewa.my = ewa.my || assign({}, my);
   }
 
+  if ((typeof qq === "undefined" ? "undefined" : _typeof(qq)) === 'object') {
+    api = qq;
+    _api = ewa.qq = ewa.qq || assign({}, qq);
+  }
+
   var noPromiseMap = {};
 
   if (removeFromPromisify) {
