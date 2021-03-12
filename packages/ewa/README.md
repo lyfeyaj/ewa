@@ -22,16 +22,20 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 11. 支持 WXSS 和 SCSS(或 LESS) 混用
 12. 代码混淆及高度压缩，节省包大小
 13. Typescript 支持
+14. 支持转换成 百度 / 字节跳动 / QQ 小程序
+15. 多种小程序开发插件，为小程序开发减负，解放生产力
 
 更多特性正在赶来 ... 敬请期待 👇
 
 + 可跨项目复用的小程序组件或页面（通过NPM包管理）
 + Redux 支持
 + Mixin 支持
++ 允许使用 `webpack-chain` 来修改 webpack 配置
++ 增加不同平台的接口差异性描述和兼容
 
 ## 安装
 
-需要 node 版本 >= 8
+***需要 node 版本 >= 10.13***
 
 ```bash
 npm i -g ewa-cli 或者 yarn global add ewa-cli
@@ -97,6 +101,8 @@ cd your_project_dir && ewa init
 ### 命令行
 
 ```
+# 命令行概览👇
+
 ewa <cmd> [args]
 
 命令：
@@ -109,20 +115,191 @@ ewa <cmd> [args]
   ewa generate <type> <name>  快速生成模版                          [别名: g]
 
 选项：
-  --version, -v  当前版本号                                               [布尔]
-  --help, -h     获取使用帮助                                             [布尔]
+  -v, --version  当前版本号                                               [布尔]
+  -h, --help     获取使用帮助                                             [布尔]
+
+
+# 多平台编译支持, 默认为 weapp (微信小程序)
+
+# 实时编译命令 👇
+ewa start
+
+启动 EWA 小程序项目实时编译
+
+选项：
+  -v, --version  当前版本号                                               [布尔]
+  -h, --help     获取使用帮助                                             [布尔]
+  -t, --type     构建目标 `weapp` 或 `swan` 或 `tt` 或 `qq`
+            [字符串] [可选值: "weapp", "swan", "tt", "qq"] [默认值: "weapp"]
+
+# 构建命令 👇
+ewa build
+
+编译小程序静态文件
+
+选项：
+  -v, --version  当前版本号                                               [布尔]
+  -h, --help     获取使用帮助                                             [布尔]
+  -t, --type     构建目标 `weapp` 或 `swan` 或 `tt` 或 `qq`
+            [字符串] [可选值: "weapp", "swan", "tt", "qq"] [默认值: "weapp"]
 ```
 
-## 微信接口 Promise 化
+## 功能插件
+
+### 微信接口 Promise 化
 
 ```javascript
-const { wx } = require('ewa');
+// 引入
+const { api } = require('ewa');
 
+// 例：
 Page({
   async onLoad() {
-    let { data } = await wx.request({ url: 'http://your_api_endpoint' });
+    let { data } = await api.request({ url: 'http://your_api_endpoint' });
   }
 })
+```
+
+### 插件: `enableState`
+
+#### 用途
+
+在 `Page` 和 `Component` 中引入 `this.setState(data, callback)` 方法, 并根据 data 数据自动 diff 出变更, 减少单次 data 提交的数据量，避免超过小程序 1mb 的限制
+
+#### 常见问题
+
+1. 由于小程序本身的 bug, 当增量更新数组元素的时候, wxml 中无法正确获取到数组元素的 length
+
+#### 使用示例
+
+```javascript
+// 在 app.js 中引入插件，并初始化
+const { enableState } = require('ewa');
+
+// 参数支持：
+//   opts: 参数对象
+//     debug: 是否开启 debug 模式，支持3种参数： true, 'page', 'component', 默认为 false
+//     component: 是否开启 component 支持, 默认为 true
+//     page: 是否开启 page 支持, 默认为 true
+//     overwriteArrayOnDeleted: 是否在数组发生删除操作是覆盖整个数组 true 或者 false, 默认为 true
+//     autoSync: 是否在 调用 setData 时自动同步 state, 默认为 true; 如果关闭此操作，在同一个页面或组件中混用 setState 或 setData 的时候，可能会导致BUG, 也可以手动调用 this.syncState() 来手动同步
+enableState({
+  debug: true,
+  component: true,
+  page: true,
+  overwriteArrayOnDeleted: true,
+  autoSync: true
+});
+
+// 上述插件会引入 this.setState 方法，在 Page 和 Component 中均可调用
+// setState 方法会自动 diff 并仅提交数据变更
+// 例：
+Page({
+  data: { a: 1, b: 1, c: { d: 1, e: 1 } }
+  async onLoad() {
+    // 自动 diff 变化
+    // 相当于 this.setData({ b: 2, 'c.d': 2 });
+    this.setState({ a: 1, b: 2, c: { d: 2, e: 1 } });
+
+    // this.setState 支持使用 promise 来代替回调函数，如
+    this.setState({ info: { name: 'My Page Title' } }).then(() => {
+      // 数据已更新到视图, 这里写完成视图更新后的逻辑
+    });
+
+    // 同理，这里可以使用 await 来简化
+    await this.setState({ info: { name: 'My Page Title' } });
+    // 数据已更新到视图, 这里写完成视图更新后的逻辑
+  }
+})
+```
+
+### 插件: `createStore`
+
+#### 用途
+
+支持设置全局响应式对象, 能够监听对象属性并自动更新到 data 中
+
+#### 使用示例
+
+```javascript
+// 1. 创建 store: 对任意纯对象调用 createStore 使其响应式化（以 app.js 中 globalData 为例）
+//    app.js 中引入
+const { createStore } = require('ewa');
+
+App({
+  ...
+  globalData: createStore ({
+    a: 'old1',
+    b: {
+      c: 'old2'
+    }
+  })
+})
+
+// 2. 改变 globalData 以及全局状态更新（支持嵌套属性和数组下标修改）
+
+// pageA.js
+Page({
+  data: {
+    a: '',
+    b: {
+      c: ''
+    }
+  }
+})
+
+onLoad() {
+  App().globalData.a = 'new1'
+  console.log(this.data.a === 'new1')  // true
+
+  App().globalData.b.c = 'new2'
+  console.log(this.data.b.c === 'new2') // true
+}
+
+
+// 3. 注入全局方法 使用示例:
+this.$on('test', (val) => { console.log(val) })
+
+// 发射数据变化
+this.$emit('test', 'value');
+
+// 使用方法同 this.$on 只会触发一次
+this.$once('test', (val) => {});
+
+// 解绑当前实例通过 this.$on(...) 注册的事件
+this.$off('test');
+
+// 以上方法适用于
+// 1. 页面与页面
+// 2. 页面与组件
+// 3. 组件与组件
+
+// 注: 所有页面或组件销毁时会自动解绑所有的事件(无需手动调用 `this.$off(...)`)
+// `this.$set('coinName', '金币')` 更新所有页面和组件 data 中 'coinName' 的值为 '金币'（支持嵌套属性和数组下标修改）
+
+// $watch 监听页面或组件 data 中属性 支持监听属性路径形式如 'a[1].b'
+
+// 使用示例：
+Page({
+  data: {
+     prop: '',
+     obj: {
+       key: ''
+     }
+   },
+   $watch: {
+     // 方式一
+     'prop': function(newVal, oldVal) {
+     },
+     // 方式二
+     'obj': {
+       handler: function(newVal, oldVal) {
+       },
+       deep: Boolean, // 深度遍历
+       immediate: Boolean // 立即触发
+     }
+   }
+});
 ```
 
 ## 配置
@@ -192,3 +369,4 @@ module.exports = {
 2. WXSS 中可以直接编写 SCSS 样式代码
 3. WXSS 或 SCSS 中引用绝对路径需要在路径前加 `~` 符号，如：`@import "~@/assets/styles/common.scss";`，具体原因参见: [sass-loader](https://github.com/webpack-contrib/sass-loader#imports)
 4. `ewa build` 后如果无法正常运行小程序，可检查下是否关闭了微信开发者工具中的 `ES6 转 ES5` 和 `增强编译` 选项。原因是：ewa 打包时会将 ES6 转换为 ES5 并混淆压缩，此功能和微信开发者工具自带的 `ES6 转 ES5` 和 `增强编译` 功能有部分重复，多次转换会导致代码无法运行，所以只要关闭即可。
+5. 其他问题欢迎直接在 Github 上提交 issue
