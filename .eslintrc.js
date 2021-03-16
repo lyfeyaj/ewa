@@ -7,6 +7,7 @@ module.exports = {
     },
     "globals": {
         "wx": true,
+        "qq": true,
         "tt": true,
         "swan": true,
         "my": true,
