@@ -7,12 +7,12 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 module.exports = function () {
-  function Queue(maxCocurrency) {
+  function Queue(maxConcurrency) {
     _classCallCheck(this, Queue);
 
     this._queue = [];
-    this._maxCocurrency = maxCocurrency || 10;
-    this._currentCocurrency = 0;
+    this._maxConcurrency = maxConcurrency || 8;
+    this._currentConcurrency = 0;
   }
 
   _createClass(Queue, [{
@@ -25,18 +25,18 @@ module.exports = function () {
     value: function shift() {
       var _this = this;
 
-      if (this._currentCocurrency >= this._maxCocurrency) {
+      if (this._currentConcurrency >= this._maxConcurrency) {
         return Promise.resolve();
       }
 
       var next = this._queue.shift();
 
       if (next) {
-        this._currentCocurrency++;
+        this._currentConcurrency++;
 
         var _handleNext = function _handleNext(e) {
           if (e) console.log(e.message, e.stack);
-          _this._currentCocurrency--;
+          _this._currentConcurrency--;
           return _this.shift();
         };
 

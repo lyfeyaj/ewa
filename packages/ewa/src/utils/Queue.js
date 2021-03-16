@@ -1,13 +1,13 @@
 module.exports = class Queue {
-  constructor(maxCocurrency) {
+  constructor(maxConcurrency) {
     // 队列
     this._queue = [];
 
     // 并发数
-    this._maxCocurrency = maxCocurrency || 10;
+    this._maxConcurrency = maxConcurrency || 8;
 
     // 当前并发数
-    this._currentCocurrency = 0;
+    this._currentConcurrency = 0;
   }
 
   isEmpty() {
@@ -16,7 +16,7 @@ module.exports = class Queue {
 
   shift() {
     // 当前并发数大于最大并发数时, 不做任何操作
-    if (this._currentCocurrency >= this._maxCocurrency) {
+    if (this._currentConcurrency >= this._maxConcurrency) {
       return Promise.resolve();
     }
 
@@ -24,13 +24,13 @@ module.exports = class Queue {
     let next = this._queue.shift();
 
     if (next) {
-      this._currentCocurrency++;
+      this._currentConcurrency++;
 
       // 处理下一个请求
       let _handleNext = (e) => {
         // eslint-disable-next-line
         if (e) console.log(e.message, e.stack);
-        this._currentCocurrency--;
+        this._currentConcurrency--;
         return this.shift();
       };
 
