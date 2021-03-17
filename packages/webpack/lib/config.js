@@ -101,7 +101,8 @@ function makeConfig() {
     new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: '[name]' }),
     new NodeCommonModuleTemplatePlugin({
-      commonModuleName: options.commonModuleName
+      commonModuleName: options.commonModuleName,
+      OUTPUT_GLOBAL_OBJECT
     }),
     new CopyWebpackPlugin({
       patterns: [
