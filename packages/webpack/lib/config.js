@@ -187,7 +187,16 @@ function makeConfig() {
     require('./rules/wxml')(ruleOpts),
     require('./rules/json')(ruleOpts),
     require('./rules/wxs')(ruleOpts),
-    cssRule
+    cssRule,
+
+    // 修复 regenerator-runtime 导致使用 Function 的报错问题
+    {
+      test: /regenerator-runtime/,
+      use: [{
+        loader: './loaders/fix-regenerator-loader',
+        options: { type: options.EWA_ENV }
+      }]
+    }
   ]);
 
   // 构建优化
