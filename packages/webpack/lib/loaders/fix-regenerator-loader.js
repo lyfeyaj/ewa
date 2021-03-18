@@ -8,8 +8,3 @@ module.exports = function fixRegeneratorLoader(content = '') {
 
   return content;
 };
-
-
-
-
-
