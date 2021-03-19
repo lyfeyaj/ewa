@@ -10,7 +10,7 @@ const BUILD_TARGET_TYPES_CONFIG = {
   describe: '构建目标 `weapp` 或 `swan` 或 `tt` 或 `qq`',
   type: 'string',
   // choices: ['weapp', 'swan', 'alipay', 'tt', 'qq'],
-  choices: ['weapp', 'swan', 'tt', 'qq'],
+  choices: ['weapp', 'swan', 'tt', 'qq', 'alipay'],
   default: 'weapp',
   demandOption: false
 };

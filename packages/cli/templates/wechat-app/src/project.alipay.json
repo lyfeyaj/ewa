@@ -1,5 +1,5 @@
 {
   "axmlStrictCheck": false,
   "enableParallelLoader": false,
-  "component2": false
+  "component2": true
 }
