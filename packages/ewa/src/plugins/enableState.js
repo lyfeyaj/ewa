@@ -6,7 +6,7 @@ const get = require('lodash.get');
 const cloneDeep = require('lodash.clonedeep');
 const keys = require('lodash.keys');
 
-const noop = function () {};
+const noop = function () { };
 
 // 取出 对象中的部分键值，支持 嵌套 key， 如 'user.gender'
 function deepPick(obj, props = []) {
@@ -208,7 +208,7 @@ function enableState(opts = {}) {
         if (debug) printDiffInfo(this, debug, null, '手动调用 setData 无法 diff');
 
         // 调用原 setData
-        this.__setData(obj, function () {
+        this.__setData(obj, () => {
           // 如果开启自动同步，则在调用 setData 完成后，自动同步所有数据到 state 中
           if (autoSync) initState.call(this);
           if (typeof callback === 'function') return callback();
@@ -232,7 +232,7 @@ function enableState(opts = {}) {
   // 使用方式和 setData 相同
   // 返回值为 Promise, 所以支持 async/await
   function setState(obj, callback) {
-    return new Promise((resolve, reject) =>{
+    return new Promise((resolve, reject) => {
       // 初始化状态
       if (!this.$$state) this.initState();
 

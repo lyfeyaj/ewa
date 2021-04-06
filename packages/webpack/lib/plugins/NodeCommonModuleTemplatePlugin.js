@@ -56,7 +56,7 @@ module.exports = class NodeCommonModuleTemplatePlugin {
           '',
           'var freeGlobal = typeof global == "object" && global && global.Object === Object && global;',
           'var freeSelf = typeof self == "object" && self && self.Object === Object && self;',
-          `var g = freeGlobal || freeSelf || ${OUTPUT_GLOBAL_OBJECT};`,
+          `var g = freeGlobal || freeSelf || ${OUTPUT_GLOBAL_OBJECT} || {};`,
           '',
           '// require common modules',
           '(function loadVendorModules() {',

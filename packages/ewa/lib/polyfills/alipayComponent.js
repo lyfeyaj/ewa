@@ -9,9 +9,22 @@ function alipayComponent() {
 
   Component = function Component(obj) {
     obj.onInit = function () {
-      obj.attached.apply(this);
-      obj.created.apply(this);
+      var _this = this;
+
       this.properties = this.props || {};
+
+      this.triggerEvent = function (name, params) {
+        name = name.replace(/^[a-zA-Z]{1}/, function (s) {
+          return s.toUpperCase();
+        });
+
+        _this.props['on' + name]({
+          detail: params
+        });
+      };
+
+      obj.created.apply(this);
+      obj.attached.apply(this);
     };
 
     var props = {};
@@ -23,7 +36,7 @@ function alipayComponent() {
     obj.props = props;
 
     obj.deriveDataFromProps = function () {
-      var _this = this;
+      var _this2 = this;
 
       var nextProps = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       this.properties = assign(this.properties, nextProps || {});
@@ -41,7 +54,7 @@ function alipayComponent() {
 
           if (observer) {
             try {
-              observer.call(_this, _this.properties[key]);
+              observer.call(_this2, _this2.properties[key]);
             } catch (e) {
               console.log(e);
             }

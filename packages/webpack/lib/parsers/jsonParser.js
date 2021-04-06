@@ -1,14 +1,14 @@
 'use strict';
 
 const path = require('path');
+const alipayJsonParser = require('./alipayJsonParser')
 
 // 组件引用路径中，匹配到以下字符串，百度中不需要替换为绝对路径，其他平台直接删除此引用
 const EXCLUDE_URL_MATCHER = /dynamicLib\:\/\//;
 
 // 百度小程序组件不支持相对路径，全部转换为绝对路径
 // 解析 usingComponents 并转换为绝对路径
-// NOTE: 支付宝不支持全局组件，需要分析全局组件, 并将其添加到各个页面和组件的 json 中
-module.exports = function jsonParser(content, file, type) {
+module.exports = function jsonParser(content, file, type, GLOBAL_COMPONENTS, ENTRY_DIR) {
 
   if (!EXCLUDE_URL_MATCHER.test(content) && type !== 'swan' && type !== 'alipay') return content;
 
@@ -25,6 +25,15 @@ module.exports = function jsonParser(content, file, type) {
   });
 
   json.usingComponents = usingComponents;
+
+  if (type === 'alipay') {
+    // 将app.json中的全局组件 写入每个的page.json
+    Object.keys(GLOBAL_COMPONENTS || {}).forEach(name => {
+      json.usingComponents[name] = '/' + path.relative(ENTRY_DIR, path.resolve(ENTRY_DIR, GLOBAL_COMPONENTS[name]))
+    })
+    // 处理支付宝平台json文件中字段不一致的问题
+    json = alipayJsonParser(json, type)
+  }
 
   return JSON.stringify(json, null, '  ');
 };

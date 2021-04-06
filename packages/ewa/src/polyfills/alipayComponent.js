@@ -7,12 +7,22 @@ function alipayComponent() {
   const __Component = Component;
 
   // 覆盖 Component 以支持微信 Component 转换为 支付宝 的 Component
-  Component = function(obj) {
+  Component = function (obj) {
     // NOTE: 需要更加精确的控制生命周期函数, 兼容性未测试
     obj.onInit = function () {
-      obj.attached.apply(this);
-      obj.created.apply(this);
       this.properties = this.props || {};
+
+      // 兼容微信组件中的 triggerEvent
+      this.triggerEvent = (name, params) => {
+        name = name.replace(/^[a-zA-Z]{1}/, function (s) {
+          return s.toUpperCase()
+        })
+        // 支付宝组件传递函数时 必须以on开头并且on后的第一个字母必须大小（微信必须全小写）
+        this.props['on' + name]({ detail: params })
+      }
+
+      obj.created.apply(this);
+      obj.attached.apply(this);
     };
 
     // obj.didMount = obj.created;
