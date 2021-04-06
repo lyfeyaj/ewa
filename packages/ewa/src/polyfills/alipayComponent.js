@@ -17,12 +17,14 @@ function alipayComponent() {
         name = name.replace(/^[a-zA-Z]{1}/, function (s) {
           return s.toUpperCase()
         })
-        // 支付宝组件传递函数时 必须以on开头并且on后的第一个字母必须大小（微信必须全小写）
+        // 支付宝组件传递函数时 必须以on开头并且on后的第一个字母必须大写（微信必须全小写）
         this.props['on' + name]({ detail: params })
       }
 
       obj.created.apply(this);
       obj.attached.apply(this);
+      obj.didMount = obj.ready.bind(this)
+      obj.didUnmount = obj.detached.bind(this)
     };
 
     // obj.didMount = obj.created;
