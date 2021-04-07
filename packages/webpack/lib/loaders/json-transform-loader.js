@@ -2,7 +2,7 @@
 
 const path = require('path');
 const jsonParser = require('../parsers/jsonParser');
-const EXCLUDE_URL_MATCHER = /dynamicLib\:\/\//;
+const EXCLUDE_URL_MATCHER = /dynamicLib:\/\//;
 
 module.exports = function jsonTransformLoader(content) {
   let { type, ENTRY_DIR, GLOBAL_COMPONENTS } = this.query || {};

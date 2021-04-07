@@ -26,8 +26,8 @@ const WXS_TYPES_MAP = {
 };
 
 // 支付宝中 组件attr匹配命中前缀，需要更换写法 onXxxx catchXxxx
-const prefixBindMatcher = /^bind\:|bind/;
-const prefixCatchMatcher = /^catch\:|catch/;
+const prefixBindMatcher = /^bind:|bind/;
+const prefixCatchMatcher = /^catch:|catch/;
 
 function tranformImport(node, type) {
   if (node.name !== 'import' && node.name !== 'include') return;
@@ -69,17 +69,17 @@ function transformWxs(node, type) {
   if (node.name === 'wxs') {
 
     const attribs = node.attribs;
-    attribs.src = attribs.src.replace(/\.wxs$/i, `.${WXS_TYPES_MAP[type]}`)
+    attribs.src = attribs.src.replace(/\.wxs$/i, `.${WXS_TYPES_MAP[type]}`);
 
-    // 支付宝虽然文件名是sjs 但是标签是<import-sjs> 
+    // 支付宝虽然文件名是sjs 但是标签是<import-sjs>
     if (type === 'alipay') {
-      node.name = 'import-' + WXS_TYPES_MAP[type]
-      attribs.name = attribs.module
-      attribs.from = attribs.src
-      delete attribs.module
-      delete attribs.src
+      node.name = 'import-' + WXS_TYPES_MAP[type];
+      attribs.name = attribs.module;
+      attribs.from = attribs.src;
+      delete attribs.module;
+      delete attribs.src;
     } else {
-      node.name = WXS_TYPES_MAP[type]
+      node.name = WXS_TYPES_MAP[type];
     }
   }
 }
@@ -272,14 +272,14 @@ function transformDirective(node, file, type) {
  * @return {string} 处理后的属性值 onXxxx
  * */
 function replaceCompAttr(oldAttr) {
-  let newAttr = ''
-  let prefix = ''
+  let newAttr = '';
+  let prefix = '';
   if (prefixBindMatcher.test(oldAttr)) {
     newAttr = oldAttr.replace(prefixBindMatcher, '');
-    prefix = 'on'
+    prefix = 'on';
   } else {
     newAttr = oldAttr.replace(prefixCatchMatcher, '');
-    prefix = 'catch'
+    prefix = 'catch';
   }
   newAttr = newAttr.replace(/^[a-zA-Z]{1}/, (s) => s.toUpperCase());
   return prefix + newAttr;

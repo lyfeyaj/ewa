@@ -4,7 +4,8 @@
   "description": "Enhanced wechat app development toolkit",
   "main": "lib/run.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "eslint --fix ./lib/**/*.js"
   },
   "repository": {
     "type": "git",

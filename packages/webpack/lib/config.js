@@ -98,17 +98,17 @@ function makeConfig() {
       context: path.resolve(ROOT, 'src'),
       noErrorOnMissing: true
     }
-  ]
+  ];
   // 支付宝单独开了一个开发中初始编译配置的json文件，放在.kaitian文件夹下
   if (EWA_ENV === 'alipay') {
     copyPluginPatterns.push({
       from: path.resolve(
         ROOT,
-        `src/.kaitian`
+        'src/.kaitian'
       ),
       to: OUTPUT_DIR + '/.kaitian',
       noErrorOnMissing: true
-    })
+    });
   }
 
   // 插件

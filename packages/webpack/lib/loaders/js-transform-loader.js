@@ -7,13 +7,10 @@ module.exports = function jsTransformLoader(content = '') {
 
   if (type === 'alipay' && /src\/app\.js$/.test(this.resourcePath)) {
     content = `
-      var alipayComponent = require('ewa/lib/polyfills/alipayComponent');
-      var alipaySelectorQuery = require('ewa/lib/polyfills/alipaySelectorQuery');
-      var alipayStorage = require('ewa/lib/polyfills/alipayStorage');
-      alipayComponent();
-      alipaySelectorQuery();
-      alipayStorage();
-      ${content}`
+      require('ewa/lib/polyfills/alipayComponent')();
+      require('ewa/lib/polyfills/alipaySelectorQuery')();
+      require('ewa/lib/polyfills/alipayStorage')();
+      ${content}`;
   }
 
   // 多端支持
