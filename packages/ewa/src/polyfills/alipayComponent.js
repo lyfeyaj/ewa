@@ -14,17 +14,15 @@ function alipayComponent() {
 
       // 兼容微信组件中的 triggerEvent
       this.triggerEvent = (name, params) => {
-        name = name.replace(/^[a-zA-Z]{1}/, function (s) {
-          return s.toUpperCase()
-        })
+        name = name.replace(/^[a-zA-Z]{1}/, (s) => s.toUpperCase());
         // 支付宝组件传递函数时 必须以on开头并且on后的第一个字母必须大写（微信必须全小写）
-        this.props['on' + name]({ detail: params })
-      }
+        this.props[`on${name}`]({ detail: params });
+      };
 
       obj.created.apply(this);
       obj.attached.apply(this);
-      obj.didMount = obj.ready && obj.ready.bind(this)
-      obj.didUnmount = obj.detached && obj.detached.bind(this)
+      obj.didMount = obj.ready && obj.ready.bind(this);
+      obj.didUnmount = obj.detached && obj.detached.bind(this);
     };
 
     // obj.didMount = obj.created;

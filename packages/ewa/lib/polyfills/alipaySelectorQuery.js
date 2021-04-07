@@ -23,7 +23,7 @@ function alipaySelectorQuery() {
     var _cacheFn = node.__proto__[name];
 
     node.__proto__[name] = function (cb) {
-      this.__query && this.__query.cacheCallbacks.push(cb);
+      if (this.__query) this.__query.cacheCallbacks.push(cb);
       return _cacheFn.call(this, cb);
     };
   });
@@ -33,11 +33,11 @@ function alipaySelectorQuery() {
     var _this = this;
 
     return _exec.call(this, function (rects) {
-      cb && cb.call(this, rects);
+      if (typeof cb === 'function') cb.call(this, rects);
 
       if (_this.cacheCallbacks && _this.cacheCallbacks.length) {
         _this.cacheCallbacks.forEach(function (cacheCallback, i) {
-          cacheCallback && cacheCallback(rects[i]);
+          if (cacheCallback) cacheCallback(rects[i]);
         });
       }
 

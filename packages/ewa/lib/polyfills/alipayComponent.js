@@ -18,7 +18,7 @@ function alipayComponent() {
           return s.toUpperCase();
         });
 
-        _this.props['on' + name]({
+        _this.props["on".concat(name)]({
           detail: params
         });
       };
