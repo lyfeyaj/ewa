@@ -7,7 +7,9 @@
     "ewa": "lib/cli.js"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "eslint lib",
+    "lint:fix": "eslint --fix lib"
   },
   "repository": {
     "type": "git",

@@ -53,7 +53,8 @@ module.exports = function generate(type, name, dest, index) {
     });
   }
 
-  for (let source in fileMappings) {
+  let source;
+  for (source in fileMappings) {
     let target =  path.resolve(fileDir, fileMappings[source]);
 
     if (fs.existsSync(target)) {
