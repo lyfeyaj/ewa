@@ -177,7 +177,7 @@ function enableState() {
         if (debug) printDiffInfo(_this, debug, null, '手动调用 setData 无法 diff');
 
         _this.__setData(obj, function () {
-          if (autoSync) initState.call(this);
+          if (autoSync) initState.call(_this);
           if (typeof callback === 'function') return callback();
         });
       };

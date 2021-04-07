@@ -25,6 +25,10 @@ const WXS_TYPES_MAP = {
   qq: 'qs'
 };
 
+// 支付宝中 组件attr匹配命中前缀，需要更换写法 onXxxx catchXxxx
+const prefixBindMatcher = /^bind\:|bind/;
+const prefixCatchMatcher = /^catch\:|catch/;
+
 function tranformImport(node, type) {
   if (node.name !== 'import' && node.name !== 'include') return;
 
@@ -63,10 +67,20 @@ function tranformTemplate(node, type) {
 function transformWxs(node, type) {
   if (type === 'weapp') return;
   if (node.name === 'wxs') {
-    node.name = WXS_TYPES_MAP[type]
 
     const attribs = node.attribs;
     attribs.src = attribs.src.replace(/\.wxs$/i, `.${WXS_TYPES_MAP[type]}`)
+
+    // 支付宝虽然文件名是sjs 但是标签是<import-sjs> 
+    if (type === 'alipay') {
+      node.name = 'import-' + WXS_TYPES_MAP[type]
+      attribs.name = attribs.module
+      attribs.from = attribs.src
+      delete attribs.module
+      delete attribs.src
+    } else {
+      node.name = WXS_TYPES_MAP[type]
+    }
   }
 }
 
@@ -120,24 +134,68 @@ const DIRECTIVES_MAP = {
     bindtouchcancel: 'onTouchCancel',
     bindtap: 'onTap',
     bindlongtap: 'onLongTap',
+    bindload: 'onLoad',
+    bindchange: 'onChange',
+    bindtransition: 'onTransition',
+    bindanimationfinish: 'onAnimationEnd',
+    bindscrolltoupper: 'onScrollToUpper',
+    bindscrolltolower: 'onScrollToLower',
+    bindscroll: 'onScroll',
+    binddragstart: 'onTouchStart',
+    binddragging: 'onTouchMove',
+    binddragend: 'onTouchEnd',
+    bindConfirm: 'onConfirm',
+
     'bind:touchstart': 'onTouchStart',
     'bind:touchmove': 'onTouchMove',
     'bind:touchend': 'onTouchEnd',
     'bind:touchcancel': 'onTouchCancel',
     'bind:tap': 'onTap',
     'bind:longtap': 'onLongTap',
+    'bind:load': 'onLoad',
+    'bind:change': 'onChange',
+    'bind:transition': 'onTransition',
+    'bind:animationfinish': 'onAnimationEnd',
+    'bind:scrolltoupper': 'onScrollToUpper',
+    'bind:scrolltolower': 'onScrollToLower',
+    'bind:scroll': 'onScroll',
+    'bind:dragstart': 'onTouchStart',
+    'bind:dragging': 'onTouchMove',
+    'bind:dragend': 'onTouchEnd',
+
     'catch:touchstart': 'catchTouchStart',
     'catch:touchmove': 'catchTouchMove',
     'catch:touchend': 'catchTouchEnd',
     'catch:touchcancel': 'catchTouchCancel',
     'catch:tap': 'catchTap',
     'catch:longtap': 'catchLongTap',
+    'catch:load': 'catchLoad',
+    'catch:change': 'catchChange',
+    'catch:transition': 'catchTransition',
+    'catch:animationfinish': 'catchAnimationEnd',
+    'catch:scrolltoupper': 'catchScrollToUpper',
+    'catch:scrolltolower': 'catchScrollToLower',
+    'catch:scroll': 'catchScroll',
+    'catch:dragstart': 'catchTouchStart',
+    'catch:dragging': 'catchTouchMove',
+    'catch:dragend': 'catchTouchEnd',
+
     'catchtouchstart': 'catchTouchStart',
     'catchtouchmove': 'catchTouchMove',
     'catchtouchend': 'catchTouchEnd',
     'catchtouchcancel': 'catchTouchCancel',
     'catchtap': 'catchTap',
     'catchlongtap': 'catchLongTap',
+    'catchload': 'catchLoad',
+    'catchchange': 'catchChange',
+    'catchtransition': 'catchTransition',
+    'catchanimationfinish': 'catchAnimationEnd',
+    'catchscrolltoupper': 'catchScrollToUpper',
+    'catchscrolltolower': 'catchScrollToLower',
+    'catchscroll': 'catchScroll',
+    'catchdragstart': 'catchTouchStart',
+    'catchdragging': 'catchTouchMove',
+    'catchdragend': 'catchTouchEnd',
   },
   qq: {
     'wx:if': 'qq:if',
@@ -196,6 +254,35 @@ function transformDirective(node, file, type) {
 
     delete attribs[attr];
   });
+
+  // alipay中，需要对组件的函数传递处理 bind:xxxxx 改成 onXxxx
+  if (type === 'alipay') {
+    Object.keys(attribs).forEach(attr => {
+      if (prefixBindMatcher.test(attr) || prefixCatchMatcher.test(attr)) {
+        const newAttr = replaceCompAttr(attr);
+        attribs[newAttr] = attribs[attr];
+      }
+    });
+  }
+}
+
+/**
+ * 将组件传递的函数的写法 转换为on:Xxxx
+ * @param {string} oldAttr 原先属性值 bind:xxxx
+ * @return {string} 处理后的属性值 onXxxx
+ * */
+function replaceCompAttr(oldAttr) {
+  let newAttr = ''
+  let prefix = ''
+  if (prefixBindMatcher.test(oldAttr)) {
+    newAttr = oldAttr.replace(prefixBindMatcher, '');
+    prefix = 'on'
+  } else {
+    newAttr = oldAttr.replace(prefixCatchMatcher, '');
+    prefix = 'catch'
+  }
+  newAttr = newAttr.replace(/^[a-zA-Z]{1}/, (s) => s.toUpperCase());
+  return prefix + newAttr;
 }
 
 /**

@@ -20,10 +20,12 @@ const ROOT = process.cwd();
 const ENTRY_DIR = path.join(ROOT, 'src');
 const OUTPUT_DIR = path.join(ROOT, EWA_ENV === 'weapp' ? 'dist' : `dist-${EWA_ENV}`);
 const USER_CONFIG_FILE = path.join(ROOT, 'ewa.config.js');
+const APP_JSON_FILE = path.join(ENTRY_DIR, 'app.json');
 const OUTPUT_GLOBAL_OBJECT_MAP = {
   weapp: 'wx',
   swan: 'swan',
   tt: 'tt',
+  qq: 'qq',
   alipay: 'my',
 };
 const OUTPUT_GLOBAL_OBJECT = OUTPUT_GLOBAL_OBJECT_MAP[EWA_ENV];
@@ -48,7 +50,9 @@ const DEFAULT_COPY_FILE_TYPES = [
 ];
 const DEFAULT_COMMON_MODULE_PATTERN = /[\\/](node_modules|utils|vendor)[\\/].+\.js/;
 const DEFAULT_CSS_PARSER = 'sass';
-const USER_CONFIG = existsSync(USER_CONFIG_FILE) ? require(USER_CONFIG_FILE): {};
+const USER_CONFIG = existsSync(USER_CONFIG_FILE) ? require(USER_CONFIG_FILE) : {};
+const APP_JSON_CONFIG = existsSync(APP_JSON_FILE) ? require(APP_JSON_FILE) : {};
+const GLOBAL_COMPONENTS = APP_JSON_CONFIG.usingComponents || {};
 
 /**
  * 生成 webpack 配置
@@ -84,6 +88,29 @@ function makeConfig() {
   const aliasDirs = {};
   options.aliasDirs.forEach(d => aliasDirs[d] = path.join(ENTRY_DIR, `${d}/`));
 
+  const copyPluginPatterns = [
+    {
+      from: path.resolve(
+        ROOT,
+        `src/**/*.{${options.copyFileTypes.join(',')}}`
+      ),
+      to: OUTPUT_DIR,
+      context: path.resolve(ROOT, 'src'),
+      noErrorOnMissing: true
+    }
+  ]
+  // 支付宝单独开了一个开发中初始编译配置的json文件，放在.kaitian文件夹下
+  if (EWA_ENV === 'alipay') {
+    copyPluginPatterns.push({
+      from: path.resolve(
+        ROOT,
+        `src/.kaitian`
+      ),
+      to: OUTPUT_DIR + '/.kaitian',
+      noErrorOnMissing: true
+    })
+  }
+
   // 插件
   let plugins = [
     new webpack.EnvironmentPlugin(['NODE_ENV', 'EWA_ENV']),
@@ -105,17 +132,7 @@ function makeConfig() {
       OUTPUT_GLOBAL_OBJECT
     }),
     new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: path.resolve(
-            ROOT,
-            `src/**/*.{${options.copyFileTypes.join(',')}}`
-          ),
-          to: OUTPUT_DIR,
-          context: path.resolve(ROOT, 'src'),
-          noErrorOnMissing: true
-        }
-      ]
+      patterns: copyPluginPatterns
     })
   ];
 
@@ -176,7 +193,7 @@ function makeConfig() {
     );
   }
 
-  let ruleOpts = { ...options, IS_DEV, ROOT, OUTPUT_DIR, ENTRY_DIR, EWA_ENV };
+  let ruleOpts = { ...options, IS_DEV, ROOT, OUTPUT_DIR, ENTRY_DIR, EWA_ENV, GLOBAL_COMPONENTS };
   const { cssRule, cssExtensions } = require('./rules/css')(ruleOpts);
 
   // 不同文件类型的处理

@@ -13,6 +13,7 @@ module.exports = function wxmlRule(options = {}) {
   // 非开发环境开启压缩
   if (!options.IS_DEV) {
     htmlOptions.minimize = {
+      caseSensitive: true,
       minifyCSS: false,
       removeComments: true,
       keepClosingSlash: true,
@@ -45,12 +46,12 @@ module.exports = function wxmlRule(options = {}) {
       options: htmlOptions
     },
     {
-      loader: './loaders/wxml-transform-loader',
-      options: { type: options.EWA_ENV, ENTRY_DIR: options.ENTRY_DIR }
-    },
-    {
       loader: './loaders/fix-unary-element-loader',
       options: { action: 'addPrefix' }
+    },
+    {
+      loader: './loaders/wxml-transform-loader',
+      options: { type: options.EWA_ENV, ENTRY_DIR: options.ENTRY_DIR }
     },
   ];
 
