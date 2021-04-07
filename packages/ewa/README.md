@@ -22,7 +22,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 11. 支持 WXSS 和 SCSS(或 LESS) 混用
 12. 代码混淆及高度压缩，节省包大小
 13. Typescript 支持
-14. 支持转换成 百度 / 字节跳动 / QQ 小程序
+14. 支持转换成 百度 / 字节跳动 / QQ / 支付宝小程序
 15. 多种小程序开发插件，为小程序开发减负，解放生产力
 
 更多特性正在赶来 ... 敬请期待 👇
@@ -129,8 +129,8 @@ ewa start
 选项：
   -v, --version  当前版本号                                               [布尔]
   -h, --help     获取使用帮助                                             [布尔]
-  -t, --type     构建目标 `weapp` 或 `swan` 或 `tt` 或 `qq`
-            [字符串] [可选值: "weapp", "swan", "tt", "qq"] [默认值: "weapp"]
+  -t, --type     构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt` 或 `qq`
+            [字符串] [可选值: "weapp", "swan", "alipay", "tt", "qq"] [默认值: "weapp"]
 
 # 构建命令 👇
 ewa build
@@ -140,8 +140,8 @@ ewa build
 选项：
   -v, --version  当前版本号                                               [布尔]
   -h, --help     获取使用帮助                                             [布尔]
-  -t, --type     构建目标 `weapp` 或 `swan` 或 `tt` 或 `qq`
-            [字符串] [可选值: "weapp", "swan", "tt", "qq"] [默认值: "weapp"]
+  -t, --type     构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt` 或 `qq`
+            [字符串] [可选值: "weapp", "swan", "alipay", "tt", "qq"] [默认值: "weapp"]
 ```
 
 ## 功能插件

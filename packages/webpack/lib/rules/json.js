@@ -14,7 +14,7 @@ module.exports = function jsonRule(options = {}) {
       },
       {
         loader: './loaders/json-transform-loader',
-        options: { type: options.EWA_ENV, ENTRY_DIR: options.ENTRY_DIR }
+        options: { type: options.EWA_ENV, ENTRY_DIR: options.ENTRY_DIR, GLOBAL_COMPONENTS: options.GLOBAL_COMPONENTS }
       }
     ])
   };
