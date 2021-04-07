@@ -25,8 +25,8 @@ function alipayComponent() {
 
       obj.created.apply(this);
       obj.attached.apply(this);
-      obj.didMount = obj.ready.bind(this);
-      obj.didUnmount = obj.detached.bind(this);
+      obj.didMount = obj.ready && obj.ready.bind(this);
+      obj.didUnmount = obj.detached && obj.detached.bind(this);
     };
 
     var props = {};
