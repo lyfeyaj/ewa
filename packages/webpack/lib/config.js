@@ -10,6 +10,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const NodeCommonModuleTemplatePlugin = require('./plugins/NodeCommonModuleTemplatePlugin');
 const AutoCleanUnusedFilesPlugin = require('./plugins/AutoCleanUnusedFilesPlugin');
+const EnsureVendorsExistancePlugin = require('./plugins/EnsureVendorsExistancePlugin');
 const utils = require('./utils');
 
 // 常量
@@ -167,6 +168,11 @@ function makeConfig() {
       ])
     }));
   }
+
+  // 添加 公共模块文件生成检查
+  plugins.push(new EnsureVendorsExistancePlugin({
+    commonModuleName: options.commonModuleName
+  }));
 
   plugins = plugins.concat(options.plugins);
 
