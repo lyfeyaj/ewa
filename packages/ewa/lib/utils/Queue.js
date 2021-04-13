@@ -1,9 +1,5 @@
 "use strict";
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -80,51 +76,20 @@ var Queue = function () {
     }
   }, {
     key: "_handleError",
-    value: function () {
-      var _handleError2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee(e, fn) {
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                if (!(typeof this.onError === 'function')) {
-                  _context.next = 11;
-                  break;
-                }
+    value: function _handleError(e, fn) {
+      var logError = function logError() {
+        var err = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+        console.log("Error on executing ".concat(fn.name, ": ").concat(err.message));
+      };
 
-                _context.prev = 1;
-                _context.next = 4;
-                return Promise.resolve(this.onError(e, fn));
+      if (typeof this.onError !== 'function') return logError(e);
 
-              case 4:
-                _context.next = 9;
-                break;
-
-              case 6:
-                _context.prev = 6;
-                _context.t0 = _context["catch"](1);
-                console.log("Error: ".concat(_context.t0.message));
-
-              case 9:
-                _context.next = 12;
-                break;
-
-              case 11:
-                if (e) console.log("Error on executing ".concat(fn.name, ": ").concat(e.message));
-
-              case 12:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this, [[1, 6]]);
-      }));
-
-      function _handleError(_x, _x2) {
-        return _handleError2.apply(this, arguments);
+      try {
+        Promise.resolve(this.onError(e, fn)).catch(logError);
+      } catch (err) {
+        logError(err);
       }
-
-      return _handleError;
-    }()
+    }
   }, {
     key: "enqueue",
     value: function enqueue(fn) {

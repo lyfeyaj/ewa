@@ -69,18 +69,19 @@ class Queue {
     return this._processQueue();
   }
 
-  async _handleError(e, fn) {
-    if (typeof this.onError === 'function') {
-      // 仅做错误信息打印，如需要做其他操作，可以覆盖此方法
-      try {
-        await Promise.resolve(this.onError(e, fn));
-      } catch (err) {
-        // eslint-disable-next-line
-        console.log(`Error: ${err.message}`);
-      }
-    } else {
+  _handleError(e, fn) {
+    const logError = (err = '') => {
       // eslint-disable-next-line
-      if (e) console.log(`Error on executing ${fn.name}: ${e.message}`);
+      console.log(`Error on executing ${fn.name}: ${err.message}`);
+    };
+
+    // 仅做错误信息打印，如需要做其他操作，可以覆盖 onError 方法
+    if (typeof this.onError !== 'function') return logError(e);
+
+    try {
+      Promise.resolve(this.onError(e, fn)).catch(logError);
+    } catch (err) {
+      logError(err);
     }
   }
 
