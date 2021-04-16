@@ -10,7 +10,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 ## 功能特性
 
 1. Async/Await 支持
-2. Javascript ES2017+ 语法
+2. Javascript ES2020 语法
 3. 原生小程序所有功能，无需学习，极易上手
 4. 微信接口 Promise 化
 5. 支持安装 NPM 包
