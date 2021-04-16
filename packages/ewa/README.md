@@ -100,9 +100,9 @@ cd your_project_dir && ewa init
 
 ### 命令行
 
-```
-# 命令行概览👇
+#### 命令行概览
 
+```
 ewa <cmd> [args]
 
 命令：
@@ -117,11 +117,11 @@ ewa <cmd> [args]
 选项：
   -v, --version  当前版本号                                               [布尔]
   -h, --help     获取使用帮助                                             [布尔]
+```
 
+#### 实时编译命令
 
-# 多平台编译支持, 默认为 weapp (微信小程序)
-
-# 实时编译命令 👇
+```
 ewa start
 
 启动 EWA 小程序项目实时编译
@@ -131,8 +131,11 @@ ewa start
   -h, --help     获取使用帮助                                             [布尔]
   -t, --type     构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt` 或 `qq`
             [字符串] [可选值: "weapp", "swan", "alipay", "tt", "qq"] [默认值: "weapp"]
+```
 
-# 构建命令 👇
+#### 构建命令
+
+```
 ewa build
 
 编译小程序静态文件
@@ -142,6 +145,60 @@ ewa build
   -h, --help     获取使用帮助                                             [布尔]
   -t, --type     构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt` 或 `qq`
             [字符串] [可选值: "weapp", "swan", "alipay", "tt", "qq"] [默认值: "weapp"]
+```
+
+#### 快速生成样板文件
+
+```
+ewa generate <type> <name>
+
+快速生成模版
+
+位置：
+  type  类型 `page` 或 `component` 或 `template`
+                       [字符串] [必需] [可选值: "page", "component", "template"]
+  name  名称                                                     [字符串] [必需]
+
+选项：
+  -v, --version     当前版本号                                            [布尔]
+  -h, --help        获取使用帮助                                          [布尔]
+  -d, --target-dir  目标文件夹，默认为 src，也可以指定为 src 中的某个子目录
+                                                                        [字符串]
+  -i, --index       生成的文件名称为 [name]/index，默认为 [name]/[name]   [布尔]
+```
+
+#### 清理 dist 目录
+
+```
+ewa clean
+
+清理小程序静态文件
+
+选项：
+  -v, --version  当前版本号                                               [布尔]
+  -h, --help     获取使用帮助                                             [布尔]
+  -t, --type     构建目标 `weapp` 或 `swan` 或 `alipay` 或 `tt` 或 `qq`
+      [字符串] [可选值: "weapp", "swan", "alipay", "tt", "qq"] [默认值: "weapp"]
+```
+
+## 多端支持和环境变量
+
+### 多端支持
+
+目前 EWA 支持 微信/百度/字节跳动/QQ/支付宝 5个平台的小程序。
+
+只需要基于`微信小程序`开发，可以通过命令行工具自动构建为不同平台的小程序，具体参见上方的命令行说明。
+
+### 环境变量
+
+EWA 会提供 `process.env.EWA_ENV` 和 `process.env.NODE_ENV` 帮助用户来判断多端和不同的开发环境
+
+可以在 .js 或 .ts 文件中直接使用，可选值见下方说明：
+
+```
+process.env.EWA_ENV: 多端支持的环境变量, 可选值为 "weapp"、"swan"、"alipay"、"tt"、"qq", 默认是 "weapp"
+
+process.env.NODE_ENV: 开发环境变量, 可选值为 "development" 和 "production", 分别对应 ewa start 和 ewa build 命令
 ```
 
 ## 功能插件
