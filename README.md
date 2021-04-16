@@ -206,9 +206,11 @@ EWA 会提供 `process.env.EWA_ENV` 和 `process.env.NODE_ENV` 帮助用户来�
 可以在 .js 或 .ts 文件中直接使用，可选值见下方说明：
 
 ```
-process.env.EWA_ENV: 多端支持的环境变量, 可选值为 "weapp"、"swan"、"alipay"、"tt"、"qq", 默认是 "weapp"
+process.env.EWA_ENV: 多端支持的环境变量
+可选值为 "weapp"、"swan"、"alipay"、"tt"、"qq", 默认是 "weapp"
 
-process.env.NODE_ENV: 开发环境变量, 可选值为 "development" 和 "production", 分别对应 ewa start 和 ewa build 命令
+process.env.NODE_ENV: 开发环境变量
+可选值为 "development" 和 "production", 分别对应 ewa start 和 ewa build 命令
 ```
 
 ## 功能插件
