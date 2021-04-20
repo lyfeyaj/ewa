@@ -91,8 +91,9 @@ function makeConfig() {
 
   const copyPluginPatterns = [
     {
-      from: path.resolve(
-        ROOT,
+      from: path.posix.join(
+        // Fix for #46, add glob support for windows
+        process.platform === 'win32' ? ROOT.replace(/\\/g, '/') : ROOT,
         `src/**/*.{${options.copyFileTypes.join(',')}}`
       ),
       to: OUTPUT_DIR,
