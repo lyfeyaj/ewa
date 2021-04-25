@@ -8,6 +8,7 @@ const WebpackBar = require('webpackbar');
 const NodeSourcePlugin = require('webpack/lib/node/NodeSourcePlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ESLintWebpackPlugin = require('eslint-webpack-plugin');
 const NodeCommonModuleTemplatePlugin = require('./plugins/NodeCommonModuleTemplatePlugin');
 const AutoCleanUnusedFilesPlugin = require('./plugins/AutoCleanUnusedFilesPlugin');
 const EnsureVendorsExistancePlugin = require('./plugins/EnsureVendorsExistancePlugin');
@@ -182,30 +183,22 @@ function makeConfig() {
     commonModuleName: options.commonModuleName
   }));
 
+  // 开发环境下增加 eslint 检查
+  if (IS_DEV) {
+    plugins.push(new ESLintWebpackPlugin({
+      context: ENTRY_DIR,
+      eslintPath: path.dirname(require.resolve('eslint/package.json')),
+      parser: path.dirname(require.resolve('babel-eslint/package.json')),
+      extensions: ['js', 'ts'],
+      cache: true,
+      fix: true,
+    }));
+  }
+
   plugins = plugins.concat(options.plugins);
 
   // Loaders
   let rules = [];
-
-  if (IS_DEV) {
-    // 开发环境下增加 eslint 检查
-    rules.push(
-      {
-        enforce: 'pre',
-        test: /\.js$/,
-        include: utils.pathToRegExp(ENTRY_DIR),
-        use: [{
-          loader: 'eslint-loader',
-          options: {
-            cache: true,
-            fix: true,
-            eslintPath: path.dirname(require.resolve('eslint/package.json')),
-            parser: path.dirname(require.resolve('babel-eslint/package.json'))
-          }
-        }]
-      }
-    );
-  }
 
   let ruleOpts = { ...options, IS_DEV, ROOT, OUTPUT_DIR, ENTRY_DIR, EWA_ENV, GLOBAL_COMPONENTS };
   const { cssRule, cssExtensions } = require('./rules/css')(ruleOpts);
