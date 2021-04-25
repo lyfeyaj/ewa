@@ -1,6 +1,5 @@
 {
   "name": "ewa",
-  "private": true,
   "license": "MIT",
   "author": "Felix Liu",
   "scripts": {
@@ -11,6 +10,12 @@
     "test": "make test"
   },
   "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0",
     "lerna": "^2.11.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
