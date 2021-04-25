@@ -1,4 +1,5 @@
 module.exports = {
+    "root": true,
     "env": {
         "browser": true,
         "commonjs": true,
@@ -14,7 +15,7 @@ module.exports = {
         "WeixinJSBridge": true,
         "getCurrentPages": true
     },
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
     "extends": ["eslint:recommended"],
     "parserOptions": {
         "ecmaFeatures": {

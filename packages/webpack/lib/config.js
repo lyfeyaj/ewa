@@ -185,14 +185,30 @@ function makeConfig() {
 
   // 开发环境下增加 eslint 检查
   if (IS_DEV) {
-    plugins.push(new ESLintWebpackPlugin({
+    const eslintConfigFile = path.resolve(ROOT, '.eslintrc.js');
+    const eslintWebpackConfig = {
       context: ENTRY_DIR,
       eslintPath: path.dirname(require.resolve('eslint/package.json')),
-      parser: path.dirname(require.resolve('babel-eslint/package.json')),
       extensions: ['js', 'ts'],
       cache: true,
       fix: true,
-    }));
+      overrideConfig: {
+        parser: path.dirname(require.resolve('@babel/eslint-parser/package.json')),
+        parserOptions: {
+          babelOptions: {
+            // 指定 babel 配置文件
+            configFile: path.resolve(__dirname, './utils/babelConfig.js')
+          }
+        }
+      }
+    };
+
+    // 如果项目根目录 eslint 配置存在，则优先使用
+    if (existsSync(eslintConfigFile)) {
+      eslintWebpackConfig.overrideConfigFile = eslintConfigFile;
+    }
+
+    plugins.push(new ESLintWebpackPlugin(eslintWebpackConfig));
   }
 
   plugins = plugins.concat(options.plugins);
