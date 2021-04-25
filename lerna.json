@@ -11,6 +11,13 @@
       "conventionalCommits": true,
       "exact": true,
       "message": "chore(release): %s"
+    },
+    "publish": {
+      "npmClient": "npm",
+      "allowBranch": [
+        "master"
+      ],
+      "registry": "https://registry.npmjs.org/"
     }
   },
   "ignoreChanges": [
