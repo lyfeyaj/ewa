@@ -30,6 +30,13 @@ const OUTPUT_GLOBAL_OBJECT_MAP = {
   alipay: 'my',
 };
 const OUTPUT_GLOBAL_OBJECT = OUTPUT_GLOBAL_OBJECT_MAP[EWA_ENV];
+const TYPE_NAME_MAPPINGS = {
+  weapp: '微信小程序',
+  swan: '百度小程序',
+  tt: '字节小程序',
+  qq: 'QQ小程序',
+  alipay: '支付宝小程序',
+};
 
 // 默认常量
 const DEFAULT_COMMON_MODULE_NAME = 'vendors.js';
@@ -242,6 +249,11 @@ function makeConfig() {
   // 构建模式
   const mode = IS_DEV ? 'development' : 'production';
 
+  // 打印构建信息
+  utils.log(`构建类型: ${TYPE_NAME_MAPPINGS[EWA_ENV]}`);
+  utils.log(`构建目录: ${OUTPUT_DIR}`);
+
+  // Webpack 配置
   const config = {
     stats: {
       // copied from `'minimal'`
