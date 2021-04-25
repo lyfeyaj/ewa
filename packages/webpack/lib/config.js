@@ -289,6 +289,14 @@ function makeConfig() {
       alias: Object.assign(aliasDirs, {
         '@': path.resolve(ROOT, 'src/')
       })
+    },
+
+    // 优化 loader 解析目录，方便用户自定义 webpack 配置
+    resolveLoader: {
+      modules: [
+        'node_modules',
+        path.resolve(ROOT, './node_modules')
+      ]
     }
   };
 
