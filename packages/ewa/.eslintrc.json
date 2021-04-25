@@ -1,9 +1,23 @@
 {
+  "root": true,
   "extends": "airbnb-base",
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module"
+  },
+  "globals": {
+    "wx": true,
+    "qq": true,
+    "tt": true,
+    "swan": true,
+    "my": true,
+    "App": true,
+    "Page": true,
+    "getApp": true,
+    "Component": true,
+    "WeixinJSBridge": true,
+    "getCurrentPages": true
   },
   "env": {
     "es6": true,
