@@ -419,6 +419,9 @@ module.exports = {
   // 是否开启缓存，默认为 true
   cache: true,
 
+  // 自定义环境变量, 默认为 ['NODE_ENV', 'EWA_ENV']
+  customEnvironments: [],
+
   // 嫌不够灵活？直接修改 webpack 配置
   webpack: function(config) {
     return config;
