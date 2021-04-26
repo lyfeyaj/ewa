@@ -23,6 +23,7 @@ const ENTRY_DIR = path.join(ROOT, 'src');
 const OUTPUT_DIR = path.join(ROOT, EWA_ENV === 'weapp' ? 'dist' : `dist-${EWA_ENV}`);
 const USER_CONFIG_FILE = path.join(ROOT, 'ewa.config.js');
 const APP_JSON_FILE = path.join(ENTRY_DIR, 'app.json');
+const CUSTOM_ENVIRONMENTS = [];
 const OUTPUT_GLOBAL_OBJECT_MAP = {
   weapp: 'wx',
   swan: 'swan',
@@ -85,7 +86,8 @@ function makeConfig() {
     commonModulePattern: DEFAULT_COMMON_MODULE_PATTERN,
     aliasDirs: DEFAULT_ALIAS_DIRS,
     copyFileTypes: DEFAULT_COPY_FILE_TYPES,
-    cssParser: DEFAULT_CSS_PARSER
+    cssParser: DEFAULT_CSS_PARSER,
+    customEnvironments: CUSTOM_ENVIRONMENTS
   }, USER_CONFIG);
 
   options.simplifyPath = options.simplifyPath === true;
@@ -123,8 +125,14 @@ function makeConfig() {
 
   // 插件
   let plugins = [
-    new webpack.EnvironmentPlugin(['NODE_ENV', 'EWA_ENV']),
+    // 支持自定义环境变量的使用
+    new webpack.EnvironmentPlugin(
+      ['NODE_ENV', 'EWA_ENV'].concat(options.customEnvironments || [])
+    ),
+
+    // 进度条显示支持
     new WebpackBar(),
+
     // Mock node env
     new NodeSourcePlugin({
       console: false,
@@ -135,12 +143,20 @@ function makeConfig() {
       Buffer: true,
       setImmediate: true
     }),
+
+    // 合并文件
     new webpack.optimize.ModuleConcatenationPlugin(),
+
+    // 输出非 js 文件
     new ExtractTextPlugin({ filename: '[name]' }),
+
+    // 注入 JS 头部引用
     new NodeCommonModuleTemplatePlugin({
       commonModuleName: options.commonModuleName,
       OUTPUT_GLOBAL_OBJECT
     }),
+
+    // 拷贝 assets 文件
     new CopyWebpackPlugin({
       patterns: copyPluginPatterns
     })
