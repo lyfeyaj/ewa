@@ -1,17 +1,24 @@
 {
-  "name": "ewa",
-  "license": "MIT",
-  "author": "Felix Liu",
-  "scripts": {
-    "build": "make build",
-    "fix": "make fix",
-    "lint": "make lint",
-    "precommit": "lint-staged",
-    "test": "make test"
+  "name": "ewa-monorepo",
+  "license": "ISC",
+  "author": {
+    "name": "Felix Liu",
+    "email": "lyfeyaj@gmail.com",
+    "url": "https://github.com/lyfeyaj"
   },
+  "private": true,
+  "bugs": "https://github.com/lyfeyaj/ewa/issues",
+  "engines": {
+    "node": ">=10"
+  },
+  "keywords": [
+    "ewa",
+    "wechat mini program"
+  ],
+  "scripts": {},
   "devDependencies": {
     "cz-conventional-changelog": "^3.3.0",
-    "lerna": "^2.11.0"
+    "lerna": "^4.0.0"
   },
   "config": {
     "commitizen": {
