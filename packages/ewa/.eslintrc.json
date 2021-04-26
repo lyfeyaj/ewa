@@ -4,7 +4,8 @@
   "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": 6,
-    "sourceType": "module"
+    "sourceType": "module",
+    "parserOptions": { "babelOptions": { "requireConfigFile": false } },
   },
   "globals": {
     "wx": true,
