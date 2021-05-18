@@ -10,7 +10,8 @@
     "version": {
       "conventionalCommits": true,
       "exact": true,
-      "message": "chore(release): %s"
+      "message": "chore(release): %s",
+      "createRelease": "github"
     },
     "publish": {
       "npmClient": "npm",
