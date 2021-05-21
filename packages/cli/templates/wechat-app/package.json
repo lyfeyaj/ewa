@@ -10,7 +10,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "ewa": "^1.0.9"
+    "ewa": "^1.1.1"
   },
   "devDependencies": {}
 }
