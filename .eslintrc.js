@@ -20,7 +20,7 @@ module.exports = {
         "getCurrentPages": true
     },
     "parser": "@babel/eslint-parser",
-    "parserOptions": { "babelOptions": { "requireConfigFile": false } },
+    "parserOptions": { "requireConfigFile": false },
     "extends": ["eslint:recommended"],
     "parserOptions": {
         "ecmaFeatures": {

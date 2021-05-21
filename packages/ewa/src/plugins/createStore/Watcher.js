@@ -8,23 +8,38 @@ const obInstance = Observer.getInstance();
 let uid = 0;
 
 class Watcher {
-  constructor(options) {
+  /**
+   *
+   * @param {Page | Component} ctx 上下文环境，小程序 Page 或者 Component 实例
+   * @param {Object} options 参数
+   * @param {String} options.watchPropName 监听数据自定义属性名称
+   */
+  constructor(ctx, options = {}) {
+    const { watchPropName = '$watch' } = options;
+
     // 执行环境
-    this.ctx = options;
+    this.ctx = ctx;
+
     // data数据
-    this.$data = options.data || {};
+    this.$data = ctx.data || {};
+
     // $watch数据
-    this.$watch = options.$watch || {};
+    this.$watch = ctx[watchPropName] || {};
+
     // 更新函数
-    this.updateFn = options.setState || options.setData;
+    this.updateFn = ctx.setState || ctx.setData;
+
     // watcherId
     this.id = ++uid;
+
     // 收集data和globalData的交集作为响应式对象
     this.reactiveData = {};
+
     // 初始化操作
     this.initReactiveData();
     this.createObserver();
     this.setCustomWatcher();
+
     // 收集watcher
     obInstance.setGlobalWatcher(this);
   }

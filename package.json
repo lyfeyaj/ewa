@@ -15,9 +15,13 @@
     "ewa",
     "wechat mini program"
   ],
-  "scripts": {},
+  "scripts": {
+    "commit": "cz",
+    "build": "cd packages/ewa && npm run lint:fix && npm run build"
+  },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
+    "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
     "lerna": "^4.0.0"
   },

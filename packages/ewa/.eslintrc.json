@@ -5,7 +5,7 @@
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module",
-    "parserOptions": { "babelOptions": { "requireConfigFile": false } },
+    "requireConfigFile": false
   },
   "globals": {
     "wx": true,
@@ -58,7 +58,12 @@
     "no-prototype-builtins": 0,
     "no-useless-escape": 0,
     "class-methods-use-this": "off",
-    "no-use-before-define": ["error", { "functions": false, "classes": true }],
-    "no-console": ["warn", { "allow": ["warn", "error"] }]
+    "no-use-before-define": ["error", {
+      "functions": false,
+      "classes": true
+    }],
+    "no-console": ["warn", {
+      "allow": ["warn", "error"]
+    }]
   }
 }
