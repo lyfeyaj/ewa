@@ -16,6 +16,7 @@ module.exports = {
         "Page": true,
         "getApp": true,
         "Component": true,
+        "Behavior": true,
         "WeixinJSBridge": true,
         "getCurrentPages": true
     },
