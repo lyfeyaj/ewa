@@ -64,3 +64,6 @@ yarn.lock
 
 */.DS_Store
 .DS_Store
+
+# ignore ewa lib
+packages/ewa/lib
