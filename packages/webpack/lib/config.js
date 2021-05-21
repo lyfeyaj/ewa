@@ -300,7 +300,11 @@ function makeConfig() {
     devtool,
     mode,
     context: __dirname,
-    entry: utils.buildDynamicEntries(ENTRY_DIR, options.simplifyPath, EWA_ENV),
+    entry: utils.buildDynamicEntries({
+      baseDir: ENTRY_DIR,
+      simplifyPath: options.simplifyPath,
+      target: EWA_ENV
+    }),
     target: 'node',
     output: {
       path: OUTPUT_DIR,

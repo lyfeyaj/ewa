@@ -78,7 +78,12 @@ function resolveOrSimplifyPath(baseDir, filepath, simplifyPath) {
 }
 
 // 构建 entries
-function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
+function buildDynamicEntries({
+  baseDir,
+  simplifyPath = false,
+  target = '',
+  ignore = []
+}) {
   // 查找所有微信小程序文件
   let wxFiles = glob.sync(
     path.join(baseDir, '**/*.{wxss,wxs,wxml}')
@@ -88,7 +93,9 @@ function buildDynamicEntries(baseDir, simplifyPath = false, target = '') {
   // 支持 scss 和 less 当做 wxss 用
   // 支持 ts 编译为 js
   let otherFiles = glob.sync(
-    path.join(baseDir, '**/*.{ts,js,json,scss,sass,less}')
+    path.join(baseDir, '**/*.{ts,js,json,scss,sass,less}'),
+    // 忽略 .d.ts 文件
+    { ignore: ['**/*.d.ts', ...ignore] }
   );
 
   // 标记为入口文件夹

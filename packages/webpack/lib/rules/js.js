@@ -9,7 +9,7 @@ module.exports = function jsRule(options = {}) {
     use: [{
       loader: './loaders/js-transform-loader',
       options: { type: options.EWA_ENV }
-    } ,{
+    }, {
       loader: 'babel-loader',
       options: {
         cacheDirectory: true,
