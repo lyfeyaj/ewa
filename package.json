@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "commit": "cz",
-    "build": "cd packages/ewa && npm run build"
+    "build": "cd packages/ewa && npm run lint:fix && npm run build"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
