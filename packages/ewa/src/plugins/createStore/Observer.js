@@ -7,10 +7,13 @@ class Observer {
   constructor() {
     // 初始化响应式对象
     this.reactiveObj = {};
+
     // 响应式对象集合
     this.reactiveBus = {};
+
     // 自定义事件集合
     this.eventBus = {};
+
     // 全局watcher集合
     this.globalWatchers = [];
   }
@@ -23,7 +26,7 @@ class Observer {
     return this.instance;
   }
 
-  // 收集全局watcher
+  // 收集全局 watcher
   setGlobalWatcher(obj) {
     if (!this.isExistSameId(this.globalWatchers, obj.id)) this.globalWatchers.push(obj);
   }
