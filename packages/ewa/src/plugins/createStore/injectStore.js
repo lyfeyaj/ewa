@@ -1,9 +1,5 @@
-'use strict';
-
 const Watcher = require('./Watcher');
-const Observer = require('./Observer');
-
-const obInstance = Observer.getInstance();
+const observer = require('./Observer').getInstance();
 
 function noop() {}
 
@@ -17,7 +13,7 @@ function checkExistedProps(ctx, methodsArr) {
   let noConflicts = true;
   methodsArr.forEach((fn) => {
     if (fn in ctx) {
-      hasConflicts = false;
+      noConflicts = false;
       warn(`${fn} 属性或方法将被覆盖, 请尽快调整。`);
     }
     if (noConflicts) return;
@@ -45,7 +41,7 @@ const DEFAULT_PROP_NAMES = {
   $emit: '$emit',
   $off: '$off',
   $once: '$once',
-  $watch: '$watch'
+  $watch: '$watch',
 };
 
 // 注入方法和属性, 支持自定义方法名称
@@ -57,33 +53,33 @@ const injectStoreMethods = (ctx, propNames = {}) => {
   checkExistedProps(ctx, Object.keys(_propNames));
 
   // 手动更新全局data
-  ctx[_propNames['$set']] = function (key, value) {
-    obInstance.handleUpdate(key, value);
+  ctx[_propNames.$set] = function (key, value) {
+    observer.handleUpdate(key, value);
   };
 
   // 添加注册事件函数
-  ctx[_propNames['$on']] = function (key, callback) {
+  ctx[_propNames.$on] = function (key, callback) {
     if (this.__watcher && this.__watcher.id) {
-      obInstance.onEvent(key, callback, ctx, this.__watcher.id);
+      observer.onEvent(key, callback, ctx, this.__watcher.id);
     }
   };
 
   // 添加通知更新函数
-  ctx[_propNames['$emit']] = function (key, obj) {
-    obInstance.emitEvent(key, obj);
+  ctx[_propNames.$emit] = function (key, obj) {
+    observer.emitEvent(key, obj);
   };
 
   // 添加解绑事件函数
-  ctx[_propNames['$off']] = function (key) {
+  ctx[_propNames.$off] = function (key) {
     if (this.__watcher && this.__watcher.id) {
-      obInstance.off(key, this.__watcher.id);
+      observer.off(key, this.__watcher.id);
     }
   };
 
   // 添加执行一次事件函数
-  ctx[_propNames['$once']] = function (key, callback) {
+  ctx[_propNames.$once] = function (key, callback) {
     if (this.__watcher && this.__watcher.id) {
-      obInstance.once(key, callback, this.__watcher.id);
+      observer.once(key, callback, this.__watcher.id);
     }
   };
 };
@@ -91,7 +87,7 @@ const injectStoreMethods = (ctx, propNames = {}) => {
 // 初始化 store
 function initStore(propNames = {}) {
   // 获取自定义 $watch 名称
-  const watchPropName = propNames['$watch'];
+  const watchPropName = propNames.$watch;
 
   // 注入方法和属性到 Page 和 Component 中
   // NOTE: 优化运行时，避免使用这种覆盖的方式，会导致污染

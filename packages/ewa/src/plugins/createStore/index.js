@@ -1,8 +1,7 @@
-'use strict';
-
 const isPlainObject = require('lodash.isplainobject');
 const injectStore = require('./injectStore');
 const reactive = require('./reactive');
+const observer = require('./Observer').getInstance();
 
 // 确保仅初始化一次
 let hasStore = false;
@@ -110,7 +109,7 @@ function createStore(obj, propNames = {}) {
   injectStore(propNames);
 
   if (isPlainObject(obj)) {
-    obInstance.reactiveObj = obj;
+    observer.reactiveObj = obj;
     reactive(obj);
     return obj;
   }
