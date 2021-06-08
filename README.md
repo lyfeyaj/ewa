@@ -457,4 +457,4 @@ module.exports = {
 4. `ewa build` 后如果无法正常运行小程序，可检查下是否关闭了微信开发者工具中的 `ES6 转 ES5` 和 `增强编译` 选项。原因是：ewa 打包时会将 ES6 转换为 ES5 并混淆压缩，此功能和微信开发者工具自带的 `ES6 转 ES5` 和 `增强编译` 功能有部分重复，多次转换会导致代码无法运行，所以只要关闭即可。
 5. 其他问题欢迎直接在 Github 上提交 issue，也可以添加下方微信反馈(请注明来意 ^_^)
 
-![lyfeyaj](./docs/_media/wechat-qrcode.jpg)
+![lyfeyaj](https://raw.githubusercontent.com/lyfeyaj/ewa/master/docs/_media/wechat-qrcode.jpg)
