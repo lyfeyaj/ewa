@@ -5,7 +5,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 
 ## 为什么开发这个工具？
 
-厌倦了不停的对比 [wepy](https://github.com/Tencent/wepy) 或者 [mpvue](https://github.com/Meituan-Dianping/mpvue) 的特性，间歇性的踩雷，以及 `code once, run everywhere` 的幻想。只想给小程序开发插上效率的翅膀 ~
+厌倦了不停的对比 [taro](https://github.com/NervJS/taro)、[wepy](https://github.com/Tencent/wepy) 或者 [mpvue](https://github.com/Meituan-Dianping/mpvue) 的特性，间歇性的踩雷，构建和运行速度慢以及 `code once, run everywhere` 的幻想。只想给小程序开发插上效率的翅膀 ~
 
 ## 功能特性
 
@@ -25,7 +25,7 @@ Enhanced Wechat App Development Toolkit (微信小程序增强开发工具)
 14. 支持转换成 百度 / 字节跳动 / QQ / 支付宝小程序
 15. 多种小程序开发插件，为小程序开发减负，解放生产力
 
-更多特性正在赶来 ... 敬请期待
+[更多特性正在赶来 ... 敬请期待](./TODOS.md)
 
 ## 安装
 
@@ -444,10 +444,17 @@ module.exports = {
 };
 ```
 
+
+## 更新日志
+
+本项目遵从 [Angular Style Commit Message Conventions](https://gist.github.com/stephenparish/9941e89d80e2bc58a153)，更新日志请查阅 [Release](https://github.com/lyfeyaj/ewa/releases)。
+
 ## 常见问题 & Tips
 
 1. 可以使用 `@` 来代替 **源代码根目录** 来引入代码或样式，如 `const utils = require('@/utils/util')`
 2. WXSS 中可以直接编写 SCSS 样式代码
 3. WXSS 或 SCSS 中引用绝对路径需要在路径前加 `~` 符号，如：`@import "~@/assets/styles/common.scss";`，具体原因参见: [sass-loader](https://github.com/webpack-contrib/sass-loader#imports)
 4. `ewa build` 后如果无法正常运行小程序，可检查下是否关闭了微信开发者工具中的 `ES6 转 ES5` 和 `增强编译` 选项。原因是：ewa 打包时会将 ES6 转换为 ES5 并混淆压缩，此功能和微信开发者工具自带的 `ES6 转 ES5` 和 `增强编译` 功能有部分重复，多次转换会导致代码无法运行，所以只要关闭即可。
-5. 其他问题欢迎直接在 Github 上提交 issue
+5. 其他问题欢迎直接在 Github 上提交 issue，也可以添加下方微信反馈(请注明来意 ^_^)
+
+![lyfeyaj](./docs/_media/wechat-qrcode.jpg)
