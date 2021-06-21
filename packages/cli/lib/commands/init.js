@@ -39,16 +39,19 @@ module.exports = function init() {
 
   // 如果存在源文件
   sourceFiles.map(source => {
-    if (source === TMP_SRC) return;
+    // Fix for #49, glob 输出的地址为 unix 地址，这里需要使用 path.resolve 自动转换一下
+    const _source = path.resolve(source);
+
+    if (_source === TMP_SRC) return;
 
     if (isEmptySrc) isEmptySrc = false;
 
-    let basename = path.basename(source);
+    let basename = path.basename(_source);
 
     let dest = path.resolve(TMP_SRC, basename);
 
-    utils.log(`正在移动 ${path.relative(ROOT, source)} 至 ${path.relative(ROOT, dest)}`);
-    fs.moveSync(source, dest, { overwrite: true });
+    utils.log(`正在移动 ${path.relative(ROOT, _source)} 至 ${path.relative(ROOT, dest)}`);
+    fs.moveSync(_source, dest, { overwrite: true });
   });
 
   utils.log('重命名 __tmp_src__ 为 src');
