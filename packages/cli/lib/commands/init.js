@@ -39,7 +39,7 @@ module.exports = function init() {
 
   // 如果存在源文件
   sourceFiles.map(source => {
-    // Fix for #49, glob 输出的地址为 unix 地址，这里需要使用 path.resolve 自动转换一下
+    // Fix for #49, glob 输出的地址为 posix 地址，这里需要使用 path.resolve 自动转换一下
     const _source = path.resolve(source);
 
     if (_source === TMP_SRC) return;
