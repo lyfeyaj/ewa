@@ -12,6 +12,7 @@ const ESLintWebpackPlugin = require('eslint-webpack-plugin');
 const NodeCommonModuleTemplatePlugin = require('./plugins/NodeCommonModuleTemplatePlugin');
 const AutoCleanUnusedFilesPlugin = require('./plugins/AutoCleanUnusedFilesPlugin');
 const EnsureVendorsExistancePlugin = require('./plugins/EnsureVendorsExistancePlugin');
+const BuildDynamicEntriesPlugin = require('./plugins/BuildDynamicEntriesPlugin');
 const utils = require('./utils');
 
 // 常量
@@ -125,6 +126,8 @@ function makeConfig() {
 
   // 插件
   let plugins = [
+    new BuildDynamicEntriesPlugin(),
+
     // 支持自定义环境变量的使用
     new webpack.EnvironmentPlugin(
       ['NODE_ENV', 'EWA_ENV'].concat(options.customEnvironments || [])

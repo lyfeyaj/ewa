@@ -192,6 +192,7 @@ function log(msg, type = 'info') {
 }
 
 module.exports = {
+  chooseCorrectExtnameByBuildTarget,
   resolveOrSimplifyPath,
   buildDynamicEntries,
   escapeRegExpString,
