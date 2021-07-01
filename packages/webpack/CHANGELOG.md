@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.3](https://github.com/lyfeyaj/ewa/tree/master/packages/webpack/compare/v1.2.2...v1.2.3) (2021-07-01)
+
+
+### Bug Fixes
+
+* **ewa-webpack:** 修复 wxml 绕过缓存的问题 ([624f13e](https://github.com/lyfeyaj/ewa/tree/master/packages/webpack/commit/624f13e52992c7b6e988a3bc4687f9cdd2ce4475))
+
+
+
+
+
 ## [1.2.2](https://github.com/lyfeyaj/ewa/tree/master/packages/webpack/compare/v1.2.0...v1.2.2) (2021-07-01)
 
 
