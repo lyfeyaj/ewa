@@ -61,7 +61,7 @@ module.exports = function wxmlRule(options = {}) {
   ];
 
   // 开启缓存
-  // if (options.cache) htmlRules = ['cache-loader'].concat(htmlRules);
+  if (options.cache) htmlRules = ['cache-loader'].concat(htmlRules);
 
   return {
     test: /\.wxml$/i,
