@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2](https://github.com/lyfeyaj/ewa/compare/v1.2.0...v1.2.2) (2021-07-01)
+
+
+### Bug Fixes
+
+* **ewa-cli:** fix for [#49](https://github.com/lyfeyaj/ewa/issues/49) ([9ba99a2](https://github.com/lyfeyaj/ewa/commit/9ba99a2e9094174a5d275dcfe4b3171c1c129af9))
+* **ewa-webpack:** 修复 wxml 中的 < 或者 > 可能导致解析报错的问题 ([83d8bda](https://github.com/lyfeyaj/ewa/commit/83d8bda4180b8709976a5a8c13602318fee02223))
+
+
+
+
+
 ## [1.2.1](https://github.com/lyfeyaj/ewa/compare/v1.2.0...v1.2.1) (2021-06-21)
 
 

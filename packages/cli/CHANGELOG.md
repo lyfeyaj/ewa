@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2](https://github.com/lyfeyaj/ewa/tree/master/packages/cli/compare/v1.2.0...v1.2.2) (2021-07-01)
+
+
+### Bug Fixes
+
+* **ewa-cli:** fix for [#49](https://github.com/lyfeyaj/ewa/tree/master/packages/cli/issues/49) ([9ba99a2](https://github.com/lyfeyaj/ewa/tree/master/packages/cli/commit/9ba99a2e9094174a5d275dcfe4b3171c1c129af9))
+
+
+
+
+
 ## [1.2.1](https://github.com/lyfeyaj/ewa/tree/master/packages/cli/compare/v1.2.0...v1.2.1) (2021-06-21)
 
 
