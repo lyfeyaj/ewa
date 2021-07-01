@@ -13,6 +13,8 @@ module.exports = function wxmlRule(options = {}) {
   // 非开发环境开启压缩
   if (!options.IS_DEV) {
     htmlOptions.minimize = {
+      collapseWhitespace: true,
+      conservativeCollapse: true,
       caseSensitive: true,
       minifyCSS: false,
       removeComments: true,
@@ -27,6 +29,9 @@ module.exports = function wxmlRule(options = {}) {
         /<wxs[\s\S]*?<\/wxs>/,
         /<sjs[\s\S]*?<\/sjs>/,
         /<qs[\s\S]*?<\/qs>/,
+
+        // 忽略 {{ }} 中间内容的处理
+        /{{[\s\S]*?}}/,
       ],
     };
   }
@@ -56,7 +61,7 @@ module.exports = function wxmlRule(options = {}) {
   ];
 
   // 开启缓存
-  if (options.cache) htmlRules = ['cache-loader'].concat(htmlRules);
+  // if (options.cache) htmlRules = ['cache-loader'].concat(htmlRules);
 
   return {
     test: /\.wxml$/i,
