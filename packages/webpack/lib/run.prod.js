@@ -8,13 +8,7 @@ const execSync = require('child_process').execSync;
 const configFile = path.resolve(__dirname, 'config.js');
 
 module.exports = function(webpack) {
-  let cmd = [
-    webpack,
-    '--config',
-    configFile,
-    '--colors',
-    '--display=errors-only'
-  ].join(' ');
+  let cmd = `${webpack} --config "${configFile}" --colors --display=errors-only`
 
   execSync(cmd, {
     env: process.env,

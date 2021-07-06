@@ -28,7 +28,7 @@ const WATCH_PATTERNS = [
 module.exports = function(webpack) {
   // nodemon 实例
   const script = nodemon({
-    exec: `${webpack} --config ${CONFIG_FILE} --watch`,
+    exec: `${webpack} --config "${CONFIG_FILE}" --watch`,
     watch: [FAKE_WATCH_DIR],
     ext: 'js'
   });
