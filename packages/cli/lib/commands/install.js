@@ -39,19 +39,23 @@ module.exports = function install(projectDir, successTip) {
     }, 10000);
   }, 10000);
 
-  exec(`cd ${projectDir} && npm i`, function(err) {
-    if (err) return utils.log(err, 'error');
+  exec(
+    'npm i',
+    { cwd: projectDir },
+    function(err) {
+      if (err) return utils.log(err, 'error');
 
-    if (tip) clearTimeout(tip);
-    if (loadingTip) clearInterval(loadingTip);
+      if (tip) clearTimeout(tip);
+      if (loadingTip) clearInterval(loadingTip);
 
-    utils.log('安装完成 ^_^ !', 'success');
-    utils.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~', 'success');
-    utils.log('欢迎使用 ewa 工具, 运行命令:  ', 'success');
-    console.log('');
-    console.log(`            ${successTip}`);
-    console.log('');
-    utils.log('即可启动项目 ~ Enjoy!', 'success');
-    utils.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~', 'success');
-  });
+      utils.log('安装完成 ^_^ !', 'success');
+      utils.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~', 'success');
+      utils.log('欢迎使用 ewa 工具, 运行命令:  ', 'success');
+      console.log('');
+      console.log(`            ${successTip}`);
+      console.log('');
+      utils.log('即可启动项目 ~ Enjoy!', 'success');
+      utils.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~', 'success');
+    }
+  );
 };

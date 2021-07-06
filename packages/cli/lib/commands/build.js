@@ -15,8 +15,9 @@ module.exports = function build(type) {
   utils.log('正在以生产模式编译项目...');
 
   execSync(
-    `cd ${ROOT} && node ${script}`,
+    `node "${script}"`,
     {
+      cwd: ROOT,
       env: Object.assign({}, {
         NODE_ENV: 'production',
         EWA_ENV: type

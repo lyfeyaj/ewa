@@ -15,8 +15,9 @@ module.exports = async function start(type) {
   utils.log('正在启动项目实时编译...');
 
   execSync(
-    `cd ${ROOT} && node ${script}`,
+    `node "${script}"`,
     {
+      cwd: ROOT,
       env: Object.assign({}, {
         NODE_ENV: 'development',
         EWA_ENV: type
