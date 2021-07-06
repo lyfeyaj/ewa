@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.4](https://github.com/lyfeyaj/ewa/tree/master/packages/webpack/compare/v1.2.3...v1.2.4) (2021-07-06)
+
+
+### Bug Fixes
+
+* **ewa-webpack:** 修复因为路径中包含空格导致脚本执行报错的问题 ([62c1e4f](https://github.com/lyfeyaj/ewa/tree/master/packages/webpack/commit/62c1e4fda10f8d46f6a6019400e2dbf37f9e6e81))
+
+
+
+
+
 ## [1.2.3](https://github.com/lyfeyaj/ewa/tree/master/packages/webpack/compare/v1.2.2...v1.2.3) (2021-07-01)
 
 
